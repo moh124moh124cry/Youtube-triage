@@ -94,7 +94,6 @@
         </div>
       </div>
 
-      <!-- بطاقة الفائز -->
       <div id="winnerCard" class="hidden bg-gradient-to-br from-red-950/60 via-slate-900 to-slate-900 border-2 border-red-500 p-5 rounded-2xl shadow-2xl">
         <div id="winnerBadge" class="inline-block text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">الفائز في المسابقة 🎉</div>
         <div class="flex items-start gap-4">
@@ -107,7 +106,6 @@
         </div>
       </div>
 
-      <!-- قائمة كل التعليقات -->
       <div id="commentsSection" class="hidden bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
           <h2 id="commentsListHeading" class="font-bold text-white text-base">قائمة كل التعليقات</h2>
@@ -119,7 +117,6 @@
         <div id="allCommentsList" class="space-y-2.5 max-h-64 overflow-y-auto pr-1"></div>
       </div>
 
-      <!-- سجل المستبعدين -->
       <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -280,12 +277,12 @@
       </div>
     </div>
 
-    <!-- 8. مستخرج نصوص وترجمة الفيديو المدمج -->
+    <!-- 8. مستخرج نصوص وترجمة الفيديو (Client-Side المباشر) -->
     <div id="section-transcript" class="tool-section hidden space-y-4">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
         <div>
           <label class="block text-sm font-semibold mb-1 text-slate-300">رابط الفيديو لاستخراج النصوص والترجمة:</label>
-          <input id="transUrl" type="text" placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
+          <input id="transUrl" type="text" placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 transition" />
         </div>
         
         <button id="btnFetchTrans" onclick="fetchVideoTranscript()" class="w-full bg-teal-600 hover:bg-teal-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-teal-600/30">
@@ -595,7 +592,7 @@
       alert("تم نسخ الوسوم!");
     }
 
-    /* 8. استخراج نصوص وترجمة الفيديو داخلياً */
+    /* 8. استخراج نصوص وترجمة الفيديو (Client-Side Direct Bypass) */
     async function fetchVideoTranscript() {
       const url = document.getElementById("transUrl").value;
       const vid = extractVideoId(url);
@@ -611,19 +608,61 @@
 
       box.classList.add("hidden");
       status.classList.remove("hidden");
-      statusText.innerText = "جاري قراءة وترجمة صوت الفيديو واستخراج النص...";
+      statusText.innerText = "جاري الاتصال المباشر لسحب النص...";
       btn.disabled = true;
       btn.classList.add("opacity-60", "cursor-not-allowed");
 
       try {
-        const res = await fetch(`/api/transcript?videoId=${vid}`);
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || "تعذر استخراج النص.");
+        const instances = [
+          "https://pipedapi.kavin.rocks",
+          "https://pipedapi.smnz.de",
+          "https://piped-api.garudalinux.org"
+        ];
+        
+        let subtitles = null;
+        
+        for (const instance of instances) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                const r = await fetch(`${instance}/streams/${vid}`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                if (!r.ok) continue;
+                const data = await r.json();
+                
+                if (data.subtitles && data.subtitles.length > 0) {
+                    subtitles = data.subtitles;
+                    break; 
+                }
+            } catch (e) {
+                continue;
+            }
         }
 
-        document.getElementById("transOutput").value = data.transcript;
+        if (!subtitles) {
+          throw new Error("لا تتوفر ترجمة لهذا الفيديو، أو أنه لا يحتوي على نص مفرّغ.");
+        }
+
+        let track = subtitles.find(s => s.code === 'ar') 
+                 || subtitles.find(s => s.code === 'en') 
+                 || subtitles[0];
+        
+        let trackUrl = track.url;
+        if (!trackUrl.includes('fmt=')) trackUrl += '&fmt=vtt';
+        
+        const trackRes = await fetch(trackUrl);
+        if (!trackRes.ok) throw new Error("تعذر قراءة ملف الترجمة.");
+        
+        const trackText = await trackRes.text();
+        
+        let cleanText = trackText.split('\n')
+            .filter(line => !line.includes('-->') && !line.startsWith('WEBVTT') && !line.startsWith('Kind:') && !line.startsWith('Language:') && !line.startsWith('Style:') && line.trim() !== '')
+            .map(line => line.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').trim())
+            .join(' ')
+            .replace(/\s+/g, ' ');
+
+        document.getElementById("transOutput").value = cleanText;
         box.classList.remove("hidden");
         status.classList.add("hidden");
       } catch (err) {
