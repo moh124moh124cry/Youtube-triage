@@ -3,41 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>كل العالم رقمي - سحب مسابقات يوتيوب</title>
+  <title>كل العالم رقمي - All World Digital</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
-    body { font-family: 'Cairo', sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap');
+    body.lang-ar { font-family: 'Cairo', sans-serif; }
+    body.lang-en { font-family: 'Inter', sans-serif; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen py-8 px-4">
+<body class="bg-slate-900 text-slate-100 min-h-screen py-8 px-4 lang-ar">
   <div class="max-w-2xl mx-auto space-y-6">
+
+    <!-- شريط تبديل اللغة -->
+    <div class="flex justify-end">
+      <button onclick="toggleLanguage()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">
+        <i class="fa-solid fa-globe text-red-500"></i>
+        <span id="langSwitchText">English</span>
+      </button>
+    </div>
 
     <!-- الشعار والرأس -->
     <header class="text-center space-y-2 bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-xl backdrop-blur">
       <div class="flex items-center justify-center gap-3">
         <i class="fa-brands fa-youtube text-red-500 text-3xl"></i>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white">كل العالم رقمي</h1>
+        <h1 id="appTitle" class="text-2xl sm:text-3xl font-extrabold text-white">كل العالم رقمي</h1>
       </div>
-      <p class="text-slate-400 text-xs sm:text-sm">سحب عشوائي مؤمّن مع استبعاد تلقائي للفائزين السابقين</p>
+      <p id="appSubtitle" class="text-slate-400 text-xs sm:text-sm">سحب عشوائي مؤمّن مع استبعاد تلقائي للفائزين السابقين</p>
     </header>
 
     <!-- صندوق الإدخال -->
     <section class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg space-y-4">
       <div>
-        <label class="block text-sm font-semibold mb-1 text-slate-300">رابط فيديو اليوتيوب:</label>
+        <label id="lblVideoUrl" class="block text-sm font-semibold mb-1 text-slate-300">رابط فيديو اليوتيوب:</label>
         <input id="videoUrl" type="text" placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
       </div>
 
       <div class="flex items-center gap-2">
         <input id="uniqueUser" type="checkbox" checked class="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700 cursor-pointer" />
-        <label for="uniqueUser" class="text-xs sm:text-sm text-slate-300 select-none cursor-pointer">احتساب مشاركة واحدة فقط لكل شخص</label>
+        <label for="uniqueUser" id="lblUniqueUser" class="text-xs sm:text-sm text-slate-300 select-none cursor-pointer">احتساب مشاركة واحدة فقط لكل شخص</label>
       </div>
 
       <button id="drawBtn" onclick="runGiveaway()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/30">
         <i class="fa-solid fa-dice text-lg"></i>
-        <span>سحب الفائز واستبعاده فوراً</span>
+        <span id="btnDrawText">سحب الفائز واستبعاده فوراً</span>
       </button>
 
       <!-- شريط الحالة -->
@@ -49,7 +58,7 @@
 
     <!-- بطاقة الفائز -->
     <section id="winnerCard" class="hidden bg-gradient-to-br from-red-950/60 via-slate-800 to-slate-800 border-2 border-red-500 p-5 rounded-2xl shadow-2xl relative">
-      <div class="inline-block text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">الفائز في المسابقة 🎉</div>
+      <div id="winnerBadge" class="inline-block text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">الفائز في المسابقة 🎉</div>
       <div class="flex items-start gap-4">
         <img id="winnerAvatar" src="" class="w-14 h-14 rounded-full border-2 border-red-400 bg-slate-700 object-cover flex-shrink-0" />
         <div class="flex-1 space-y-1">
@@ -60,20 +69,19 @@
       </div>
     </section>
 
-    <!-- قسم إحصائيات وقائمة كافة التعليقات -->
+    <!-- قائمة التعليقات والإحصائيات -->
     <section id="commentsSection" class="hidden bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg space-y-4">
       <div class="flex items-center justify-between border-b border-slate-700/80 pb-3">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-comments text-sky-400"></i>
-          <h2 class="font-bold text-white text-base">قائمة كل التعليقات</h2>
+          <h2 id="commentsListHeading" class="font-bold text-white text-base">قائمة كل التعليقات</h2>
         </div>
         <div class="flex items-center gap-2 text-xs">
-          <span class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg">الإجمالي: <strong id="totalCountBadge">0</strong></span>
-          <span class="bg-emerald-950 border border-emerald-700 text-emerald-300 px-2.5 py-1 rounded-lg">المؤهلون: <strong id="eligibleCountBadge">0</strong></span>
+          <span class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg"><span id="lblTotalComments">الإجمالي</span>: <strong id="totalCountBadge">0</strong></span>
+          <span class="bg-emerald-950 border border-emerald-700 text-emerald-300 px-2.5 py-1 rounded-lg"><span id="lblEligibleComments">المؤهلون</span>: <strong id="eligibleCountBadge">0</strong></span>
         </div>
       </div>
 
-      <!-- قائمة التعليقات مع شريط تمرير -->
       <div id="allCommentsList" class="space-y-2.5 max-h-72 overflow-y-auto pr-1"></div>
     </section>
 
@@ -82,16 +90,16 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-user-slash text-red-400"></i>
-          <h2 class="font-bold text-white text-base">المستبعدون نهائياً (الفائزون السابقون)</h2>
+          <h2 id="excludedHeading" class="font-bold text-white text-base">المستبعدون نهائياً (الفائزون السابقون)</h2>
         </div>
         <span id="excludedCount" class="text-xs bg-slate-700 text-slate-300 px-2.5 py-0.5 rounded-full font-bold">0</span>
       </div>
-      <p class="text-xs text-slate-400">الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم حتى مع تغيير رابط الفيديو.</p>
+      <p id="excludedDesc" class="text-xs text-slate-400">الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم حتى مع تغيير رابط الفيديو.</p>
 
       <div id="excludedList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
 
       <div class="pt-1 flex justify-end">
-        <button onclick="clearExcluded()" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة المستبعدين</button>
+        <button onclick="clearExcluded()" id="btnClearExcluded" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة المستبعدين</button>
       </div>
     </section>
 
@@ -99,8 +107,106 @@
 
   <script>
     const STORAGE_KEY = "allwd_permanent_excluded";
+    const LANG_KEY = "allwd_language";
 
-    document.addEventListener("DOMContentLoaded", renderExcludedList);
+    const translations = {
+      ar: {
+        pageTitle: "كل العالم رقمي - سحب مسابقات يوتيوب",
+        langSwitchBtn: "English",
+        appTitle: "كل العالم رقمي",
+        appSubtitle: "سحب عشوائي مؤمّن مع استبعاد تلقائي للفائزين السابقين",
+        lblVideoUrl: "رابط فيديو اليوتيوب:",
+        videoPlaceholder: "https://www.youtube.com/watch?v=... أو https://youtu.be/...",
+        lblUniqueUser: "احتساب مشاركة واحدة فقط لكل شخص",
+        btnDrawText: "سحب الفائز واستبعاده فوراً",
+        winnerBadge: "الفائز في المسابقة 🎉",
+        commentsListHeading: "قائمة كل التعليقات",
+        lblTotalComments: "الإجمالي",
+        lblEligibleComments: "المؤهلون",
+        excludedHeading: "المستبعدون نهائياً (الفائزون السابقون)",
+        excludedDesc: "الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم حتى مع تغيير رابط الفيديو.",
+        btnClearExcluded: "تفريغ قائمة المستبعدين",
+        noExcludedYet: "لا يوجد فائزون مستبعدون بعد.",
+        channelIdPrefix: "معرف القناة:",
+        wonOnPrefix: "فاز في:",
+        badgeEligible: "مؤهل",
+        badgeWinner: "الفائز 🎉",
+        badgeExcluded: "مستبعد مسبقاً",
+        alertEnterValidUrl: "يرجى إدخال رابط يوتيوب صحيح.",
+        statusFetching: "جاري جلب التعليقات وحساب الإحصائيات...",
+        statusNoComments: "لا توجد تعليقات متاحة على هذا الفيديو.",
+        statusAllExcluded: (total) => `تم فحص ${total} تعليق، لكن جميع المشاركين فازوا سابقاً وهم مستبعدون!`,
+        statusDone: (total, eligible, winner) => `تم فحص ${total} تعليق (المؤهلون: ${eligible}). الفائز: ${winner}`,
+        confirmClearExcluded: "هل تريد تفريغ قائمة المستبعدين والسماح للجميع بالمشاركة؟"
+      },
+      en: {
+        pageTitle: "All World Digital - YouTube Giveaway Picker",
+        langSwitchBtn: "العربية",
+        appTitle: "All World Digital",
+        appSubtitle: "Secure YouTube giveaway picker with automated winner exclusion",
+        lblVideoUrl: "YouTube Video URL:",
+        videoPlaceholder: "https://www.youtube.com/watch?v=... or https://youtu.be/...",
+        lblUniqueUser: "Count only one entry per user",
+        btnDrawText: "Pick Winner & Exclude Instantly",
+        winnerBadge: "Giveaway Winner 🎉",
+        commentsListHeading: "All Comments List",
+        lblTotalComments: "Total",
+        lblEligibleComments: "Eligible",
+        excludedHeading: "Permanently Excluded (Past Winners)",
+        excludedDesc: "Winners are saved here permanently and won't be picked again even on different videos.",
+        btnClearExcluded: "Clear Excluded List",
+        noExcludedYet: "No excluded winners yet.",
+        channelIdPrefix: "Channel ID:",
+        wonOnPrefix: "Won on:",
+        badgeEligible: "Eligible",
+        badgeWinner: "Winner 🎉",
+        badgeExcluded: "Excluded",
+        alertEnterValidUrl: "Please enter a valid YouTube video URL.",
+        statusFetching: "Fetching comments and calculating stats...",
+        statusNoComments: "No comments found on this video.",
+        statusAllExcluded: (total) => `Analyzed ${total} comments, but all participants have already won and are excluded!`,
+        statusDone: (total, eligible, winner) => `Analyzed ${total} comments (Eligible: ${eligible}). Winner: ${winner}`,
+        confirmClearExcluded: "Are you sure you want to clear all excluded winners and let them enter again?"
+      }
+    };
+
+    let currentLang = localStorage.getItem(LANG_KEY) || "ar";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyLanguage(currentLang);
+      renderExcludedList();
+    });
+
+    function toggleLanguage() {
+      currentLang = currentLang === "ar" ? "en" : "ar";
+      localStorage.setItem(LANG_KEY, currentLang);
+      applyLanguage(currentLang);
+      renderExcludedList();
+    }
+
+    function applyLanguage(lang) {
+      const t = translations[lang];
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+      
+      document.body.className = `bg-slate-900 text-slate-100 min-h-screen py-8 px-4 lang-${lang}`;
+      document.title = t.pageTitle;
+      
+      document.getElementById("langSwitchText").innerText = t.langSwitchBtn;
+      document.getElementById("appTitle").innerText = t.appTitle;
+      document.getElementById("appSubtitle").innerText = t.appSubtitle;
+      document.getElementById("lblVideoUrl").innerText = t.lblVideoUrl;
+      document.getElementById("videoUrl").placeholder = t.videoPlaceholder;
+      document.getElementById("lblUniqueUser").innerText = t.lblUniqueUser;
+      document.getElementById("btnDrawText").innerText = t.btnDrawText;
+      document.getElementById("winnerBadge").innerText = t.winnerBadge;
+      document.getElementById("commentsListHeading").innerText = t.commentsListHeading;
+      document.getElementById("lblTotalComments").innerText = t.lblTotalComments;
+      document.getElementById("lblEligibleComments").innerText = t.lblEligibleComments;
+      document.getElementById("excludedHeading").innerText = t.excludedHeading;
+      document.getElementById("excludedDesc").innerText = t.excludedDesc;
+      document.getElementById("btnClearExcluded").innerText = t.btnClearExcluded;
+    }
 
     function getExcludedList() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
@@ -113,12 +219,13 @@
     }
 
     function renderExcludedList() {
+      const t = translations[currentLang];
       const list = getExcludedList();
       const container = document.getElementById("excludedList");
       document.getElementById("excludedCount").innerText = list.length;
 
       if (list.length === 0) {
-        container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">لا يوجد فائزون مستبعدون بعد.</div>`;
+        container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">${t.noExcludedYet}</div>`;
         return;
       }
 
@@ -128,7 +235,7 @@
             <img src="${user.avatar || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full border border-slate-600 object-cover flex-shrink-0" />
             <div>
               <div class="font-semibold text-slate-200">${escapeHtml(user.name)}</div>
-              <div class="text-[11px] text-slate-400 font-mono">${user.id} • ${user.date}</div>
+              <div class="text-[11px] text-slate-400 font-mono">${user.id} • ${t.wonOnPrefix} ${user.date}</div>
             </div>
           </div>
           <button onclick="removeExcluded(${idx})" class="text-slate-500 hover:text-red-400 p-1 transition">
@@ -145,7 +252,8 @@
     }
 
     function clearExcluded() {
-      if (confirm("هل تريد تفريغ قائمة المستبعدين والسماح للجميع بالمشاركة؟")) {
+      const t = translations[currentLang];
+      if (confirm(t.confirmClearExcluded)) {
         localStorage.removeItem(STORAGE_KEY);
         renderExcludedList();
       }
@@ -173,6 +281,7 @@
     }
 
     function renderAllComments(comments, excludedIds, winnerId) {
+      const t = translations[currentLang];
       const container = document.getElementById("allCommentsList");
       document.getElementById("commentsSection").classList.remove("hidden");
 
@@ -180,11 +289,11 @@
         const isExcluded = excludedIds.has(String(c.id));
         const isWinner = c.id === winnerId;
         
-        let badge = `<span class="text-[10px] bg-emerald-950 border border-emerald-700 text-emerald-400 px-2 py-0.5 rounded">مؤهل</span>`;
+        let badge = `<span class="text-[10px] bg-emerald-950 border border-emerald-700 text-emerald-400 px-2 py-0.5 rounded">${t.badgeEligible}</span>`;
         if (isWinner) {
-          badge = `<span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded animate-pulse">الفائز 🎉</span>`;
+          badge = `<span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded animate-pulse">${t.badgeWinner}</span>`;
         } else if (isExcluded) {
-          badge = `<span class="text-[10px] bg-red-950 border border-red-800 text-red-400 px-2 py-0.5 rounded">مستبعد مسبقاً</span>`;
+          badge = `<span class="text-[10px] bg-red-950 border border-red-800 text-red-400 px-2 py-0.5 rounded">${t.badgeExcluded}</span>`;
         }
 
         return `
@@ -196,13 +305,14 @@
               </div>
               ${badge}
             </div>
-            <div class="text-slate-300 text-[11px] pr-8 leading-relaxed">${c.text}</div>
+            <div class="text-slate-300 text-[11px] leading-relaxed ${currentLang === 'ar' ? 'pr-8' : 'pl-8'}">${c.text}</div>
           </div>
         `;
       }).join('');
     }
 
     async function runGiveaway() {
+      const t = translations[currentLang];
       const urlInput = document.getElementById("videoUrl").value;
       const isUniqueOnly = document.getElementById("uniqueUser").checked;
       const btn = document.getElementById("drawBtn");
@@ -212,33 +322,31 @@
       const videoId = extractVideoId(urlInput);
 
       if (!videoId) {
-        alert("يرجى إدخال رابط يوتيوب صحيح.");
+        alert(t.alertEnterValidUrl);
         return;
       }
 
       btn.disabled = true;
       btn.classList.add("opacity-50", "cursor-not-allowed");
-      setStatus("جاري جلب التعليقات وحساب الإحصائيات...");
+      setStatus(t.statusFetching);
 
       try {
         const response = await fetch(`/api/comments?videoId=${videoId}`);
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || "تعذر جلب التعليقات");
+          throw new Error(data.error || "Failed to fetch comments");
         }
 
         let comments = data.comments || [];
         if (comments.length === 0) {
-          setStatus("لا توجد تعليقات متاحة على هذا الفيديو.", false);
+          setStatus(t.statusNoComments, false);
           return;
         }
 
-        // جلب قائمة المستبعدين الحالية
         const excluded = getExcludedList();
         const excludedIds = new Set(excluded.map(u => String(u.id)));
 
-        // احتساب تعليق واحد لكل حساب إذا تم التحديد
         if (isUniqueOnly) {
           const seen = new Set();
           comments = comments.filter(c => {
@@ -248,46 +356,39 @@
           });
         }
 
-        // تحديد المؤهلين للسحب
         let eligible = comments.filter(c => !excludedIds.has(String(c.id)));
 
-        // تحديث شارات العداد
         document.getElementById("totalCountBadge").innerText = comments.length;
         document.getElementById("eligibleCountBadge").innerText = eligible.length;
 
         if (eligible.length === 0) {
           renderAllComments(comments, excludedIds, null);
-          setStatus(`تم فحص ${comments.length} تعليق، لكن جميع المشاركين فازوا سابقاً وهم مستبعدون!`, false);
+          setStatus(t.statusAllExcluded(comments.length), false);
           return;
         }
 
-        // اختيار الفائز عشوائياً
         const winner = eligible[Math.floor(Math.random() * eligible.length)];
 
-        // إظهار بطاقة الفائز
         document.getElementById("winnerName").innerText = winner.name;
         document.getElementById("winnerAvatar").src = winner.avatar;
-        document.getElementById("winnerId").innerText = `معرف القناة: ${winner.id}`;
+        document.getElementById("winnerId").innerText = `${t.channelIdPrefix} ${winner.id}`;
         document.getElementById("winnerComment").innerHTML = winner.text;
         card.classList.remove("hidden");
 
-        // إضافة الفائز للمستبعدين وتحديث التخزين
         const list = getExcludedList();
         list.unshift({
           id: winner.id,
           name: winner.name,
           avatar: winner.avatar,
-          date: new Date().toLocaleDateString('ar-DZ')
+          date: new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-DZ' : 'en-US')
         });
         saveExcludedList(list);
 
-        // عرض كل التعليقات مع إبراز الفائز
         renderAllComments(comments, excludedIds, winner.id);
-
-        setStatus(`تم فحص ${comments.length} تعليق (المؤهلون: ${eligible.length}). الفائز: ${winner.name}`, false);
+        setStatus(t.statusDone(comments.length, eligible.length, winner.name), false);
 
       } catch (err) {
-        alert(`خطأ: ${err.message}`);
+        alert(`Error: ${err.message}`);
         setStatus("");
       } finally {
         btn.disabled = false;
