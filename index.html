@@ -14,16 +14,16 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen py-8 px-4">
   <div class="max-w-2xl mx-auto space-y-6">
 
-    <!-- الشعار والعنوان -->
+    <!-- الشعار والرأس -->
     <header class="text-center space-y-2 bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-xl backdrop-blur">
       <div class="flex items-center justify-center gap-3">
         <i class="fa-brands fa-youtube text-red-500 text-3xl"></i>
         <h1 class="text-2xl sm:text-3xl font-extrabold text-white">كل العالم رقمي</h1>
       </div>
-      <p class="text-slate-400 text-xs sm:text-sm">سحب عشوائي للتعليقات مع نظام استبعاد دائم للفائزين</p>
+      <p class="text-slate-400 text-xs sm:text-sm">سحب عشوائي مؤمّن مع استبعاد تلقائي للفائزين السابقين</p>
     </header>
 
-    <!-- صندوق الإدخال والسحب -->
+    <!-- صندوق الإدخال -->
     <section class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg space-y-4">
       <div>
         <label class="block text-sm font-semibold mb-1 text-slate-300">رابط فيديو اليوتيوب:</label>
@@ -31,31 +31,32 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <input id="uniqueUser" type="checkbox" checked class="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700" />
-        <label for="uniqueUser" class="text-xs sm:text-sm text-slate-300 select-none">احتساب مشاركة واحدة لكل معلق</label>
+        <input id="uniqueUser" type="checkbox" checked class="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700 cursor-pointer" />
+        <label for="uniqueUser" class="text-xs sm:text-sm text-slate-300 select-none cursor-pointer">احتساب مشاركة واحدة فقط لكل شخص</label>
       </div>
 
-      <button id="drawBtn" onclick="runScraperGiveaway()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/30">
+      <button id="drawBtn" onclick="runGiveaway()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/30">
         <i class="fa-solid fa-dice text-lg"></i>
-        <span>جلب وسحب الفائز</span>
+        <span>سحب الفائز واستبعاده فوراً</span>
       </button>
 
+      <!-- حالة المعالجة -->
       <div id="statusBox" class="hidden text-xs sm:text-sm py-2.5 px-3 rounded-xl bg-slate-950/70 border border-slate-700 text-slate-300 flex items-center gap-3">
         <span id="spinner" class="animate-spin inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full"></span>
         <span id="statusText">جاري الاتصال...</span>
       </div>
     </section>
 
-    <!-- كارت الفائز -->
-    <section id="winnerCard" class="hidden bg-gradient-to-br from-red-950/50 via-slate-800 to-slate-800 border-2 border-red-500 p-5 rounded-2xl shadow-2xl relative">
-      <div class="inline-block text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">الفائز المختار 🎉</div>
-      <div class="space-y-2">
-        <h3 id="winnerName" class="text-xl font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-trophy text-amber-400"></i>
-          <span></span>
-        </h3>
-        <p id="winnerHandle" class="text-xs text-slate-400 font-mono"></p>
-        <div class="mt-2 bg-slate-900/90 p-3 rounded-xl border border-slate-700 text-sm text-slate-200" id="winnerComment"></div>
+    <!-- بطاقة الفائز -->
+    <section id="winnerCard" class="hidden bg-gradient-to-br from-red-950/60 via-slate-800 to-slate-800 border-2 border-red-500 p-5 rounded-2xl shadow-2xl relative">
+      <div class="inline-block text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">الفائز في المسابقة 🎉</div>
+      <div class="flex items-start gap-4">
+        <img id="winnerAvatar" src="" class="w-14 h-14 rounded-full border-2 border-red-400 bg-slate-700 object-cover flex-shrink-0" />
+        <div class="flex-1 space-y-1">
+          <h3 id="winnerName" class="text-xl font-bold text-white"></h3>
+          <p id="winnerId" class="text-xs text-slate-400 font-mono"></p>
+          <div class="mt-2 bg-slate-900/90 p-3 rounded-xl border border-slate-700 text-sm text-slate-200" id="winnerComment"></div>
+        </div>
       </div>
     </section>
 
@@ -64,23 +65,23 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-user-slash text-red-400"></i>
-          <h2 class="font-bold text-white text-base">المستبعدون نهائياً</h2>
+          <h2 class="font-bold text-white text-base">المستبعدون نهائياً (الفائزون السابقون)</h2>
         </div>
-        <span id="excludedCount" class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-bold">0</span>
+        <span id="excludedCount" class="text-xs bg-slate-700 text-slate-300 px-2.5 py-0.5 rounded-full font-bold">0</span>
       </div>
-      <p class="text-xs text-slate-400">يتم استبعاد الفائز تلقائياً ومحلياً من أي سحب مستقبلي، حتى مع تغيير رابط الفيديو.</p>
+      <p class="text-xs text-slate-400">الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم حتى مع تغيير رابط الفيديو.</p>
 
-      <div id="excludedList" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
+      <div id="excludedList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
 
       <div class="pt-1 flex justify-end">
-        <button onclick="clearExcluded()" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة الفائزين السابقين</button>
+        <button onclick="clearExcluded()" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة المستبعدين</button>
       </div>
     </section>
 
   </div>
 
   <script>
-    const STORAGE_KEY = "allwd_excluded_winners";
+    const STORAGE_KEY = "allwd_permanent_excluded";
 
     document.addEventListener("DOMContentLoaded", renderExcludedList);
 
@@ -106,11 +107,14 @@
 
       container.innerHTML = list.map((user, idx) => `
         <div class="flex items-center justify-between bg-slate-900/60 border border-slate-700/80 p-2.5 rounded-xl text-xs sm:text-sm">
-          <div>
-            <div class="font-semibold text-slate-200">${escapeHtml(user.name)}</div>
-            <div class="text-[11px] text-slate-400 font-mono">${user.id || ''} • فاز في: ${user.date}</div>
+          <div class="flex items-center gap-3">
+            <img src="${user.avatar || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full border border-slate-600 object-cover flex-shrink-0" />
+            <div>
+              <div class="font-semibold text-slate-200">${escapeHtml(user.name)}</div>
+              <div class="text-[11px] text-slate-400 font-mono">${user.id} • ${user.date}</div>
+            </div>
           </div>
-          <button onclick="removeExcluded(${idx})" class="text-slate-500 hover:text-red-400 p-1 transition">
+          <button onclick="removeExcluded(${idx})" class="text-slate-500 hover:text-red-400 p-1.5 transition">
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </div>
@@ -124,7 +128,7 @@
     }
 
     function clearExcluded() {
-      if (confirm("هل تريد تفريغ القائمة بالكامل؟")) {
+      if (confirm("هل تريد تفريغ قائمة المستبعدين والسماح للجميع بالمشاركة؟")) {
         localStorage.removeItem(STORAGE_KEY);
         renderExcludedList();
       }
@@ -132,8 +136,7 @@
 
     function extractVideoId(url) {
       if (!url) return null;
-      const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-      const match = url.trim().match(regExp);
+      const match = url.trim().match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
       if (match && match[1]) return match[1];
       if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) return url.trim();
       return null;
@@ -152,43 +155,7 @@
       spinner.style.display = showSpinner ? "inline-block" : "none";
     }
 
-    // جلب التعليقات باستخدام واجهات Piped العامة البديلة
-    async function fetchCommentsPiped(videoId) {
-      const endpoints = [
-        `https://pipedapi.kavin.rocks/comments/${videoId}`,
-        `https://api.piped.privacydev.net/comments/${videoId}`,
-        `https://piped-api.garudalinux.org/comments/${videoId}`,
-        `https://api-piped.mha.fi/comments/${videoId}`
-      ];
-
-      for (const url of endpoints) {
-        try {
-          setStatus(`جاري فحص تعليقات الفيديو...`);
-          const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 6000);
-
-          const res = await fetch(url, { signal: controller.signal });
-          clearTimeout(timer);
-
-          if (!res.ok) continue;
-
-          const data = await res.json();
-          const items = data.comments || data;
-          if (Array.isArray(items) && items.length > 0) {
-            return items.map(c => ({
-              id: c.authorId || c.author || c.commentId,
-              name: c.author || 'مشارك',
-              text: c.commentText || c.content || ''
-            }));
-          }
-        } catch (err) {
-          // محاولة النقطة التالية
-        }
-      }
-      return null;
-    }
-
-    async function runScraperGiveaway() {
+    async function runGiveaway() {
       const urlInput = document.getElementById("videoUrl").value;
       const isUniqueOnly = document.getElementById("uniqueUser").checked;
       const btn = document.getElementById("drawBtn");
@@ -204,61 +171,67 @@
 
       btn.disabled = true;
       btn.classList.add("opacity-50", "cursor-not-allowed");
+      setStatus("جاري جلب التعليقات عبر السيرفر بأمان...");
 
       try {
-        const comments = await fetchCommentsPiped(videoId);
+        const response = await fetch(`/api/comments?videoId=${videoId}`);
+        const data = await response.json();
 
-        if (!comments || comments.length === 0) {
-          throw new Error("تعذر جلب التعليقات تلقائياً بسبب سياسات يوتيوب اللحظية على الخوادم العامة. لتفادي هذا الانقطاع نهائياً، يوصى بإنشاء مفتاح YouTube API رسمي ليعمل موقعك بنسبة 100% دائماً وبدون توقف.");
+        if (!response.ok) {
+          throw new Error(data.error || "تعذر جلب التعليقات");
         }
 
-        // استبعاد الفائزين السابقين المسجلين
+        const comments = data.comments || [];
+        if (comments.length === 0) {
+          setStatus("لا توجد تعليقات متاحة على هذا الفيديو.", false);
+          return;
+        }
+
+        // تصفية المستبعدين مسبقاً
         const excluded = getExcludedList();
-        const excludedIds = new Set(excluded.map(u => String(u.id).toLowerCase()));
-        const excludedNames = new Set(excluded.map(u => String(u.name).trim().toLowerCase()));
+        const excludedIds = new Set(excluded.map(u => String(u.id)));
 
-        let eligible = comments.filter(c => 
-          !excludedIds.has(String(c.id).toLowerCase()) && 
-          !excludedNames.has(String(c.name).trim().toLowerCase())
-        );
+        let eligible = comments.filter(c => !excludedIds.has(String(c.id)));
 
+        // احتساب مشاركة واحدة لكل حساب
         if (isUniqueOnly) {
           const seen = new Set();
           eligible = eligible.filter(c => {
-            const key = String(c.name).trim().toLowerCase();
-            if (seen.has(key)) return false;
-            seen.add(key);
+            if (seen.has(c.id)) return false;
+            seen.add(c.id);
             return true;
           });
         }
 
         if (eligible.length === 0) {
-          setStatus(`تم العثور على ${comments.length} تعليق، لكن جميع المشاركين فازوا سابقاً وهم مستبعدون!`, false);
+          setStatus(`تم فحص ${comments.length} تعليق، وجميع المشاركين مستبعدون مسبقاً!`, false);
           return;
         }
 
-        // اختيار عشوائي
+        // اختيار الفائز عشوائياً
         const winner = eligible[Math.floor(Math.random() * eligible.length)];
 
         // إظهار بطاقة الفائز
-        document.querySelector("#winnerName span").innerText = winner.name;
-        document.getElementById("winnerHandle").innerText = `المعرف: ${winner.id}`;
-        document.getElementById("winnerComment").innerText = winner.text || 'لا يوجد نص للتعليق';
+        document.getElementById("winnerName").innerText = winner.name;
+        document.getElementById("winnerAvatar").src = winner.avatar;
+        document.getElementById("winnerId").innerText = `معرف القناة: ${winner.id}`;
+        document.getElementById("winnerComment").innerHTML = winner.text;
         card.classList.remove("hidden");
 
-        // تسجيله في قائمة المستبعدين محلياً
+        // إضافة الفائز للمستبعدين
         const list = getExcludedList();
         list.unshift({
           id: winner.id,
           name: winner.name,
+          avatar: winner.avatar,
           date: new Date().toLocaleDateString('ar-DZ')
         });
         saveExcludedList(list);
 
-        setStatus(`تم بنجاح سحب الفائز (${winner.name}) واستبعاده من السحوبات القادمة.`, false);
+        setStatus(`تم سحب الفائز (${winner.name}) واستبعاده بنجاح من أي سحب مستقبلي.`, false);
 
       } catch (err) {
-        alert(err.message);
+        alert(`خطأ: ${err.message}`);
         setStatus("");
       } finally {
         btn.disabled = false;
