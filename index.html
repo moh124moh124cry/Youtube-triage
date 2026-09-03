@@ -14,59 +14,53 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen py-10 px-4">
   <div class="max-w-3xl mx-auto space-y-6">
 
-    <!-- الشعار والعنوان -->
+    <!-- الرأس والشعار -->
     <header class="text-center space-y-2 bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-xl backdrop-blur">
       <div class="flex items-center justify-center gap-3">
         <i class="fa-brands fa-youtube text-red-500 text-4xl"></i>
         <h1 class="text-3xl font-extrabold text-white tracking-wide">كل العالم رقمي</h1>
       </div>
-      <p class="text-slate-400 text-sm">أداة السحب العشوائي لليوتيوب مع الاستبعاد التلقائي للفائزين السابقين</p>
+      <p class="text-slate-400 text-sm">سحب تلقائي ومباشر بالرابط بدون مفتاح API مع استبعاد الفائزين السابقين</p>
     </header>
 
-    <!-- إعدادات السحب -->
+    <!-- إدخال الرابط والإجراء -->
     <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
       <div>
-        <label class="block text-sm font-semibold mb-1 text-slate-300">مفتاح API الخاص بيوتيوب (YouTube Data API v3):</label>
-        <input id="apiKey" type="password" placeholder="AIzaSy..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" />
-        <span class="text-xs text-slate-500">يُحفظ المفتاح محلياً في متصفحك لراحتك.</span>
+        <label class="block text-sm font-semibold mb-1 text-slate-300">رابط فيديو اليوتيوب:</label>
+        <input id="videoUrl" type="text" placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
       </div>
 
-      <div>
-        <label class="block text-sm font-semibold mb-1 text-slate-300">رابط فيديو يوتيوب أو معرف الفيديو (Video ID):</label>
-        <input id="videoInput" type="text" placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" />
-      </div>
-
-      <div class="flex items-center gap-2 pt-1">
+      <div class="flex items-center gap-2">
         <input id="uniqueUser" type="checkbox" checked class="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700" />
-        <label for="uniqueUser" class="text-sm text-slate-300 select-none">احتساب تعليق واحد فقط لكل مشارك (منع التكرار داخل نفس الفيديو)</label>
+        <label for="uniqueUser" class="text-sm text-slate-300 select-none">احتساب مشاركة واحدة فقط لكل معلق</label>
       </div>
 
-      <button id="drawBtn" onclick="runGiveaway()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/30">
+      <button id="drawBtn" onclick="startGiveaway()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/30">
         <i class="fa-solid fa-dice text-lg"></i>
-        <span>بدء جلب التعليقات واختيار الفائز</span>
+        <span>سحب الفائز واستبعاده فوراً</span>
       </button>
 
-      <!-- حالة المعالجة -->
-      <div id="statusBox" class="hidden text-sm py-2 px-3 rounded-lg bg-slate-700/50 border border-slate-600 text-slate-300 flex items-center gap-2">
+      <!-- شريط الحالة والتحميل -->
+      <div id="statusBox" class="hidden text-sm py-2.5 px-3 rounded-xl bg-slate-950/60 border border-slate-700 text-slate-300 flex items-center gap-3">
         <span id="spinner" class="animate-spin inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full"></span>
-        <span id="statusText">جاري المعالجة...</span>
+        <span id="statusText">جاري الاتصال...</span>
       </div>
     </section>
 
-    <!-- بطاقة الفائز -->
-    <section id="winnerCard" class="hidden bg-gradient-to-br from-red-950/40 via-slate-800 to-slate-800 border-2 border-red-500 p-6 rounded-2xl shadow-2xl relative overflow-hidden">
-      <div class="absolute top-2 left-4 text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider">الفائز الحالي 🎉</div>
-      <div class="flex items-start gap-4 mt-2">
-        <img id="winnerAvatar" src="" alt="Avatar" class="w-16 h-16 rounded-full border-2 border-red-400 bg-slate-700 object-cover" />
+    <!-- بطاقة الفائز الحالية -->
+    <section id="winnerCard" class="hidden bg-gradient-to-br from-red-950/50 via-slate-800 to-slate-800 border-2 border-red-500 p-6 rounded-2xl shadow-2xl relative">
+      <div class="inline-block text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">الفائز في السحب 🎉</div>
+      <div class="flex items-start gap-4">
+        <img id="winnerAvatar" src="" class="w-14 h-14 rounded-full border border-red-400 bg-slate-700 object-cover" />
         <div class="flex-1 space-y-1">
           <h3 id="winnerName" class="text-xl font-bold text-white"></h3>
-          <p id="winnerChannelId" class="text-xs text-slate-400 font-mono"></p>
-          <div class="mt-3 bg-slate-900/80 p-3 rounded-xl border border-slate-700/80 text-sm text-slate-200" id="winnerComment"></div>
+          <p id="winnerId" class="text-xs text-slate-400 font-mono"></p>
+          <div class="mt-3 bg-slate-900/90 p-3 rounded-xl border border-slate-700 text-sm text-slate-200" id="winnerComment"></div>
         </div>
       </div>
     </section>
 
-    <!-- قائمة المستبعدين (الفائزون السابقون) -->
+    <!-- قائمة المستبعدين -->
     <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-lg space-y-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -75,36 +69,33 @@
         </div>
         <span id="excludedCount" class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full font-bold">0 مستبعد</span>
       </div>
-      <p class="text-xs text-slate-400">يتم استبعاد هؤلاء المستخدمين تلقائياً من أي سحب مستقبلي بناءً على معرف قناتهم الفريد (Channel ID) مهما تغيّر رابط الفيديو.</p>
+      <p class="text-xs text-slate-400">المستبعدون لن يظهروا في أي سحب قادم حتى لو وضعت رابط فيديو يوتيوب آخر.</p>
 
-      <div id="excludedList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-        <!-- عناصر القائمة تضاف هنا برمجياً -->
-      </div>
+      <div id="excludedList" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
 
-      <div class="pt-2 flex justify-end">
-        <button onclick="clearExcluded()" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة المستبعدين بالكامل</button>
+      <div class="pt-1 flex justify-end">
+        <button onclick="clearExcluded()" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة المستبعدين</button>
       </div>
     </section>
 
   </div>
 
   <script>
-    // تهيئة البيانات
-    const STORAGE_KEY = "all_world_digital_excluded_winners";
-    const API_STORAGE_KEY = "all_world_digital_yt_api_key";
+    const STORAGE_KEY = "allwd_excluded_winners";
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedApiKey = localStorage.getItem(API_STORAGE_KEY);
-      if (savedApiKey) document.getElementById("apiKey").value = savedApiKey;
-      renderExcludedList();
-    });
+    // قائمة خوادم مفتوحة لجلب التعليقات تلقائياً بدون API
+    const INVIDIOUS_INSTANCES = [
+      "https://inv.tux.pizza",
+      "https://invidious.nerdvpn.de",
+      "https://invidious.projectsegfau.lt",
+      "https://yt.artemislena.eu"
+    ];
+
+    document.addEventListener("DOMContentLoaded", renderExcludedList);
 
     function getExcludedList() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      } catch {
-        return [];
-      }
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+      catch { return []; }
     }
 
     function saveExcludedList(list) {
@@ -118,20 +109,20 @@
       document.getElementById("excludedCount").innerText = `${list.length} مستبعد`;
 
       if (list.length === 0) {
-        container.innerHTML = `<div class="text-sm text-slate-500 text-center py-4">لا يوجد مستبعدون حتى الآن. عند فوز أي شخص سيضاف إلى هنا مباشرة.</div>`;
+        container.innerHTML = `<div class="text-sm text-slate-500 text-center py-3">لا يوجد مستبعدون حتى الآن.</div>`;
         return;
       }
 
       container.innerHTML = list.map((user, idx) => `
-        <div class="flex items-center justify-between bg-slate-900/60 border border-slate-700/60 p-2.5 rounded-xl text-sm">
+        <div class="flex items-center justify-between bg-slate-900/70 border border-slate-700 p-2.5 rounded-xl text-sm">
           <div class="flex items-center gap-3">
             <img src="${user.avatar || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full border border-slate-600 object-cover" />
             <div>
               <div class="font-semibold text-slate-200">${escapeHtml(user.name)}</div>
-              <div class="text-[11px] text-slate-400 font-mono">${user.channelId} • فاز في: ${user.date}</div>
+              <div class="text-[11px] text-slate-400 font-mono">${user.id} • ${user.date}</div>
             </div>
           </div>
-          <button onclick="removeExcluded(${idx})" title="إلغاء الاستبعاد" class="text-slate-500 hover:text-red-400 p-1.5 transition">
+          <button onclick="removeExcluded(${idx})" class="text-slate-500 hover:text-red-400 p-1.5 transition">
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </div>
@@ -145,19 +136,18 @@
     }
 
     function clearExcluded() {
-      if (confirm("هل أنت متأكد من رغبتك في حذف جميع الفائزين السابقين والسماح لهم بالمشاركة مجدداً؟")) {
+      if (confirm("هل تريد تصفير القائمة والسماح للجميع بالمشاركة مرة أخرى؟")) {
         localStorage.removeItem(STORAGE_KEY);
         renderExcludedList();
       }
     }
 
-    function extractVideoId(urlOrId) {
-      if (!urlOrId) return null;
-      urlOrId = urlOrId.trim();
+    function extractVideoId(url) {
+      if (!url) return null;
       const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-      const match = urlOrId.match(regExp);
+      const match = url.trim().match(regExp);
       if (match && match[1]) return match[1];
-      if (/^[a-zA-Z0-9_-]{11}$/.test(urlOrId)) return urlOrId;
+      if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) return url.trim();
       return null;
     }
 
@@ -165,7 +155,6 @@
       const box = document.getElementById("statusBox");
       const statusText = document.getElementById("statusText");
       const spinner = document.getElementById("spinner");
-
       if (!text) {
         box.classList.add("hidden");
         return;
@@ -175,133 +164,115 @@
       spinner.style.display = showSpinner ? "inline-block" : "none";
     }
 
-    async function fetchAllComments(videoId, apiKey) {
-      let comments = [];
-      let nextPageToken = "";
-      let totalFetched = 0;
+    // جلب التعليقات تلقائياً بالتنقل بين الخوادم السريعة المفتوحة
+    async function fetchCommentsAuto(videoId) {
+      for (const instance of INVIDIOUS_INSTANCES) {
+        try {
+          setStatus(`جاري جلب التعليقات مباشرة عبر الخادم...`);
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-      do {
-        setStatus(`جاري سحب التعليقات... (تم جلب ${totalFetched} تعليق)`);
-        const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=100&pageToken=${nextPageToken}&key=${apiKey}`;
-        const res = await fetch(url);
-        
-        if (!res.ok) {
-          const errData = await res.json();
-          throw new Error(errData.error?.message || "فشل الاتصال بـ YouTube API");
-        }
-
-        const data = await res.json();
-        const items = data.items || [];
-        
-        for (const item of items) {
-          const topComment = item.snippet.topLevelComment.snippet;
-          comments.push({
-            name: topComment.authorDisplayName,
-            avatar: topComment.authorProfileImageUrl,
-            channelId: topComment.authorChannelId ? topComment.authorChannelId.value : topComment.authorDisplayName,
-            commentText: topComment.textDisplay,
-            publishedAt: topComment.publishedAt
+          const res = await fetch(`${instance}/api/v1/comments/${videoId}?sort_by=top`, {
+            signal: controller.signal
           });
+          clearTimeout(timeoutId);
+
+          if (!res.ok) continue;
+
+          const data = await res.json();
+          if (data && data.comments && data.comments.length > 0) {
+            return data.comments.map(c => ({
+              id: c.authorId || c.author,
+              name: c.author,
+              avatar: c.authorThumbnails && c.authorThumbnails.length ? c.authorThumbnails[c.authorThumbnails.length - 1].url : '',
+              text: c.contentHtml ? c.contentHtml.replace(/<[^>]*>?/gm, '') : c.content
+            }));
+          }
+        } catch (e) {
+          // تجربة الخادم التالي في حال انشغال الخادم الحالي
         }
-
-        totalFetched = comments.length;
-        nextPageToken = data.nextPageToken || "";
-      } while (nextPageToken);
-
-      return comments;
+      }
+      throw new Error("تعذر جلب التعليقات مباشرة من الخوادم السريعة، يرجى التأكد من أن الفيديو عام وتوجد به تعليقات.");
     }
 
-    async function runGiveaway() {
-      const apiKey = document.getElementById("apiKey").value.trim();
-      const videoInput = document.getElementById("videoInput").value.trim();
+    async function startGiveaway() {
+      const urlInput = document.getElementById("videoUrl").value;
       const isUniqueOnly = document.getElementById("uniqueUser").checked;
-      const drawBtn = document.getElementById("drawBtn");
-      const winnerCard = document.getElementById("winnerCard");
+      const btn = document.getElementById("drawBtn");
+      const card = document.getElementById("winnerCard");
 
-      winnerCard.classList.add("hidden");
+      card.classList.add("hidden");
+      const videoId = extractVideoId(urlInput);
 
-      if (!apiKey) {
-        alert("يرجى إدخال مفتاح YouTube Data API.");
-        return;
-      }
-      localStorage.setItem(API_STORAGE_KEY, apiKey);
-
-      const videoId = extractVideoId(videoInput);
       if (!videoId) {
-        alert("يرجى إدخال رابط فيديو يوتيوب صحيح.");
+        alert("يرجى إدخال رابط يوتيوب صحيح.");
         return;
       }
 
-      drawBtn.disabled = true;
-      drawBtn.classList.add("opacity-60", "cursor-not-allowed");
+      btn.disabled = true;
+      btn.classList.add("opacity-50", "cursor-not-allowed");
 
       try {
-        const rawComments = await fetchAllComments(videoId, apiKey);
-        if (rawComments.length === 0) {
-          setStatus("لا توجد تعليقات على هذا الفيديو.", false);
-          return;
-        }
+        const comments = await fetchCommentsAuto(videoId);
+        setStatus(`تم جلب ${comments.length} تعليق. جاري فرز المستبعدين...`);
 
-        // استبعاد الفائزين السابقين
+        // استبعاد الفائزين المسجلين مسبقاً
         const excluded = getExcludedList();
-        const excludedIds = new Set(excluded.map(u => u.channelId));
+        const excludedIds = new Set(excluded.map(u => u.id));
+        const excludedNames = new Set(excluded.map(u => u.name.trim().toLowerCase()));
 
-        let eligibleComments = rawComments.filter(c => !excludedIds.has(c.channelId));
+        let eligible = comments.filter(c => !excludedIds.has(c.id) && !excludedNames.has(c.name.trim().toLowerCase()));
 
-        // منع تكرار نفس المشارك داخل نفس الفيديو إن تم تفعيل الخيار
+        // منع تكرار المشارك داخل نفس الفيديو
         if (isUniqueOnly) {
           const seen = new Set();
-          eligibleComments = eligibleComments.filter(c => {
-            if (seen.has(c.channelId)) return false;
-            seen.add(c.channelId);
+          eligible = eligible.filter(c => {
+            if (seen.has(c.id)) return false;
+            seen.add(c.id);
             return true;
           });
         }
 
-        if (eligibleComments.length === 0) {
-          setStatus(`تم فحص ${rawComments.length} تعليق، لكن جميع المشاركين مستبعدون مسبقاً!`, false);
+        if (eligible.length === 0) {
+          setStatus(`جميع أصحاب التعليقات (${comments.length}) سبق لهم الفوز ومستبعدون!`, false);
           return;
         }
 
-        setStatus(`تم فحص ${rawComments.length} تعليق. عدد المؤهلين بعد الاستبعاد: ${eligibleComments.length}. جاري اختيار الفائز...`);
+        // اختيار الفائز عشوائياً
+        const winner = eligible[Math.floor(Math.random() * eligible.length)];
 
-        // اختيار فائز عشوائي
-        const randomIndex = Math.floor(Math.random() * eligibleComments.length);
-        const winner = eligibleComments[randomIndex];
-
-        // عرض بطاقة الفائز
+        // إظهار بطاقة الفائز
         document.getElementById("winnerName").innerText = winner.name;
-        document.getElementById("winnerAvatar").src = winner.avatar;
-        document.getElementById("winnerChannelId").innerText = `معرف القناة: ${winner.channelId}`;
-        document.getElementById("winnerComment").innerHTML = winner.commentText;
-        winnerCard.classList.remove("hidden");
+        document.getElementById("winnerId").innerText = `المعرف: ${winner.id}`;
+        document.getElementById("winnerComment").innerText = winner.text;
+        document.getElementById("winnerAvatar").src = winner.avatar || 'https://via.placeholder.com/50';
+        card.classList.remove("hidden");
 
-        // حفظ الفائز ضمن قائمة المستبعدين تلقائياً
-        const updatedList = getExcludedList();
-        updatedList.unshift({
+        // حفظ الفائز ضمن المستبعدين
+        const list = getExcludedList();
+        list.unshift({
+          id: winner.id,
           name: winner.name,
           avatar: winner.avatar,
-          channelId: winner.channelId,
           date: new Date().toLocaleDateString('ar-DZ')
         });
-        saveExcludedList(updatedList);
+        saveExcludedList(list);
 
-        setStatus(`تم اختيار الفائز واستبعاده بنجاح من المشاركات القادمة!`, false);
+        setStatus(`تم اختيار الفائز (${winner.name}) واستبعاده من المسابقات القادمة بنجاح.`, false);
 
       } catch (err) {
-        alert(`حدث خطأ: ${err.message}`);
+        alert(err.message);
         setStatus("");
       } finally {
-        drawBtn.disabled = false;
-        drawBtn.classList.remove("opacity-60", "cursor-not-allowed");
+        btn.disabled = false;
+        btn.classList.remove("opacity-50", "cursor-not-allowed");
       }
     }
 
-    function escapeHtml(string) {
-      const pre = document.createElement('pre');
-      const text = document.createTextNode(string);
-      pre.appendChild(text);
-      return pre.innerHTML;
+    function escapeHtml(str) {
+      const p = document.createElement('p');
+      p.appendChild(document.createTextNode(str));
+      return p.innerHTML;
     }
   </script>
 </body>
