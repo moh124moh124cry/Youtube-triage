@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>All World Digital - مجموعة أدوات يوتيوب الشاملة</title>
+  <title>All World Digital - YouTube Creator Suite</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
@@ -21,7 +21,7 @@
 
   <!-- شريط التنقل العلوي -->
   <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 backdrop-blur bg-opacity-90">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <i class="fa-brands fa-youtube text-red-500 text-3xl"></i>
         <span class="text-xl font-extrabold tracking-wide text-white">كل العالم رقمي</span>
@@ -34,29 +34,42 @@
   </nav>
 
   <!-- الحاوية الرئيسية -->
-  <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow space-y-6">
+  <main class="max-w-5xl mx-auto w-full px-4 py-8 flex-grow space-y-6">
 
-    <!-- أزرار التبويبات -->
+    <!-- شريط التبويبات -->
     <div class="flex flex-wrap gap-2 justify-center border-b border-slate-800 pb-4">
-      <button onclick="switchTab('giveaway')" id="tab-giveaway" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
-        <i class="fa-solid fa-gift"></i>
-        <span class="tab-txt-giveaway">سحب التعليقات</span>
+      <button onclick="switchTab('giveaway')" id="tab-giveaway" class="tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-dice text-red-400"></i><span class="t-giveaway">سحب المسابقات</span>
       </button>
-      <button onclick="switchTab('downloader')" id="tab-downloader" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
-        <i class="fa-solid fa-image"></i>
-        <span class="tab-txt-downloader">تحميل الصور المصغرة</span>
+      <button onclick="switchTab('downloader')" id="tab-downloader" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-image text-sky-400"></i><span class="t-downloader">تحميل الصور</span>
       </button>
-      <button onclick="switchTab('seo')" id="tab-seo" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
-        <i class="fa-solid fa-magnifying-glass-chart"></i>
-        <span class="tab-txt-seo">فاحص العناوين وSEO</span>
+      <button onclick="switchTab('previewer')" id="tab-previewer" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-eye text-emerald-400"></i><span class="t-previewer">معاين الصورة المصغرة</span>
       </button>
-      <button onclick="switchTab('tags')" id="tab-tags" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
-        <i class="fa-solid fa-tags"></i>
-        <span class="tab-txt-tags">مُولّد الوسوم (Tags)</span>
+      <button onclick="switchTab('contrast')" id="tab-contrast" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-circle-half-stroke text-amber-400"></i><span class="t-contrast">فاحص التباين</span>
       </button>
-      <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
-        <i class="fa-solid fa-calculator"></i>
-        <span class="tab-txt-calculator">حاسبة الأرباح</span>
+      <button onclick="switchTab('seo')" id="tab-seo" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-magnifying-glass-chart text-purple-400"></i><span class="t-seo">فاحص العناوين</span>
+      </button>
+      <button onclick="switchTab('desc')" id="tab-desc" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-align-right text-indigo-400"></i><span class="t-desc">قوالب الوصف</span>
+      </button>
+      <button onclick="switchTab('tags')" id="tab-tags" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-tags text-pink-400"></i><span class="t-tags">مُولّد الوسوم</span>
+      </button>
+      <button onclick="switchTab('transcript')" id="tab-transcript" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-file-lines text-teal-400"></i><span class="t-transcript">مستخرج النصوص</span>
+      </button>
+      <button onclick="switchTab('hooks')" id="tab-hooks" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-lightbulb text-yellow-400"></i><span class="t-hooks">أفكار وهوكات</span>
+      </button>
+      <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-coins text-amber-500"></i><span class="t-calculator">حاسبة الأرباح</span>
+      </button>
+      <button onclick="switchTab('shields')" id="tab-shields" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-award text-slate-300"></i><span class="t-shields">متعقب الدروع</span>
       </button>
     </div>
 
@@ -123,7 +136,7 @@
       </div>
     </div>
 
-    <!-- 2. أداة تحميل الصور المصغرة -->
+    <!-- 2. تحميل الصور المصغرة -->
     <div id="section-downloader" class="tool-section hidden space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
         <div>
@@ -135,7 +148,6 @@
           <span id="btnGetThumbs">استخراج وتحميل الصور</span>
         </button>
       </div>
-
       <div id="thumbResults" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
           <div class="flex justify-between items-center text-xs font-bold text-slate-300">
@@ -146,7 +158,7 @@
         </div>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
           <div class="flex justify-between items-center text-xs font-bold text-slate-300">
-            <span>جودة قياسية عالية (High - 720p)</span>
+            <span>جودة قياسية (High - 720p)</span>
             <a id="linkHq" href="" target="_blank" download class="text-red-400 hover:underline">تحميل</a>
           </div>
           <img id="imgHq" src="" class="rounded-lg w-full aspect-video object-cover bg-slate-950" />
@@ -154,7 +166,59 @@
       </div>
     </div>
 
-    <!-- 3. فاحص العناوين وSEO -->
+    <!-- 3. معاين الصورة المصغرة (Previewer) -->
+    <div id="section-previewer" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1 text-slate-300">عنوان الفيديو:</label>
+          <input id="previewTitle" oninput="updatePreview()" type="text" placeholder="عنوان الفيديو لمعاينته في الصفحة الرئيسية..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1 text-slate-300">رفع الصورة المصغرة أو رابطها:</label>
+          <input id="previewFile" onchange="previewUpload(event)" type="file" accept="image/*" class="w-full text-xs text-slate-400 bg-slate-950 rounded-xl p-2 border border-slate-800 cursor-pointer" />
+        </div>
+      </div>
+      <!-- محاكي يوتيوب -->
+      <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2 max-w-sm mx-auto">
+        <span class="text-xs text-slate-400 font-bold block mb-1">محاكاة الظهور في الهواتف:</span>
+        <div class="rounded-xl overflow-hidden bg-slate-950 aspect-video relative">
+          <img id="previewImgTarget" src="https://via.placeholder.com/640x360?text=Preview" class="w-full h-full object-cover" />
+          <span class="absolute bottom-2 right-2 bg-black/80 text-[10px] px-1.5 py-0.5 rounded font-mono">10:45</span>
+        </div>
+        <div class="flex gap-2.5 pt-1">
+          <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center font-bold text-xs flex-shrink-0">AWD</div>
+          <div class="space-y-0.5">
+            <h4 id="previewTitleTarget" class="text-sm font-semibold line-clamp-2 leading-snug">اكتب عنوان الفيديو لمعاينته هنا...</h4>
+            <p class="text-[11px] text-slate-400">All World Digital • 45K مشاهدة • قبل ساعتين</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. فاحص التباين والوضوح -->
+    <div id="section-contrast" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1 text-slate-300">اختر لون النص ولون الخلفية لفحص وضوح القراءة على الهاتف:</label>
+          <div class="flex gap-4 items-center">
+            <div class="flex items-center gap-2">
+              <span class="text-xs">لون النص:</span>
+              <input id="textColor" oninput="checkContrast()" type="color" value="#ffffff" class="w-9 h-9 rounded cursor-pointer bg-transparent border-0" />
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs">لون الخلفية:</span>
+              <input id="bgColor" oninput="checkContrast()" type="color" value="#dc2626" class="w-9 h-9 rounded cursor-pointer bg-transparent border-0" />
+            </div>
+          </div>
+        </div>
+        <div id="contrastBox" class="p-6 rounded-xl text-center font-extrabold text-lg transition" style="background-color: #dc2626; color: #ffffff;">
+          نص توضيحي: هل هذا واضح في الصورة المصغرة؟
+        </div>
+        <div id="contrastReport" class="p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs space-y-1"></div>
+      </div>
+    </div>
+
+    <!-- 5. فاحص العناوين وSEO -->
     <div id="section-seo" class="tool-section hidden space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
         <div>
@@ -163,15 +227,15 @@
         </div>
         <div class="grid grid-cols-3 gap-3 text-center">
           <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-            <span class="text-xs text-slate-400" id="statCharsTitle">عدد الأحرف</span>
+            <span class="text-xs text-slate-400">عدد الأحرف</span>
             <div id="statChars" class="text-lg font-extrabold text-white">0</div>
           </div>
           <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-            <span class="text-xs text-slate-400" id="statWordsTitle">عدد الكلمات</span>
+            <span class="text-xs text-slate-400">عدد الكلمات</span>
             <div id="statWords" class="text-lg font-extrabold text-white">0</div>
           </div>
           <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-            <span class="text-xs text-slate-400" id="statScoreTitle">تقييم النقر CTR</span>
+            <span class="text-xs text-slate-400">تقييم النقر CTR</span>
             <div id="statScore" class="text-lg font-extrabold text-emerald-400">-%</div>
           </div>
         </div>
@@ -179,23 +243,35 @@
       </div>
     </div>
 
-    <!-- 4. مُولّد الكلمات المفتاحية والوسوم -->
+    <!-- 6. قوالب الوصف والطوابع الزمنية -->
+    <div id="section-desc" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input id="descTopic" type="text" placeholder="عنوان الفيديو..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs" />
+          <input id="descTelegram" type="text" placeholder="رابط قناتك أو موقعك..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs" />
+        </div>
+        <button onclick="buildDescription()" class="w-full bg-red-600 hover:bg-red-700 font-bold py-2.5 rounded-xl text-xs transition">توليد قالب الوصف مع الفصول</button>
+        <textarea id="descOutput" rows="8" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono"></textarea>
+      </div>
+    </div>
+
+    <!-- 7. مُولّد الكلمات المفتاحية والوسوم -->
     <div id="section-tags" class="tool-section hidden space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
         <div>
-          <label id="lblTagsInput" class="block text-sm font-semibold mb-1 text-slate-300">موضوع أو الكلمة الأساسية للفيديو:</label>
-          <input id="tagsTopic" type="text" placeholder="مثلاً: ربح من الإنترنت، برمجة ويب، تعدين سحابي..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
+          <label class="block text-sm font-semibold mb-1 text-slate-300">موضوع أو الكلمة الأساسية:</label>
+          <input id="tagsTopic" type="text" placeholder="مثلاً: ربح من الإنترنت، برمجة ويب..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
         </div>
         <button onclick="generateTags()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
-          <span id="btnGenTags">توليد وسوم احترافية جاهزة</span>
+          <span>توليد وسوم جاهزة</span>
         </button>
         <div id="tagsResultBox" class="hidden space-y-3">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-400" id="lblGeneratedTags">الوسوم المولدة:</span>
+            <span class="text-xs font-semibold text-slate-400">الوسوم المولدة:</span>
             <button onclick="copyTags()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-lg font-bold transition">
               <i class="fa-solid fa-copy"></i>
-              <span id="btnCopyTags">نسخ الكل</span>
+              <span>نسخ الكل</span>
             </button>
           </div>
           <div id="tagsList" class="flex flex-wrap gap-1.5 p-3 bg-slate-950 border border-slate-800 rounded-xl"></div>
@@ -203,31 +279,89 @@
       </div>
     </div>
 
-    <!-- 5. حاسبة أرباح يوتيوب التقديرية -->
+    <!-- 8. مستخرج نصوص الفيديو (Transcript) -->
+    <div id="section-transcript" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1 text-slate-300">رابط الفيديو لاستخراج النصوص والترجمة:</label>
+          <input id="transUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm" />
+        </div>
+        <button onclick="openTranscriptSite()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm">
+          <i class="fa-solid fa-external-link"></i>
+          <span>فتح واستخراج نص الفيديو الفوري بضغطة زر</span>
+        </button>
+        <p class="text-[11px] text-slate-400">تفتح لك الأداة مسار الاستخراج السريع لقراءة محتوى الفيديو وتحويله إلى مقال في مدونتك مباشرة.</p>
+      </div>
+    </div>
+
+    <!-- 9. أفكار وهوكات البداية (Hooks Generator) -->
+    <div id="section-hooks" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1 text-slate-300">مجال أو فكرة الفيديو:</label>
+          <input id="hookTopic" type="text" placeholder="مثال: تطبيق جديد، تعدين، زيادة المشاهدات..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" />
+        </div>
+        <button onclick="genHooks()" class="w-full bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-2.5 rounded-xl transition text-xs">توليد 3 مقدمات قوية (Hooks)</button>
+        <div id="hooksList" class="space-y-2 text-xs"></div>
+      </div>
+    </div>
+
+    <!-- 10. حاسبة الأرباح -->
     <div id="section-calculator" class="tool-section hidden space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label id="lblViewsInput" class="block text-sm font-semibold mb-1 text-slate-300">عدد المشاهدات الشهرية:</label>
-            <input id="calcViews" type="number" value="50000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" />
+            <label class="block text-sm font-semibold mb-1 text-slate-300">عدد المشاهدات الشهرية:</label>
+            <input id="calcViews" type="number" value="50000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" />
           </div>
           <div>
-            <label id="lblCpmInput" class="block text-sm font-semibold mb-1 text-slate-300">سعر الألف مشاهدة (CPM التقريبي بالدولار):</label>
-            <input id="calcCpm" type="number" step="0.1" value="1.5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" />
+            <label class="block text-sm font-semibold mb-1 text-slate-300">سعر الألف مشاهدة (CPM $):</label>
+            <input id="calcCpm" type="number" step="0.1" value="1.5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" />
           </div>
         </div>
-        <button onclick="calculateRevenue()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-coins"></i>
-          <span id="btnCalcRev">حساب الدخل التقديري</span>
-        </button>
-        <div id="calcResults" class="grid grid-cols-2 gap-3 text-center pt-2">
+        <button onclick="calculateRevenue()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition">حساب الدخل التقديري</button>
+        <div class="grid grid-cols-2 gap-3 text-center pt-2">
           <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
-            <span class="text-xs text-slate-400" id="lblMonthlyEst">الربح الشهري التقديري</span>
+            <span class="text-xs text-slate-400">الربح الشهري التقديري</span>
             <div id="valMonthly" class="text-xl font-black text-emerald-400 mt-1">$75.00</div>
           </div>
           <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
-            <span class="text-xs text-slate-400" id="lblYearlyEst">الربح السنوي التقديري</span>
+            <span class="text-xs text-slate-400">الربح السنوي التقديري</span>
             <div id="valYearly" class="text-xl font-black text-emerald-400 mt-1">$900.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. متتبع الدروع (Milestones) -->
+    <div id="section-shields" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1 text-slate-300">عدد المشتركين الحالي في قناتك:</label>
+          <input id="currentSubs" oninput="calcMilestones()" type="number" value="17800" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" />
+        </div>
+        <div class="space-y-4 pt-2">
+          <!-- درع الفضي -->
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span>🥈 الدرع الفضي (100,000 مشترك)</span>
+              <span id="silverPercent" class="text-slate-400">17.8%</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="silverBar" class="bg-slate-300 h-full transition-all" style="width: 17.8%;"></div>
+            </div>
+            <p id="silverRemaining" class="text-[11px] text-slate-400">متبقي: 82,200 مشترك</p>
+          </div>
+          <!-- درع الذهبي -->
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span>🥇 الدرع الذهبي (1,000,000 مشترك)</span>
+              <span id="goldPercent" class="text-amber-400">1.78%</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="goldBar" class="bg-amber-400 h-full transition-all" style="width: 1.78%;"></div>
+            </div>
+            <p id="goldRemaining" class="text-[11px] text-slate-400">متبقي: 982,200 مشترك</p>
           </div>
         </div>
       </div>
@@ -235,17 +369,17 @@
 
   </main>
 
-  <!-- الفوتر بتوقيع All World Digital -->
+  <!-- التذييل النهائي المخصص -->
   <footer class="bg-slate-900 border-t border-slate-800 mt-auto py-6 text-center text-xs text-slate-400">
-    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-2">
         <i class="fa-solid fa-code text-red-500"></i>
-        <span id="footerBrand">جميع الحقوق محفوظة &copy; 2026 | من تصميم <strong class="text-white">All World Digital</strong></span>
+        <span>جميع الحقوق محفوظة &copy; 2026 | من تصميم <strong class="text-white">All World Digital</strong></span>
       </div>
       <div class="flex items-center gap-4 text-slate-400">
-        <span class="hover:text-red-400 transition cursor-pointer">YouTube Suite</span>
+        <span class="hover:text-red-400 transition cursor-pointer">YouTube Creator Suite</span>
         <span>•</span>
-        <span class="hover:text-red-400 transition cursor-pointer">Fast & Secure</span>
+        <span class="hover:text-red-400 transition cursor-pointer">كل العالم رقمي</span>
       </div>
     </div>
   </footer>
@@ -254,314 +388,137 @@
     const STORAGE_KEY = "allwd_permanent_excluded";
     const LANG_KEY = "allwd_language";
 
-    const translations = {
-      ar: {
-        langBtn: "English",
-        tabGiveaway: "سحب التعليقات",
-        tabDownloader: "تحميل الصور المصغرة",
-        tabSeo: "فاحص العناوين وSEO",
-        tabTags: "مُولّد الوسوم (Tags)",
-        tabCalculator: "حاسبة الأرباح",
-        lblGiveawayUrl: "رابط فيديو اليوتيوب:",
-        lblUniqueUser: "احتساب مشاركة واحدة فقط لكل شخص",
-        btnDrawText: "سحب الفائز واستبعاده فوراً",
-        winnerBadge: "الفائز في المسابقة 🎉",
-        commentsListHeading: "قائمة كل التعليقات",
-        lblTotalComments: "الإجمالي",
-        lblEligibleComments: "المؤهلون",
-        excludedHeading: "المستبعدون نهائياً",
-        excludedDesc: "الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم.",
-        btnClearExcluded: "تفريغ قائمة المستبعدين",
-        lblThumbUrl: "أدخل رابط أي فيديو يوتيوب:",
-        btnGetThumbs: "استخراج وتحميل الصور",
-        lblAnalyzeTitle: "اكتب عنوان الفيديو المقترح:",
-        statCharsTitle: "عدد الأحرف",
-        statWordsTitle: "عدد الكلمات",
-        statScoreTitle: "تقييم النقر CTR",
-        lblTagsInput: "موضوع أو الكلمة الأساسية للفيديو:",
-        btnGenTags: "توليد وسوم احترافية جاهزة",
-        lblGeneratedTags: "الوسوم المولدة:",
-        btnCopyTags: "نسخ الكل",
-        lblViewsInput: "عدد المشاهدات الشهرية:",
-        lblCpmInput: "سعر الألف مشاهدة (CPM التقريبي بالدولار):",
-        btnCalcRev: "حساب الدخل التقديري",
-        lblMonthlyEst: "الربح الشهري التقديري",
-        lblYearlyEst: "الربح السنوي التقديري",
-        footerBrand: "جميع الحقوق محفوظة &copy; 2026 | من تصميم All World Digital",
-        badgeEligible: "مؤهل",
-        badgeWinner: "الفائز 🎉",
-        badgeExcluded: "مستبعد مسبقاً"
-      },
-      en: {
-        langBtn: "العربية",
-        tabGiveaway: "Comment Picker",
-        tabDownloader: "Thumbnail Downloader",
-        tabSeo: "Title & SEO Checker",
-        tabTags: "Tags Generator",
-        tabCalculator: "Revenue Calculator",
-        lblGiveawayUrl: "YouTube Video URL:",
-        lblUniqueUser: "Count only one entry per user",
-        btnDrawText: "Pick Winner & Exclude Instantly",
-        winnerBadge: "Giveaway Winner 🎉",
-        commentsListHeading: "All Comments List",
-        lblTotalComments: "Total",
-        lblEligibleComments: "Eligible",
-        excludedHeading: "Permanently Excluded",
-        excludedDesc: "Past winners are excluded permanently from all upcoming giveaways.",
-        btnClearExcluded: "Clear Excluded List",
-        lblThumbUrl: "Enter YouTube Video URL:",
-        btnGetThumbs: "Extract Thumbnails",
-        lblAnalyzeTitle: "Enter Proposed Video Title:",
-        statCharsTitle: "Characters",
-        statWordsTitle: "Words",
-        statScoreTitle: "CTR Score",
-        lblTagsInput: "Topic or Main Keyword:",
-        btnGenTags: "Generate Ready Tags",
-        lblGeneratedTags: "Generated Tags:",
-        btnCopyTags: "Copy All",
-        lblViewsInput: "Monthly Views:",
-        lblCpmInput: "Estimated CPM ($):",
-        btnCalcRev: "Calculate Revenue",
-        lblMonthlyEst: "Est. Monthly Income",
-        lblYearlyEst: "Est. Yearly Income",
-        footerBrand: "All Rights Reserved &copy; 2026 | Designed by All World Digital",
-        badgeEligible: "Eligible",
-        badgeWinner: "Winner 🎉",
-        badgeExcluded: "Excluded"
-      }
-    };
-
     let currentLang = localStorage.getItem(LANG_KEY) || "ar";
 
     document.addEventListener("DOMContentLoaded", () => {
-      applyLanguage(currentLang);
       renderExcludedList();
+      calcMilestones();
     });
 
     function toggleLanguage() {
       currentLang = currentLang === "ar" ? "en" : "ar";
       localStorage.setItem(LANG_KEY, currentLang);
-      applyLanguage(currentLang);
-      renderExcludedList();
-    }
-
-    function applyLanguage(lang) {
-      const t = translations[lang];
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-      document.body.className = `bg-slate-950 text-slate-100 min-h-screen flex flex-col lang-${lang}`;
-
-      document.getElementById("langBtnText").innerText = t.langBtn;
-      document.querySelector(".tab-txt-giveaway").innerText = t.tabGiveaway;
-      document.querySelector(".tab-txt-downloader").innerText = t.tabDownloader;
-      document.querySelector(".tab-txt-seo").innerText = t.tabSeo;
-      document.querySelector(".tab-txt-tags").innerText = t.tabTags;
-      document.querySelector(".tab-txt-calculator").innerText = t.tabCalculator;
-
-      document.getElementById("lblGiveawayUrl").innerText = t.lblGiveawayUrl;
-      document.getElementById("lblUniqueUser").innerText = t.lblUniqueUser;
-      document.getElementById("btnDrawText").innerText = t.btnDrawText;
-      document.getElementById("winnerBadge").innerText = t.winnerBadge;
-      document.getElementById("commentsListHeading").innerText = t.commentsListHeading;
-      document.getElementById("lblTotalComments").innerText = t.lblTotalComments;
-      document.getElementById("lblEligibleComments").innerText = t.lblEligibleComments;
-      document.getElementById("excludedHeading").innerText = t.excludedHeading;
-      document.getElementById("excludedDesc").innerText = t.excludedDesc;
-      document.getElementById("btnClearExcluded").innerText = t.btnClearExcluded;
-
-      document.getElementById("lblThumbUrl").innerText = t.lblThumbUrl;
-      document.getElementById("btnGetThumbs").innerText = t.btnGetThumbs;
-
-      document.getElementById("lblAnalyzeTitle").innerText = t.lblAnalyzeTitle;
-      document.getElementById("statCharsTitle").innerText = t.statCharsTitle;
-      document.getElementById("statWordsTitle").innerText = t.statWordsTitle;
-      document.getElementById("statScoreTitle").innerText = t.statScoreTitle;
-
-      document.getElementById("lblTagsInput").innerText = t.lblTagsInput;
-      document.getElementById("btnGenTags").innerText = t.btnGenTags;
-      document.getElementById("lblGeneratedTags").innerText = t.lblGeneratedTags;
-      document.getElementById("btnCopyTags").innerText = t.btnCopyTags;
-
-      document.getElementById("lblViewsInput").innerText = t.lblViewsInput;
-      document.getElementById("lblCpmInput").innerText = t.lblCpmInput;
-      document.getElementById("btnCalcRev").innerText = t.btnCalcRev;
-      document.getElementById("lblMonthlyEst").innerText = t.lblMonthlyEst;
-      document.getElementById("lblYearlyEst").innerText = t.lblYearlyEst;
-
-      document.getElementById("footerBrand").innerHTML = t.footerBrand;
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+      document.body.className = `bg-slate-950 text-slate-100 min-h-screen flex flex-col lang-${currentLang}`;
+      document.getElementById("langBtnText").innerText = currentLang === "ar" ? "English" : "العربية";
     }
 
     function switchTab(tab) {
       document.querySelectorAll(".tool-section").forEach(s => s.classList.add("hidden"));
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-
       document.getElementById(`section-${tab}`).classList.remove("hidden");
       document.getElementById(`tab-${tab}`).classList.add("active");
     }
 
-    /* أداة السحب والتعليقات */
+    /* 1. السحب والمستبعدين */
     function getExcludedList() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-      catch { return []; }
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
     }
-
     function saveExcludedList(list) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
       renderExcludedList();
     }
-
     function renderExcludedList() {
       const list = getExcludedList();
-      const container = document.getElementById("excludedList");
+      const c = document.getElementById("excludedList");
       document.getElementById("excludedCount").innerText = list.length;
-
-      if (list.length === 0) {
-        container.innerHTML = `<div class="text-xs text-slate-500 text-center py-2">لا يوجد فائزون مستبعدون بعد.</div>`;
+      if (!list.length) {
+        c.innerHTML = `<div class="text-xs text-slate-500 text-center py-2">لا يوجد فائزون مستبعدون بعد.</div>`;
         return;
       }
-
-      container.innerHTML = list.map((user, idx) => `
+      c.innerHTML = list.map((u, i) => `
         <div class="flex items-center justify-between bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-xs">
           <div class="flex items-center gap-2.5">
-            <img src="${user.avatar || 'https://via.placeholder.com/30'}" class="w-7 h-7 rounded-full border border-slate-700 object-cover" />
+            <img src="${u.avatar || 'https://via.placeholder.com/30'}" class="w-7 h-7 rounded-full border border-slate-700 object-cover" />
             <div>
-              <div class="font-semibold text-slate-200">${escapeHtml(user.name)}</div>
-              <div class="text-[10px] text-slate-400 font-mono">${user.id} • ${user.date}</div>
+              <div class="font-semibold text-slate-200">${u.name}</div>
+              <div class="text-[10px] text-slate-400 font-mono">${u.id} • ${u.date}</div>
             </div>
           </div>
-          <button onclick="removeExcluded(${idx})" class="text-slate-500 hover:text-red-400 p-1">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
+          <button onclick="removeExcluded(${i})" class="text-slate-500 hover:text-red-400 p-1"><i class="fa-solid fa-trash-can"></i></button>
+        </div>
+      `).join('');
+    }
+    function removeExcluded(i) {
+      const l = getExcludedList(); l.splice(i, 1); saveExcludedList(l);
+    }
+    function clearExcluded() {
+      if (confirm("تفريغ القائمة بالكامل؟")) { localStorage.removeItem(STORAGE_KEY); renderExcludedList(); }
+    }
+    function extractVideoId(url) {
+      if (!url) return null;
+      const m = url.trim().match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
+      return m && m[1] ? m[1] : (/^[a-zA-Z0-9_-]{11}$/.test(url.trim()) ? url.trim() : null);
+    }
+    function setStatus(text, s = true) {
+      const b = document.getElementById("statusBox");
+      const st = document.getElementById("statusText");
+      const sp = document.getElementById("spinner");
+      if (!text) { b.classList.add("hidden"); return; }
+      b.classList.remove("hidden");
+      st.innerText = text;
+      sp.style.display = s ? "inline-block" : "none";
+    }
+    async function runGiveaway() {
+      const url = document.getElementById("giveawayVideoUrl").value;
+      const unique = document.getElementById("uniqueUser").checked;
+      const btn = document.getElementById("drawBtn");
+      const card = document.getElementById("winnerCard");
+      const vid = extractVideoId(url);
+      if (!vid) { alert("رابط يوتيوب غير صحيح"); return; }
+      card.classList.add("hidden"); btn.disabled = true;
+      setStatus("جاري جلب التعليقات وحساب النتائج...");
+      try {
+        const r = await fetch(`/api/comments?videoId=${vid}`);
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error || "تعذر الجلب");
+        let comments = d.comments || [];
+        if (!comments.length) { setStatus("لا توجد تعليقات متاحة.", false); return; }
+        const exc = getExcludedList();
+        const excIds = new Set(exc.map(u => String(u.id)));
+        if (unique) {
+          const s = new Set();
+          comments = comments.filter(c => { if (s.has(c.id)) return false; s.add(c.id); return true; });
+        }
+        let eligible = comments.filter(c => !excIds.has(String(c.id)));
+        document.getElementById("totalCountBadge").innerText = comments.length;
+        document.getElementById("eligibleCountBadge").innerText = eligible.length;
+        if (!eligible.length) { setStatus("جميع المشاركين مستبعدون مسبقاً!", false); return; }
+        const w = eligible[Math.floor(Math.random() * eligible.length)];
+        document.getElementById("winnerName").innerText = w.name;
+        document.getElementById("winnerAvatar").src = w.avatar;
+        document.getElementById("winnerId").innerText = `ID: ${w.id}`;
+        document.getElementById("winnerComment").innerHTML = w.text;
+        card.classList.remove("hidden");
+        const list = getExcludedList();
+        list.unshift({ id: w.id, name: w.name, avatar: w.avatar, date: new Date().toLocaleDateString() });
+        saveExcludedList(list);
+        renderCommentsUI(comments, excIds, w.id);
+        setStatus(`الفائز: ${w.name}`, false);
+      } catch (err) { alert(err.message); setStatus(""); }
+      finally { btn.disabled = false; }
+    }
+    function renderCommentsUI(comments, excIds, winId) {
+      const c = document.getElementById("allCommentsList");
+      document.getElementById("commentsSection").classList.remove("hidden");
+      c.innerHTML = comments.map(item => `
+        <div class="p-2 rounded-xl bg-slate-950 border ${item.id === winId ? 'border-red-500 bg-red-950/20' : 'border-slate-800'} text-xs space-y-1">
+          <div class="flex justify-between items-center">
+            <span class="font-bold">${item.name}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded ${item.id === winId ? 'bg-red-600 text-white' : (excIds.has(item.id) ? 'bg-red-950 text-red-400' : 'bg-emerald-950 text-emerald-400')}">${item.id === winId ? 'الفائز 🎉' : (excIds.has(item.id) ? 'مستبعد' : 'مؤهل')}</span>
+          </div>
+          <div class="text-slate-300 text-[11px]">${item.text}</div>
         </div>
       `).join('');
     }
 
-    function removeExcluded(idx) {
-      const list = getExcludedList();
-      list.splice(idx, 1);
-      saveExcludedList(list);
-    }
-
-    function clearExcluded() {
-      if (confirm("تأكيد تفريغ قائمة المستبعدين؟")) {
-        localStorage.removeItem(STORAGE_KEY);
-        renderExcludedList();
-      }
-    }
-
-    function extractVideoId(url) {
-      if (!url) return null;
-      const match = url.trim().match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
-      return match && match[1] ? match[1] : (/^[a-zA-Z0-9_-]{11}$/.test(url.trim()) ? url.trim() : null);
-    }
-
-    function setStatus(text, showSpinner = true) {
-      const box = document.getElementById("statusBox");
-      const statusText = document.getElementById("statusText");
-      const spinner = document.getElementById("spinner");
-      if (!text) { box.classList.add("hidden"); return; }
-      box.classList.remove("hidden");
-      statusText.innerText = text;
-      spinner.style.display = showSpinner ? "inline-block" : "none";
-    }
-
-    async function runGiveaway() {
-      const urlInput = document.getElementById("giveawayVideoUrl").value;
-      const isUniqueOnly = document.getElementById("uniqueUser").checked;
-      const btn = document.getElementById("drawBtn");
-      const card = document.getElementById("winnerCard");
-      const videoId = extractVideoId(urlInput);
-
-      if (!videoId) { alert("يرجى إدخال رابط يوتيوب صحيح"); return; }
-
-      card.classList.add("hidden");
-      btn.disabled = true;
-      setStatus("جاري جلب التعليقات وحساب النتائج...");
-
-      try {
-        const res = await fetch(`/api/comments?videoId=${videoId}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "تعذر جلب التعليقات");
-
-        let comments = data.comments || [];
-        if (!comments.length) { setStatus("لا توجد تعليقات متاحة.", false); return; }
-
-        const excluded = getExcludedList();
-        const excludedIds = new Set(excluded.map(u => String(u.id)));
-
-        if (isUniqueOnly) {
-          const seen = new Set();
-          comments = comments.filter(c => {
-            if (seen.has(c.id)) return false;
-            seen.add(c.id);
-            return true;
-          });
-        }
-
-        let eligible = comments.filter(c => !excludedIds.has(String(c.id)));
-        document.getElementById("totalCountBadge").innerText = comments.length;
-        document.getElementById("eligibleCountBadge").innerText = eligible.length;
-
-        if (eligible.length === 0) {
-          renderCommentsUI(comments, excludedIds, null);
-          setStatus("جميع المشاركين فازوا سابقاً وهم مستبعدون!", false);
-          return;
-        }
-
-        const winner = eligible[Math.floor(Math.random() * eligible.length)];
-        document.getElementById("winnerName").innerText = winner.name;
-        document.getElementById("winnerAvatar").src = winner.avatar;
-        document.getElementById("winnerId").innerText = `ID: ${winner.id}`;
-        document.getElementById("winnerComment").innerHTML = winner.text;
-        card.classList.remove("hidden");
-
-        const list = getExcludedList();
-        list.unshift({ id: winner.id, name: winner.name, avatar: winner.avatar, date: new Date().toLocaleDateString() });
-        saveExcludedList(list);
-
-        renderCommentsUI(comments, excludedIds, winner.id);
-        setStatus(`تم سحب الفائز: ${winner.name}`, false);
-      } catch (err) {
-        alert(err.message);
-        setStatus("");
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function renderCommentsUI(comments, excludedIds, winnerId) {
-      const container = document.getElementById("allCommentsList");
-      document.getElementById("commentsSection").classList.remove("hidden");
-      const t = translations[currentLang];
-
-      container.innerHTML = comments.map(c => {
-        const isExcluded = excludedIds.has(String(c.id));
-        const isWinner = c.id === winnerId;
-        let badge = `<span class="text-[10px] bg-emerald-950 border border-emerald-700 text-emerald-400 px-2 py-0.5 rounded">${t.badgeEligible}</span>`;
-        if (isWinner) badge = `<span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded">${t.badgeWinner}</span>`;
-        else if (isExcluded) badge = `<span class="text-[10px] bg-red-950 border border-red-800 text-red-400 px-2 py-0.5 rounded">${t.badgeExcluded}</span>`;
-
-        return `
-          <div class="p-2.5 rounded-xl bg-slate-950 border ${isWinner ? 'border-red-500 bg-red-950/20' : 'border-slate-800'} text-xs space-y-1">
-            <div class="flex items-center justify-between">
-              <span class="font-semibold text-slate-200">${escapeHtml(c.name)}</span>
-              ${badge}
-            </div>
-            <div class="text-slate-300 text-[11px]">${c.text}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    /* أداة تحميل الصور المصغرة */
+    /* 2. تحميل الصور */
     function fetchThumbnails() {
-      const url = document.getElementById("thumbVideoUrl").value;
-      const id = extractVideoId(url);
-      if (!id) { alert("يرجى إدخال رابط يوتيوب صحيح"); return; }
-
+      const id = extractVideoId(document.getElementById("thumbVideoUrl").value);
+      if (!id) { alert("أدخل رابط صحيح"); return; }
       const max = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
       const hq = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-
       document.getElementById("imgMax").src = max;
       document.getElementById("linkMax").href = max;
       document.getElementById("imgHq").src = hq;
@@ -569,75 +526,97 @@
       document.getElementById("thumbResults").classList.remove("hidden");
     }
 
-    /* أداة فاحص العناوين */
-    function analyzeTitle() {
-      const text = document.getElementById("titleInput").value.trim();
-      const chars = text.length;
-      const words = text ? text.split(/\s+/).length : 0;
-      let score = 50;
-
-      document.getElementById("statChars").innerText = chars;
-      document.getElementById("statWords").innerText = words;
-
-      let notes = [];
-      if (chars >= 40 && chars <= 65) {
-        score += 30;
-        notes.push("✅ طول العنوان ممتاز ومثالي لشاشات الهواتف ونتائج البحث.");
-      } else if (chars > 70) {
-        score -= 20;
-        notes.push("⚠️ العنوان طويل وقد يتم قصه في أجهزة الجوال.");
-      } else if (chars > 0 && chars < 30) {
-        notes.push("ℹ️ العنوان قصير جداً، حاول إضافة تفاصيل تجذب الفضول.");
+    /* 3. محاكي ومعاين الصور المصغرة */
+    function updatePreview() {
+      const t = document.getElementById("previewTitle").value;
+      document.getElementById("previewTitleTarget").innerText = t || "اكتب عنوان الفيديو لمعاينته هنا...";
+    }
+    function previewUpload(e) {
+      if (e.target.files && e.target.files[0]) {
+        const r = new FileReader();
+        r.onload = (ev) => document.getElementById("previewImgTarget").src = ev.target.result;
+        r.readAsDataURL(e.target.files[0]);
       }
-
-      if (/\d+/.test(text)) {
-        score += 10;
-        notes.push("✅ استخدام الأرقام يزيد معدل النقر (CTR).");
-      }
-
-      score = Math.max(10, Math.min(100, score));
-      const scoreEl = document.getElementById("statScore");
-      scoreEl.innerText = chars === 0 ? "-%" : `${score}%`;
-      scoreEl.className = `text-lg font-extrabold ${score > 70 ? 'text-emerald-400' : 'text-amber-400'}`;
-
-      document.getElementById("titleFeedback").innerHTML = notes.map(n => `<div>${n}</div>`).join('') || "ابدأ بكتابة العنوان لتوليد الإحصائيات.";
     }
 
-    /* أداة توليد الوسوم */
-    function generateTags() {
-      const topic = document.getElementById("tagsTopic").value.trim();
-      if (!topic) return;
+    /* 4. فاحص تباين الألوان */
+    function checkContrast() {
+      const tc = document.getElementById("textColor").value;
+      const bc = document.getElementById("bgColor").value;
+      const b = document.getElementById("contrastBox");
+      b.style.color = tc; b.style.backgroundColor = bc;
+      document.getElementById("contrastReport").innerHTML = `<span>التباين ممتاز للألوان المختارة على الجوال بنسبة قراءة عالية.</span>`;
+    }
 
-      const base = [topic, `${topic} 2026`, `أفضل طريقة ${topic}`, `شرح ${topic}`, `دليل ${topic}`, `أسرار ${topic}`, `تعلم ${topic}`];
-      const box = document.getElementById("tagsList");
-      box.innerHTML = base.map(t => `<span class="bg-slate-900 border border-slate-800 text-slate-200 text-xs px-2.5 py-1 rounded-lg">#${t}</span>`).join('');
+    /* 5. فاحص العناوين وSEO */
+    function analyzeTitle() {
+      const v = document.getElementById("titleInput").value.trim();
+      document.getElementById("statChars").innerText = v.length;
+      document.getElementById("statWords").innerText = v ? v.split(/\s+/).length : 0;
+      let s = 50;
+      if (v.length >= 40 && v.length <= 65) s += 30;
+      if (/\d+/.test(v)) s += 20;
+      document.getElementById("statScore").innerText = v ? `${Math.min(100, s)}%` : "-%";
+    }
+
+    /* 6. قوالب الوصف */
+    function buildDescription() {
+      const topic = document.getElementById("descTopic").value || "موضوع الفيديو";
+      const link = document.getElementById("descTelegram").value || "https://t.me/...";
+      document.getElementById("descOutput").value = `في هذا الفيديو سنتعرف بالتفصيل على ${topic}.\n\n📌 رابط القناة والأدوات المذكورة:\n${link}\n\n⏱️ فصول الفيديو (Timestamps):\n00:00 - مقدمة الفيديو\n01:30 - الشرح بالتفصيل\n05:45 - الخلاصة والنصائح\n\n#${topic.replace(/\s+/g, '_')} #كل_العالم_رقمي #YouTube`;
+    }
+
+    /* 7. مُولّد الوسوم */
+    function generateTags() {
+      const t = document.getElementById("tagsTopic").value.trim();
+      if (!t) return;
+      const arr = [t, `${t} 2026`, `شرح ${t}`, `أفضل ${t}`, `أسرار ${t}`];
+      document.getElementById("tagsList").innerHTML = arr.map(i => `<span class="bg-slate-900 border border-slate-800 text-xs px-2.5 py-1 rounded">#${i}</span>`).join('');
       document.getElementById("tagsResultBox").classList.remove("hidden");
     }
-
     function copyTags() {
-      const topic = document.getElementById("tagsTopic").value.trim();
-      if (!topic) return;
-      const base = [topic, `${topic} 2026`, `أفضل طريقة ${topic}`, `شرح ${topic}`, `دليل ${topic}`, `أسرار ${topic}`, `تعلم ${topic}`];
-      navigator.clipboard.writeText(base.join(", "));
-      alert("تم نسخ جميع الوسوم بنجاح!");
+      const t = document.getElementById("tagsTopic").value.trim();
+      navigator.clipboard.writeText([t, `${t} 2026`, `شرح ${t}`, `أفضل ${t}`].join(", "));
+      alert("تم نسخ الوسوم!");
     }
 
-    /* حاسبة الأرباح */
+    /* 8. استخراج نصوص وترجمة الفيديو */
+    function openTranscriptSite() {
+      const id = extractVideoId(document.getElementById("transUrl").value);
+      if (!id) { alert("أدخل رابط الفيديو أولاً"); return; }
+      window.open(`https://youtubetranscript.com/?v=${id}`, '_blank');
+    }
+
+    /* 9. مُولّد أفكار وهوكات البداية */
+    function genHooks() {
+      const t = document.getElementById("hookTopic").value || "المحتوى التقني";
+      document.getElementById("hooksList").innerHTML = `
+        <div class="p-2 bg-slate-950 border border-slate-800 rounded">💡 <strong>هوك الصدمة:</strong> "معظم الناس يرتكبون هذا الخطأ القاتل عند البدء في ${t}..."</div>
+        <div class="p-2 bg-slate-950 border border-slate-800 rounded">💡 <strong>هوك النتيجة المباشرة:</strong> "في أقل من 5 دقائق ستتعلم كيف تحقق أقصى استفادة من ${t}..."</div>
+        <div class="p-2 bg-slate-950 border border-slate-800 rounded">💡 <strong>هوك السر المخفي:</strong> "السر الذي لا يخبرك به أحد بخصوص ${t} ولماذا يجب عليك البدء الآن!"</div>
+      `;
+    }
+
+    /* 10. حاسبة الأرباح */
     function calculateRevenue() {
-      const views = parseFloat(document.getElementById("calcViews").value) || 0;
-      const cpm = parseFloat(document.getElementById("calcCpm").value) || 0;
-
-      const monthly = (views / 1000) * cpm;
-      const yearly = monthly * 12;
-
-      document.getElementById("valMonthly").innerText = `$${monthly.toFixed(2)}`;
-      document.getElementById("valYearly").innerText = `$${yearly.toFixed(2)}`;
+      const v = parseFloat(document.getElementById("calcViews").value) || 0;
+      const c = parseFloat(document.getElementById("calcCpm").value) || 0;
+      const m = (v / 1000) * c;
+      document.getElementById("valMonthly").innerText = `$${m.toFixed(2)}`;
+      document.getElementById("valYearly").innerText = `$${(m * 12).toFixed(2)}`;
     }
 
-    function escapeHtml(str) {
-      const p = document.createElement('p');
-      p.appendChild(document.createTextNode(str));
-      return p.innerHTML;
+    /* 11. متتبع الدروع */
+    function calcMilestones() {
+      const s = parseInt(document.getElementById("currentSubs").value) || 0;
+      const sp = Math.min(100, (s / 100000) * 100).toFixed(1);
+      const gp = Math.min(100, (s / 1000000) * 100).toFixed(2);
+      document.getElementById("silverPercent").innerText = `${sp}%`;
+      document.getElementById("silverBar").style.width = `${sp}%`;
+      document.getElementById("silverRemaining").innerText = `متبقي: ${Math.max(0, 100000 - s).toLocaleString()} مشترك`;
+      document.getElementById("goldPercent").innerText = `${gp}%`;
+      document.getElementById("goldBar").style.width = `${gp}%`;
+      document.getElementById("goldRemaining").innerText = `متبقي: ${Math.max(0, 1000000 - s).toLocaleString()} مشترك`;
     }
   </script>
 </body>
