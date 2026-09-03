@@ -40,7 +40,7 @@
         <span>سحب الفائز واستبعاده فوراً</span>
       </button>
 
-      <!-- حالة المعالجة -->
+      <!-- شريط الحالة -->
       <div id="statusBox" class="hidden text-xs sm:text-sm py-2.5 px-3 rounded-xl bg-slate-950/70 border border-slate-700 text-slate-300 flex items-center gap-3">
         <span id="spinner" class="animate-spin inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full"></span>
         <span id="statusText">جاري الاتصال...</span>
@@ -58,6 +58,23 @@
           <div class="mt-2 bg-slate-900/90 p-3 rounded-xl border border-slate-700 text-sm text-slate-200" id="winnerComment"></div>
         </div>
       </div>
+    </section>
+
+    <!-- قسم إحصائيات وقائمة كافة التعليقات -->
+    <section id="commentsSection" class="hidden bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-700/80 pb-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-comments text-sky-400"></i>
+          <h2 class="font-bold text-white text-base">قائمة كل التعليقات</h2>
+        </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg">الإجمالي: <strong id="totalCountBadge">0</strong></span>
+          <span class="bg-emerald-950 border border-emerald-700 text-emerald-300 px-2.5 py-1 rounded-lg">المؤهلون: <strong id="eligibleCountBadge">0</strong></span>
+        </div>
+      </div>
+
+      <!-- قائمة التعليقات مع شريط تمرير -->
+      <div id="allCommentsList" class="space-y-2.5 max-h-72 overflow-y-auto pr-1"></div>
     </section>
 
     <!-- سجل المستبعدين -->
@@ -114,7 +131,7 @@
               <div class="text-[11px] text-slate-400 font-mono">${user.id} • ${user.date}</div>
             </div>
           </div>
-          <button onclick="removeExcluded(${idx})" class="text-slate-500 hover:text-red-400 p-1.5 transition">
+          <button onclick="removeExcluded(${idx})" class="text-slate-500 hover:text-red-400 p-1 transition">
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </div>
@@ -136,7 +153,7 @@
 
     function extractVideoId(url) {
       if (!url) return null;
-      const match = url.trim().match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      const match = url.trim().match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
       if (match && match[1]) return match[1];
       if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) return url.trim();
       return null;
@@ -155,6 +172,36 @@
       spinner.style.display = showSpinner ? "inline-block" : "none";
     }
 
+    function renderAllComments(comments, excludedIds, winnerId) {
+      const container = document.getElementById("allCommentsList");
+      document.getElementById("commentsSection").classList.remove("hidden");
+
+      container.innerHTML = comments.map(c => {
+        const isExcluded = excludedIds.has(String(c.id));
+        const isWinner = c.id === winnerId;
+        
+        let badge = `<span class="text-[10px] bg-emerald-950 border border-emerald-700 text-emerald-400 px-2 py-0.5 rounded">مؤهل</span>`;
+        if (isWinner) {
+          badge = `<span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded animate-pulse">الفائز 🎉</span>`;
+        } else if (isExcluded) {
+          badge = `<span class="text-[10px] bg-red-950 border border-red-800 text-red-400 px-2 py-0.5 rounded">مستبعد مسبقاً</span>`;
+        }
+
+        return `
+          <div class="p-2.5 rounded-xl bg-slate-900/70 border ${isWinner ? 'border-red-500 bg-red-950/20' : 'border-slate-700/60'} text-xs space-y-1.5 transition">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="${c.avatar || 'https://via.placeholder.com/30'}" class="w-6 h-6 rounded-full border border-slate-600 object-cover" />
+                <span class="font-semibold text-slate-200">${escapeHtml(c.name)}</span>
+              </div>
+              ${badge}
+            </div>
+            <div class="text-slate-300 text-[11px] pr-8 leading-relaxed">${c.text}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
     async function runGiveaway() {
       const urlInput = document.getElementById("videoUrl").value;
       const isUniqueOnly = document.getElementById("uniqueUser").checked;
@@ -171,7 +218,7 @@
 
       btn.disabled = true;
       btn.classList.add("opacity-50", "cursor-not-allowed");
-      setStatus("جاري جلب التعليقات عبر السيرفر بأمان...");
+      setStatus("جاري جلب التعليقات وحساب الإحصائيات...");
 
       try {
         const response = await fetch(`/api/comments?videoId=${videoId}`);
@@ -181,30 +228,36 @@
           throw new Error(data.error || "تعذر جلب التعليقات");
         }
 
-        const comments = data.comments || [];
+        let comments = data.comments || [];
         if (comments.length === 0) {
           setStatus("لا توجد تعليقات متاحة على هذا الفيديو.", false);
           return;
         }
 
-        // تصفية المستبعدين مسبقاً
+        // جلب قائمة المستبعدين الحالية
         const excluded = getExcludedList();
         const excludedIds = new Set(excluded.map(u => String(u.id)));
 
-        let eligible = comments.filter(c => !excludedIds.has(String(c.id)));
-
-        // احتساب مشاركة واحدة لكل حساب
+        // احتساب تعليق واحد لكل حساب إذا تم التحديد
         if (isUniqueOnly) {
           const seen = new Set();
-          eligible = eligible.filter(c => {
+          comments = comments.filter(c => {
             if (seen.has(c.id)) return false;
             seen.add(c.id);
             return true;
           });
         }
 
+        // تحديد المؤهلين للسحب
+        let eligible = comments.filter(c => !excludedIds.has(String(c.id)));
+
+        // تحديث شارات العداد
+        document.getElementById("totalCountBadge").innerText = comments.length;
+        document.getElementById("eligibleCountBadge").innerText = eligible.length;
+
         if (eligible.length === 0) {
-          setStatus(`تم فحص ${comments.length} تعليق، وجميع المشاركين مستبعدون مسبقاً!`, false);
+          renderAllComments(comments, excludedIds, null);
+          setStatus(`تم فحص ${comments.length} تعليق، لكن جميع المشاركين فازوا سابقاً وهم مستبعدون!`, false);
           return;
         }
 
@@ -218,7 +271,7 @@
         document.getElementById("winnerComment").innerHTML = winner.text;
         card.classList.remove("hidden");
 
-        // إضافة الفائز للمستبعدين
+        // إضافة الفائز للمستبعدين وتحديث التخزين
         const list = getExcludedList();
         list.unshift({
           id: winner.id,
@@ -228,7 +281,10 @@
         });
         saveExcludedList(list);
 
-        setStatus(`تم سحب الفائز (${winner.name}) واستبعاده بنجاح من أي سحب مستقبلي.`, false);
+        // عرض كل التعليقات مع إبراز الفائز
+        renderAllComments(comments, excludedIds, winner.id);
+
+        setStatus(`تم فحص ${comments.length} تعليق (المؤهلون: ${eligible.length}). الفائز: ${winner.name}`, false);
 
       } catch (err) {
         alert(`خطأ: ${err.message}`);
