@@ -3,107 +3,252 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>كل العالم رقمي - All World Digital</title>
+  <title>All World Digital - مجموعة أدوات يوتيوب الشاملة</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap');
     body.lang-ar { font-family: 'Cairo', sans-serif; }
     body.lang-en { font-family: 'Inter', sans-serif; }
+    .tab-btn.active {
+      background-color: #dc2626;
+      color: #ffffff;
+      border-color: #ef4444;
+    }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen py-8 px-4 lang-ar">
-  <div class="max-w-2xl mx-auto space-y-6">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col lang-ar">
 
-    <!-- شريط تبديل اللغة -->
-    <div class="flex justify-end">
-      <button onclick="toggleLanguage()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">
+  <!-- شريط التنقل العلوي -->
+  <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 backdrop-blur bg-opacity-90">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <i class="fa-brands fa-youtube text-red-500 text-3xl"></i>
+        <span class="text-xl font-extrabold tracking-wide text-white">كل العالم رقمي</span>
+      </div>
+      <button onclick="toggleLanguage()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition">
         <i class="fa-solid fa-globe text-red-500"></i>
-        <span id="langSwitchText">English</span>
+        <span id="langBtnText">English</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- الحاوية الرئيسية -->
+  <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow space-y-6">
+
+    <!-- أزرار التبويبات -->
+    <div class="flex flex-wrap gap-2 justify-center border-b border-slate-800 pb-4">
+      <button onclick="switchTab('giveaway')" id="tab-giveaway" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
+        <i class="fa-solid fa-gift"></i>
+        <span class="tab-txt-giveaway">سحب التعليقات</span>
+      </button>
+      <button onclick="switchTab('downloader')" id="tab-downloader" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
+        <i class="fa-solid fa-image"></i>
+        <span class="tab-txt-downloader">تحميل الصور المصغرة</span>
+      </button>
+      <button onclick="switchTab('seo')" id="tab-seo" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
+        <i class="fa-solid fa-magnifying-glass-chart"></i>
+        <span class="tab-txt-seo">فاحص العناوين وSEO</span>
+      </button>
+      <button onclick="switchTab('tags')" id="tab-tags" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
+        <i class="fa-solid fa-tags"></i>
+        <span class="tab-txt-tags">مُولّد الوسوم (Tags)</span>
+      </button>
+      <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-2">
+        <i class="fa-solid fa-calculator"></i>
+        <span class="tab-txt-calculator">حاسبة الأرباح</span>
       </button>
     </div>
 
-    <!-- الشعار والرأس -->
-    <header class="text-center space-y-2 bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-xl backdrop-blur">
-      <div class="flex items-center justify-center gap-3">
-        <i class="fa-brands fa-youtube text-red-500 text-3xl"></i>
-        <h1 id="appTitle" class="text-2xl sm:text-3xl font-extrabold text-white">كل العالم رقمي</h1>
-      </div>
-      <p id="appSubtitle" class="text-slate-400 text-xs sm:text-sm">سحب عشوائي مؤمّن مع استبعاد تلقائي للفائزين السابقين</p>
-    </header>
-
-    <!-- صندوق الإدخال -->
-    <section class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg space-y-4">
-      <div>
-        <label id="lblVideoUrl" class="block text-sm font-semibold mb-1 text-slate-300">رابط فيديو اليوتيوب:</label>
-        <input id="videoUrl" type="text" placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
-      </div>
-
-      <div class="flex items-center gap-2">
-        <input id="uniqueUser" type="checkbox" checked class="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-900 border-slate-700 cursor-pointer" />
-        <label for="uniqueUser" id="lblUniqueUser" class="text-xs sm:text-sm text-slate-300 select-none cursor-pointer">احتساب مشاركة واحدة فقط لكل شخص</label>
-      </div>
-
-      <button id="drawBtn" onclick="runGiveaway()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/30">
-        <i class="fa-solid fa-dice text-lg"></i>
-        <span id="btnDrawText">سحب الفائز واستبعاده فوراً</span>
-      </button>
-
-      <!-- شريط الحالة -->
-      <div id="statusBox" class="hidden text-xs sm:text-sm py-2.5 px-3 rounded-xl bg-slate-950/70 border border-slate-700 text-slate-300 flex items-center gap-3">
-        <span id="spinner" class="animate-spin inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full"></span>
-        <span id="statusText">جاري الاتصال...</span>
-      </div>
-    </section>
-
-    <!-- بطاقة الفائز -->
-    <section id="winnerCard" class="hidden bg-gradient-to-br from-red-950/60 via-slate-800 to-slate-800 border-2 border-red-500 p-5 rounded-2xl shadow-2xl relative">
-      <div id="winnerBadge" class="inline-block text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">الفائز في المسابقة 🎉</div>
-      <div class="flex items-start gap-4">
-        <img id="winnerAvatar" src="" class="w-14 h-14 rounded-full border-2 border-red-400 bg-slate-700 object-cover flex-shrink-0" />
-        <div class="flex-1 space-y-1">
-          <h3 id="winnerName" class="text-xl font-bold text-white"></h3>
-          <p id="winnerId" class="text-xs text-slate-400 font-mono"></p>
-          <div class="mt-2 bg-slate-900/90 p-3 rounded-xl border border-slate-700 text-sm text-slate-200" id="winnerComment"></div>
+    <!-- 1. أداة سحب المسابقات والتعليقات -->
+    <div id="section-giveaway" class="tool-section space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <label id="lblGiveawayUrl" class="block text-sm font-semibold mb-1 text-slate-300">رابط فيديو اليوتيوب:</label>
+          <input id="giveawayVideoUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="uniqueUser" type="checkbox" checked class="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-950 border-slate-800" />
+          <label for="uniqueUser" id="lblUniqueUser" class="text-xs sm:text-sm text-slate-300">احتساب مشاركة واحدة فقط لكل شخص</label>
+        </div>
+        <button id="drawBtn" onclick="runGiveaway()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/30">
+          <i class="fa-solid fa-dice text-lg"></i>
+          <span id="btnDrawText">سحب الفائز واستبعاده فوراً</span>
+        </button>
+        <div id="statusBox" class="hidden text-xs sm:text-sm py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 flex items-center gap-3">
+          <span id="spinner" class="animate-spin inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full"></span>
+          <span id="statusText">جاري المعالجة...</span>
         </div>
       </div>
-    </section>
 
-    <!-- قائمة التعليقات والإحصائيات -->
-    <section id="commentsSection" class="hidden bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-700/80 pb-3">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-comments text-sky-400"></i>
+      <!-- بطاقة الفائز -->
+      <div id="winnerCard" class="hidden bg-gradient-to-br from-red-950/60 via-slate-900 to-slate-900 border-2 border-red-500 p-5 rounded-2xl shadow-2xl">
+        <div id="winnerBadge" class="inline-block text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">الفائز في المسابقة 🎉</div>
+        <div class="flex items-start gap-4">
+          <img id="winnerAvatar" src="" class="w-14 h-14 rounded-full border-2 border-red-400 bg-slate-800 object-cover flex-shrink-0" />
+          <div class="flex-1 space-y-1">
+            <h3 id="winnerName" class="text-xl font-bold text-white"></h3>
+            <p id="winnerId" class="text-xs text-slate-400 font-mono"></p>
+            <div class="mt-2 bg-slate-950 p-3 rounded-xl border border-slate-800 text-sm text-slate-200" id="winnerComment"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- قائمة كل التعليقات -->
+      <div id="commentsSection" class="hidden bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
           <h2 id="commentsListHeading" class="font-bold text-white text-base">قائمة كل التعليقات</h2>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="bg-slate-800 px-2.5 py-1 rounded-lg"><span id="lblTotalComments">الإجمالي</span>: <strong id="totalCountBadge">0</strong></span>
+            <span class="bg-emerald-950 border border-emerald-700 text-emerald-300 px-2.5 py-1 rounded-lg"><span id="lblEligibleComments">المؤهلون</span>: <strong id="eligibleCountBadge">0</strong></span>
+          </div>
         </div>
-        <div class="flex items-center gap-2 text-xs">
-          <span class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg"><span id="lblTotalComments">الإجمالي</span>: <strong id="totalCountBadge">0</strong></span>
-          <span class="bg-emerald-950 border border-emerald-700 text-emerald-300 px-2.5 py-1 rounded-lg"><span id="lblEligibleComments">المؤهلون</span>: <strong id="eligibleCountBadge">0</strong></span>
-        </div>
+        <div id="allCommentsList" class="space-y-2.5 max-h-64 overflow-y-auto pr-1"></div>
       </div>
 
-      <div id="allCommentsList" class="space-y-2.5 max-h-72 overflow-y-auto pr-1"></div>
-    </section>
-
-    <!-- سجل المستبعدين -->
-    <section class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg space-y-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-user-slash text-red-400"></i>
-          <h2 id="excludedHeading" class="font-bold text-white text-base">المستبعدون نهائياً (الفائزون السابقون)</h2>
+      <!-- سجل المستبعدين -->
+      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-user-slash text-red-400"></i>
+            <h2 id="excludedHeading" class="font-bold text-white text-base">المستبعدون نهائياً</h2>
+          </div>
+          <span id="excludedCount" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full font-bold">0</span>
         </div>
-        <span id="excludedCount" class="text-xs bg-slate-700 text-slate-300 px-2.5 py-0.5 rounded-full font-bold">0</span>
+        <p id="excludedDesc" class="text-xs text-slate-400">الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم.</p>
+        <div id="excludedList" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
+        <div class="pt-1 flex justify-end">
+          <button onclick="clearExcluded()" id="btnClearExcluded" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة المستبعدين</button>
+        </div>
       </div>
-      <p id="excludedDesc" class="text-xs text-slate-400">الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم حتى مع تغيير رابط الفيديو.</p>
+    </div>
 
-      <div id="excludedList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
-
-      <div class="pt-1 flex justify-end">
-        <button onclick="clearExcluded()" id="btnClearExcluded" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة المستبعدين</button>
+    <!-- 2. أداة تحميل الصور المصغرة -->
+    <div id="section-downloader" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <label id="lblThumbUrl" class="block text-sm font-semibold mb-1 text-slate-300">أدخل رابط أي فيديو يوتيوب:</label>
+          <input id="thumbVideoUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
+        </div>
+        <button onclick="fetchThumbnails()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-download"></i>
+          <span id="btnGetThumbs">استخراج وتحميل الصور</span>
+        </button>
       </div>
-    </section>
 
-  </div>
+      <div id="thumbResults" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-xs font-bold text-slate-300">
+            <span>أعلى جودة (Full HD - 1080p)</span>
+            <a id="linkMax" href="" target="_blank" download class="text-red-400 hover:underline">تحميل</a>
+          </div>
+          <img id="imgMax" src="" class="rounded-lg w-full aspect-video object-cover bg-slate-950" />
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-xs font-bold text-slate-300">
+            <span>جودة قياسية عالية (High - 720p)</span>
+            <a id="linkHq" href="" target="_blank" download class="text-red-400 hover:underline">تحميل</a>
+          </div>
+          <img id="imgHq" src="" class="rounded-lg w-full aspect-video object-cover bg-slate-950" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. فاحص العناوين وSEO -->
+    <div id="section-seo" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <label id="lblAnalyzeTitle" class="block text-sm font-semibold mb-1 text-slate-300">اكتب عنوان الفيديو المقترح:</label>
+          <input id="titleInput" oninput="analyzeTitle()" type="text" placeholder="اكتب العنوان هنا لتجربته..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+            <span class="text-xs text-slate-400" id="statCharsTitle">عدد الأحرف</span>
+            <div id="statChars" class="text-lg font-extrabold text-white">0</div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+            <span class="text-xs text-slate-400" id="statWordsTitle">عدد الكلمات</span>
+            <div id="statWords" class="text-lg font-extrabold text-white">0</div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+            <span class="text-xs text-slate-400" id="statScoreTitle">تقييم النقر CTR</span>
+            <div id="statScore" class="text-lg font-extrabold text-emerald-400">-%</div>
+          </div>
+        </div>
+        <div id="titleFeedback" class="text-xs space-y-1.5 p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300"></div>
+      </div>
+    </div>
+
+    <!-- 4. مُولّد الكلمات المفتاحية والوسوم -->
+    <div id="section-tags" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <label id="lblTagsInput" class="block text-sm font-semibold mb-1 text-slate-300">موضوع أو الكلمة الأساسية للفيديو:</label>
+          <input id="tagsTopic" type="text" placeholder="مثلاً: ربح من الإنترنت، برمجة ويب، تعدين سحابي..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
+        </div>
+        <button onclick="generateTags()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span id="btnGenTags">توليد وسوم احترافية جاهزة</span>
+        </button>
+        <div id="tagsResultBox" class="hidden space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-400" id="lblGeneratedTags">الوسوم المولدة:</span>
+            <button onclick="copyTags()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-lg font-bold transition">
+              <i class="fa-solid fa-copy"></i>
+              <span id="btnCopyTags">نسخ الكل</span>
+            </button>
+          </div>
+          <div id="tagsList" class="flex flex-wrap gap-1.5 p-3 bg-slate-950 border border-slate-800 rounded-xl"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. حاسبة أرباح يوتيوب التقديرية -->
+    <div id="section-calculator" class="tool-section hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label id="lblViewsInput" class="block text-sm font-semibold mb-1 text-slate-300">عدد المشاهدات الشهرية:</label>
+            <input id="calcViews" type="number" value="50000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" />
+          </div>
+          <div>
+            <label id="lblCpmInput" class="block text-sm font-semibold mb-1 text-slate-300">سعر الألف مشاهدة (CPM التقريبي بالدولار):</label>
+            <input id="calcCpm" type="number" step="0.1" value="1.5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" />
+          </div>
+        </div>
+        <button onclick="calculateRevenue()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-coins"></i>
+          <span id="btnCalcRev">حساب الدخل التقديري</span>
+        </button>
+        <div id="calcResults" class="grid grid-cols-2 gap-3 text-center pt-2">
+          <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+            <span class="text-xs text-slate-400" id="lblMonthlyEst">الربح الشهري التقديري</span>
+            <div id="valMonthly" class="text-xl font-black text-emerald-400 mt-1">$75.00</div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+            <span class="text-xs text-slate-400" id="lblYearlyEst">الربح السنوي التقديري</span>
+            <div id="valYearly" class="text-xl font-black text-emerald-400 mt-1">$900.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- الفوتر بتوقيع All World Digital -->
+  <footer class="bg-slate-900 border-t border-slate-800 mt-auto py-6 text-center text-xs text-slate-400">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-code text-red-500"></i>
+        <span id="footerBrand">جميع الحقوق محفوظة &copy; 2026 | من تصميم <strong class="text-white">All World Digital</strong></span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400">
+        <span class="hover:text-red-400 transition cursor-pointer">YouTube Suite</span>
+        <span>•</span>
+        <span class="hover:text-red-400 transition cursor-pointer">Fast & Secure</span>
+      </div>
+    </div>
+  </footer>
 
   <script>
     const STORAGE_KEY = "allwd_permanent_excluded";
@@ -111,62 +256,78 @@
 
     const translations = {
       ar: {
-        pageTitle: "كل العالم رقمي - سحب مسابقات يوتيوب",
-        langSwitchBtn: "English",
-        appTitle: "كل العالم رقمي",
-        appSubtitle: "سحب عشوائي مؤمّن مع استبعاد تلقائي للفائزين السابقين",
-        lblVideoUrl: "رابط فيديو اليوتيوب:",
-        videoPlaceholder: "https://www.youtube.com/watch?v=... أو https://youtu.be/...",
+        langBtn: "English",
+        tabGiveaway: "سحب التعليقات",
+        tabDownloader: "تحميل الصور المصغرة",
+        tabSeo: "فاحص العناوين وSEO",
+        tabTags: "مُولّد الوسوم (Tags)",
+        tabCalculator: "حاسبة الأرباح",
+        lblGiveawayUrl: "رابط فيديو اليوتيوب:",
         lblUniqueUser: "احتساب مشاركة واحدة فقط لكل شخص",
         btnDrawText: "سحب الفائز واستبعاده فوراً",
         winnerBadge: "الفائز في المسابقة 🎉",
         commentsListHeading: "قائمة كل التعليقات",
         lblTotalComments: "الإجمالي",
         lblEligibleComments: "المؤهلون",
-        excludedHeading: "المستبعدون نهائياً (الفائزون السابقون)",
-        excludedDesc: "الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم حتى مع تغيير رابط الفيديو.",
+        excludedHeading: "المستبعدون نهائياً",
+        excludedDesc: "الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم.",
         btnClearExcluded: "تفريغ قائمة المستبعدين",
-        noExcludedYet: "لا يوجد فائزون مستبعدون بعد.",
-        channelIdPrefix: "معرف القناة:",
-        wonOnPrefix: "فاز في:",
+        lblThumbUrl: "أدخل رابط أي فيديو يوتيوب:",
+        btnGetThumbs: "استخراج وتحميل الصور",
+        lblAnalyzeTitle: "اكتب عنوان الفيديو المقترح:",
+        statCharsTitle: "عدد الأحرف",
+        statWordsTitle: "عدد الكلمات",
+        statScoreTitle: "تقييم النقر CTR",
+        lblTagsInput: "موضوع أو الكلمة الأساسية للفيديو:",
+        btnGenTags: "توليد وسوم احترافية جاهزة",
+        lblGeneratedTags: "الوسوم المولدة:",
+        btnCopyTags: "نسخ الكل",
+        lblViewsInput: "عدد المشاهدات الشهرية:",
+        lblCpmInput: "سعر الألف مشاهدة (CPM التقريبي بالدولار):",
+        btnCalcRev: "حساب الدخل التقديري",
+        lblMonthlyEst: "الربح الشهري التقديري",
+        lblYearlyEst: "الربح السنوي التقديري",
+        footerBrand: "جميع الحقوق محفوظة &copy; 2026 | من تصميم All World Digital",
         badgeEligible: "مؤهل",
         badgeWinner: "الفائز 🎉",
-        badgeExcluded: "مستبعد مسبقاً",
-        alertEnterValidUrl: "يرجى إدخال رابط يوتيوب صحيح.",
-        statusFetching: "جاري جلب التعليقات وحساب الإحصائيات...",
-        statusNoComments: "لا توجد تعليقات متاحة على هذا الفيديو.",
-        statusAllExcluded: (total) => `تم فحص ${total} تعليق، لكن جميع المشاركين فازوا سابقاً وهم مستبعدون!`,
-        statusDone: (total, eligible, winner) => `تم فحص ${total} تعليق (المؤهلون: ${eligible}). الفائز: ${winner}`,
-        confirmClearExcluded: "هل تريد تفريغ قائمة المستبعدين والسماح للجميع بالمشاركة؟"
+        badgeExcluded: "مستبعد مسبقاً"
       },
       en: {
-        pageTitle: "All World Digital - YouTube Giveaway Picker",
-        langSwitchBtn: "العربية",
-        appTitle: "All World Digital",
-        appSubtitle: "Secure YouTube giveaway picker with automated winner exclusion",
-        lblVideoUrl: "YouTube Video URL:",
-        videoPlaceholder: "https://www.youtube.com/watch?v=... or https://youtu.be/...",
+        langBtn: "العربية",
+        tabGiveaway: "Comment Picker",
+        tabDownloader: "Thumbnail Downloader",
+        tabSeo: "Title & SEO Checker",
+        tabTags: "Tags Generator",
+        tabCalculator: "Revenue Calculator",
+        lblGiveawayUrl: "YouTube Video URL:",
         lblUniqueUser: "Count only one entry per user",
         btnDrawText: "Pick Winner & Exclude Instantly",
         winnerBadge: "Giveaway Winner 🎉",
         commentsListHeading: "All Comments List",
         lblTotalComments: "Total",
         lblEligibleComments: "Eligible",
-        excludedHeading: "Permanently Excluded (Past Winners)",
-        excludedDesc: "Winners are saved here permanently and won't be picked again even on different videos.",
+        excludedHeading: "Permanently Excluded",
+        excludedDesc: "Past winners are excluded permanently from all upcoming giveaways.",
         btnClearExcluded: "Clear Excluded List",
-        noExcludedYet: "No excluded winners yet.",
-        channelIdPrefix: "Channel ID:",
-        wonOnPrefix: "Won on:",
+        lblThumbUrl: "Enter YouTube Video URL:",
+        btnGetThumbs: "Extract Thumbnails",
+        lblAnalyzeTitle: "Enter Proposed Video Title:",
+        statCharsTitle: "Characters",
+        statWordsTitle: "Words",
+        statScoreTitle: "CTR Score",
+        lblTagsInput: "Topic or Main Keyword:",
+        btnGenTags: "Generate Ready Tags",
+        lblGeneratedTags: "Generated Tags:",
+        btnCopyTags: "Copy All",
+        lblViewsInput: "Monthly Views:",
+        lblCpmInput: "Estimated CPM ($):",
+        btnCalcRev: "Calculate Revenue",
+        lblMonthlyEst: "Est. Monthly Income",
+        lblYearlyEst: "Est. Yearly Income",
+        footerBrand: "All Rights Reserved &copy; 2026 | Designed by All World Digital",
         badgeEligible: "Eligible",
         badgeWinner: "Winner 🎉",
-        badgeExcluded: "Excluded",
-        alertEnterValidUrl: "Please enter a valid YouTube video URL.",
-        statusFetching: "Fetching comments and calculating stats...",
-        statusNoComments: "No comments found on this video.",
-        statusAllExcluded: (total) => `Analyzed ${total} comments, but all participants have already won and are excluded!`,
-        statusDone: (total, eligible, winner) => `Analyzed ${total} comments (Eligible: ${eligible}). Winner: ${winner}`,
-        confirmClearExcluded: "Are you sure you want to clear all excluded winners and let them enter again?"
+        badgeExcluded: "Excluded"
       }
     };
 
@@ -188,15 +349,16 @@
       const t = translations[lang];
       document.documentElement.lang = lang;
       document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-      
-      document.body.className = `bg-slate-900 text-slate-100 min-h-screen py-8 px-4 lang-${lang}`;
-      document.title = t.pageTitle;
-      
-      document.getElementById("langSwitchText").innerText = t.langSwitchBtn;
-      document.getElementById("appTitle").innerText = t.appTitle;
-      document.getElementById("appSubtitle").innerText = t.appSubtitle;
-      document.getElementById("lblVideoUrl").innerText = t.lblVideoUrl;
-      document.getElementById("videoUrl").placeholder = t.videoPlaceholder;
+      document.body.className = `bg-slate-950 text-slate-100 min-h-screen flex flex-col lang-${lang}`;
+
+      document.getElementById("langBtnText").innerText = t.langBtn;
+      document.querySelector(".tab-txt-giveaway").innerText = t.tabGiveaway;
+      document.querySelector(".tab-txt-downloader").innerText = t.tabDownloader;
+      document.querySelector(".tab-txt-seo").innerText = t.tabSeo;
+      document.querySelector(".tab-txt-tags").innerText = t.tabTags;
+      document.querySelector(".tab-txt-calculator").innerText = t.tabCalculator;
+
+      document.getElementById("lblGiveawayUrl").innerText = t.lblGiveawayUrl;
       document.getElementById("lblUniqueUser").innerText = t.lblUniqueUser;
       document.getElementById("btnDrawText").innerText = t.btnDrawText;
       document.getElementById("winnerBadge").innerText = t.winnerBadge;
@@ -206,8 +368,38 @@
       document.getElementById("excludedHeading").innerText = t.excludedHeading;
       document.getElementById("excludedDesc").innerText = t.excludedDesc;
       document.getElementById("btnClearExcluded").innerText = t.btnClearExcluded;
+
+      document.getElementById("lblThumbUrl").innerText = t.lblThumbUrl;
+      document.getElementById("btnGetThumbs").innerText = t.btnGetThumbs;
+
+      document.getElementById("lblAnalyzeTitle").innerText = t.lblAnalyzeTitle;
+      document.getElementById("statCharsTitle").innerText = t.statCharsTitle;
+      document.getElementById("statWordsTitle").innerText = t.statWordsTitle;
+      document.getElementById("statScoreTitle").innerText = t.statScoreTitle;
+
+      document.getElementById("lblTagsInput").innerText = t.lblTagsInput;
+      document.getElementById("btnGenTags").innerText = t.btnGenTags;
+      document.getElementById("lblGeneratedTags").innerText = t.lblGeneratedTags;
+      document.getElementById("btnCopyTags").innerText = t.btnCopyTags;
+
+      document.getElementById("lblViewsInput").innerText = t.lblViewsInput;
+      document.getElementById("lblCpmInput").innerText = t.lblCpmInput;
+      document.getElementById("btnCalcRev").innerText = t.btnCalcRev;
+      document.getElementById("lblMonthlyEst").innerText = t.lblMonthlyEst;
+      document.getElementById("lblYearlyEst").innerText = t.lblYearlyEst;
+
+      document.getElementById("footerBrand").innerHTML = t.footerBrand;
     }
 
+    function switchTab(tab) {
+      document.querySelectorAll(".tool-section").forEach(s => s.classList.add("hidden"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+
+      document.getElementById(`section-${tab}`).classList.remove("hidden");
+      document.getElementById(`tab-${tab}`).classList.add("active");
+    }
+
+    /* أداة السحب والتعليقات */
     function getExcludedList() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
       catch { return []; }
@@ -219,41 +411,39 @@
     }
 
     function renderExcludedList() {
-      const t = translations[currentLang];
       const list = getExcludedList();
       const container = document.getElementById("excludedList");
       document.getElementById("excludedCount").innerText = list.length;
 
       if (list.length === 0) {
-        container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">${t.noExcludedYet}</div>`;
+        container.innerHTML = `<div class="text-xs text-slate-500 text-center py-2">لا يوجد فائزون مستبعدون بعد.</div>`;
         return;
       }
 
       container.innerHTML = list.map((user, idx) => `
-        <div class="flex items-center justify-between bg-slate-900/60 border border-slate-700/80 p-2.5 rounded-xl text-xs sm:text-sm">
-          <div class="flex items-center gap-3">
-            <img src="${user.avatar || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full border border-slate-600 object-cover flex-shrink-0" />
+        <div class="flex items-center justify-between bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-xs">
+          <div class="flex items-center gap-2.5">
+            <img src="${user.avatar || 'https://via.placeholder.com/30'}" class="w-7 h-7 rounded-full border border-slate-700 object-cover" />
             <div>
               <div class="font-semibold text-slate-200">${escapeHtml(user.name)}</div>
-              <div class="text-[11px] text-slate-400 font-mono">${user.id} • ${t.wonOnPrefix} ${user.date}</div>
+              <div class="text-[10px] text-slate-400 font-mono">${user.id} • ${user.date}</div>
             </div>
           </div>
-          <button onclick="removeExcluded(${idx})" class="text-slate-500 hover:text-red-400 p-1 transition">
+          <button onclick="removeExcluded(${idx})" class="text-slate-500 hover:text-red-400 p-1">
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </div>
       `).join('');
     }
 
-    function removeExcluded(index) {
+    function removeExcluded(idx) {
       const list = getExcludedList();
-      list.splice(index, 1);
+      list.splice(idx, 1);
       saveExcludedList(list);
     }
 
     function clearExcluded() {
-      const t = translations[currentLang];
-      if (confirm(t.confirmClearExcluded)) {
+      if (confirm("تأكيد تفريغ قائمة المستبعدين؟")) {
         localStorage.removeItem(STORAGE_KEY);
         renderExcludedList();
       }
@@ -262,87 +452,39 @@
     function extractVideoId(url) {
       if (!url) return null;
       const match = url.trim().match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
-      if (match && match[1]) return match[1];
-      if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) return url.trim();
-      return null;
+      return match && match[1] ? match[1] : (/^[a-zA-Z0-9_-]{11}$/.test(url.trim()) ? url.trim() : null);
     }
 
     function setStatus(text, showSpinner = true) {
       const box = document.getElementById("statusBox");
       const statusText = document.getElementById("statusText");
       const spinner = document.getElementById("spinner");
-      if (!text) {
-        box.classList.add("hidden");
-        return;
-      }
+      if (!text) { box.classList.add("hidden"); return; }
       box.classList.remove("hidden");
       statusText.innerText = text;
       spinner.style.display = showSpinner ? "inline-block" : "none";
     }
 
-    function renderAllComments(comments, excludedIds, winnerId) {
-      const t = translations[currentLang];
-      const container = document.getElementById("allCommentsList");
-      document.getElementById("commentsSection").classList.remove("hidden");
-
-      container.innerHTML = comments.map(c => {
-        const isExcluded = excludedIds.has(String(c.id));
-        const isWinner = c.id === winnerId;
-        
-        let badge = `<span class="text-[10px] bg-emerald-950 border border-emerald-700 text-emerald-400 px-2 py-0.5 rounded">${t.badgeEligible}</span>`;
-        if (isWinner) {
-          badge = `<span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded animate-pulse">${t.badgeWinner}</span>`;
-        } else if (isExcluded) {
-          badge = `<span class="text-[10px] bg-red-950 border border-red-800 text-red-400 px-2 py-0.5 rounded">${t.badgeExcluded}</span>`;
-        }
-
-        return `
-          <div class="p-2.5 rounded-xl bg-slate-900/70 border ${isWinner ? 'border-red-500 bg-red-950/20' : 'border-slate-700/60'} text-xs space-y-1.5 transition">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <img src="${c.avatar || 'https://via.placeholder.com/30'}" class="w-6 h-6 rounded-full border border-slate-600 object-cover" />
-                <span class="font-semibold text-slate-200">${escapeHtml(c.name)}</span>
-              </div>
-              ${badge}
-            </div>
-            <div class="text-slate-300 text-[11px] leading-relaxed ${currentLang === 'ar' ? 'pr-8' : 'pl-8'}">${c.text}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
     async function runGiveaway() {
-      const t = translations[currentLang];
-      const urlInput = document.getElementById("videoUrl").value;
+      const urlInput = document.getElementById("giveawayVideoUrl").value;
       const isUniqueOnly = document.getElementById("uniqueUser").checked;
       const btn = document.getElementById("drawBtn");
       const card = document.getElementById("winnerCard");
-
-      card.classList.add("hidden");
       const videoId = extractVideoId(urlInput);
 
-      if (!videoId) {
-        alert(t.alertEnterValidUrl);
-        return;
-      }
+      if (!videoId) { alert("يرجى إدخال رابط يوتيوب صحيح"); return; }
 
+      card.classList.add("hidden");
       btn.disabled = true;
-      btn.classList.add("opacity-50", "cursor-not-allowed");
-      setStatus(t.statusFetching);
+      setStatus("جاري جلب التعليقات وحساب النتائج...");
 
       try {
-        const response = await fetch(`/api/comments?videoId=${videoId}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch comments");
-        }
+        const res = await fetch(`/api/comments?videoId=${videoId}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "تعذر جلب التعليقات");
 
         let comments = data.comments || [];
-        if (comments.length === 0) {
-          setStatus(t.statusNoComments, false);
-          return;
-        }
+        if (!comments.length) { setStatus("لا توجد تعليقات متاحة.", false); return; }
 
         const excluded = getExcludedList();
         const excludedIds = new Set(excluded.map(u => String(u.id)));
@@ -357,43 +499,139 @@
         }
 
         let eligible = comments.filter(c => !excludedIds.has(String(c.id)));
-
         document.getElementById("totalCountBadge").innerText = comments.length;
         document.getElementById("eligibleCountBadge").innerText = eligible.length;
 
         if (eligible.length === 0) {
-          renderAllComments(comments, excludedIds, null);
-          setStatus(t.statusAllExcluded(comments.length), false);
+          renderCommentsUI(comments, excludedIds, null);
+          setStatus("جميع المشاركين فازوا سابقاً وهم مستبعدون!", false);
           return;
         }
 
         const winner = eligible[Math.floor(Math.random() * eligible.length)];
-
         document.getElementById("winnerName").innerText = winner.name;
         document.getElementById("winnerAvatar").src = winner.avatar;
-        document.getElementById("winnerId").innerText = `${t.channelIdPrefix} ${winner.id}`;
+        document.getElementById("winnerId").innerText = `ID: ${winner.id}`;
         document.getElementById("winnerComment").innerHTML = winner.text;
         card.classList.remove("hidden");
 
         const list = getExcludedList();
-        list.unshift({
-          id: winner.id,
-          name: winner.name,
-          avatar: winner.avatar,
-          date: new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-DZ' : 'en-US')
-        });
+        list.unshift({ id: winner.id, name: winner.name, avatar: winner.avatar, date: new Date().toLocaleDateString() });
         saveExcludedList(list);
 
-        renderAllComments(comments, excludedIds, winner.id);
-        setStatus(t.statusDone(comments.length, eligible.length, winner.name), false);
-
+        renderCommentsUI(comments, excludedIds, winner.id);
+        setStatus(`تم سحب الفائز: ${winner.name}`, false);
       } catch (err) {
-        alert(`Error: ${err.message}`);
+        alert(err.message);
         setStatus("");
       } finally {
         btn.disabled = false;
-        btn.classList.remove("opacity-50", "cursor-not-allowed");
       }
+    }
+
+    function renderCommentsUI(comments, excludedIds, winnerId) {
+      const container = document.getElementById("allCommentsList");
+      document.getElementById("commentsSection").classList.remove("hidden");
+      const t = translations[currentLang];
+
+      container.innerHTML = comments.map(c => {
+        const isExcluded = excludedIds.has(String(c.id));
+        const isWinner = c.id === winnerId;
+        let badge = `<span class="text-[10px] bg-emerald-950 border border-emerald-700 text-emerald-400 px-2 py-0.5 rounded">${t.badgeEligible}</span>`;
+        if (isWinner) badge = `<span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded">${t.badgeWinner}</span>`;
+        else if (isExcluded) badge = `<span class="text-[10px] bg-red-950 border border-red-800 text-red-400 px-2 py-0.5 rounded">${t.badgeExcluded}</span>`;
+
+        return `
+          <div class="p-2.5 rounded-xl bg-slate-950 border ${isWinner ? 'border-red-500 bg-red-950/20' : 'border-slate-800'} text-xs space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-slate-200">${escapeHtml(c.name)}</span>
+              ${badge}
+            </div>
+            <div class="text-slate-300 text-[11px]">${c.text}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* أداة تحميل الصور المصغرة */
+    function fetchThumbnails() {
+      const url = document.getElementById("thumbVideoUrl").value;
+      const id = extractVideoId(url);
+      if (!id) { alert("يرجى إدخال رابط يوتيوب صحيح"); return; }
+
+      const max = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+      const hq = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+
+      document.getElementById("imgMax").src = max;
+      document.getElementById("linkMax").href = max;
+      document.getElementById("imgHq").src = hq;
+      document.getElementById("linkHq").href = hq;
+      document.getElementById("thumbResults").classList.remove("hidden");
+    }
+
+    /* أداة فاحص العناوين */
+    function analyzeTitle() {
+      const text = document.getElementById("titleInput").value.trim();
+      const chars = text.length;
+      const words = text ? text.split(/\s+/).length : 0;
+      let score = 50;
+
+      document.getElementById("statChars").innerText = chars;
+      document.getElementById("statWords").innerText = words;
+
+      let notes = [];
+      if (chars >= 40 && chars <= 65) {
+        score += 30;
+        notes.push("✅ طول العنوان ممتاز ومثالي لشاشات الهواتف ونتائج البحث.");
+      } else if (chars > 70) {
+        score -= 20;
+        notes.push("⚠️ العنوان طويل وقد يتم قصه في أجهزة الجوال.");
+      } else if (chars > 0 && chars < 30) {
+        notes.push("ℹ️ العنوان قصير جداً، حاول إضافة تفاصيل تجذب الفضول.");
+      }
+
+      if (/\d+/.test(text)) {
+        score += 10;
+        notes.push("✅ استخدام الأرقام يزيد معدل النقر (CTR).");
+      }
+
+      score = Math.max(10, Math.min(100, score));
+      const scoreEl = document.getElementById("statScore");
+      scoreEl.innerText = chars === 0 ? "-%" : `${score}%`;
+      scoreEl.className = `text-lg font-extrabold ${score > 70 ? 'text-emerald-400' : 'text-amber-400'}`;
+
+      document.getElementById("titleFeedback").innerHTML = notes.map(n => `<div>${n}</div>`).join('') || "ابدأ بكتابة العنوان لتوليد الإحصائيات.";
+    }
+
+    /* أداة توليد الوسوم */
+    function generateTags() {
+      const topic = document.getElementById("tagsTopic").value.trim();
+      if (!topic) return;
+
+      const base = [topic, `${topic} 2026`, `أفضل طريقة ${topic}`, `شرح ${topic}`, `دليل ${topic}`, `أسرار ${topic}`, `تعلم ${topic}`];
+      const box = document.getElementById("tagsList");
+      box.innerHTML = base.map(t => `<span class="bg-slate-900 border border-slate-800 text-slate-200 text-xs px-2.5 py-1 rounded-lg">#${t}</span>`).join('');
+      document.getElementById("tagsResultBox").classList.remove("hidden");
+    }
+
+    function copyTags() {
+      const topic = document.getElementById("tagsTopic").value.trim();
+      if (!topic) return;
+      const base = [topic, `${topic} 2026`, `أفضل طريقة ${topic}`, `شرح ${topic}`, `دليل ${topic}`, `أسرار ${topic}`, `تعلم ${topic}`];
+      navigator.clipboard.writeText(base.join(", "));
+      alert("تم نسخ جميع الوسوم بنجاح!");
+    }
+
+    /* حاسبة الأرباح */
+    function calculateRevenue() {
+      const views = parseFloat(document.getElementById("calcViews").value) || 0;
+      const cpm = parseFloat(document.getElementById("calcCpm").value) || 0;
+
+      const monthly = (views / 1000) * cpm;
+      const yearly = monthly * 12;
+
+      document.getElementById("valMonthly").innerText = `$${monthly.toFixed(2)}`;
+      document.getElementById("valYearly").innerText = `$${yearly.toFixed(2)}`;
     }
 
     function escapeHtml(str) {
