@@ -5,69 +5,82 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "معرف الفيديو مطلوب." });
   }
 
+  // قائمة خوادم Piped المفتوحة لتجاوز حظر يوتيوب على خوادم Vercel
+  const instances = [
+    "https://pipedapi.kavin.rocks",
+    "https://piped-api.garudalinux.org",
+    "https://api-piped.mha.fi",
+    "https://pipedapi.smnz.de"
+  ];
+
+  let subtitles = null;
+
   try {
-    // 1. تجاوز صفحة الموافقة الخاصة بيوتيوب والتي تعيق خوادم Vercel
-    const pageRes = await fetch(`https://www.youtube.com/watch?v=${videoId}`, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        "Accept-Language": "ar,en-US;q=0.9,en;q=0.8",
-        "Cookie": "CONSENT=YES+cb.20210328-17-p0.en+FX+478" // كود تخطي صفحة الموافقة
-      }
-    });
-    
-    const html = await pageRes.text();
-    let captionTracks = [];
-    
-    // 2. الطريقة الأولى: البحث المباشر عن مسارات الترجمة
-    const regex = /"captionTracks":\s*(\[.*?\])/;
-    const match = html.match(regex);
+    // 1. البحث عن الترجمات عبر الخوادم الوسيطة لتفادي الحظر
+    for (const instance of instances) {
+      try {
+        // نضع مهلة للاتصال حتى ننتقل للخادم التالي إذا كان الحالي بطيئاً
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        
+        const r = await fetch(`${instance}/streams/${videoId}`, { signal: controller.signal });
+        clearTimeout(timeoutId);
 
-    if (match && match[1]) {
-      captionTracks = JSON.parse(match[1]);
-    } else {
-      // 3. الطريقة البديلة: البحث بعمق داخل كائن مشغل يوتيوب
-      const playerMatch = html.match(/ytInitialPlayerResponse\s*=\s*(\{.*?\});/);
-      if (playerMatch && playerMatch[1]) {
-        const playerResponse = JSON.parse(playerMatch[1]);
-        if (playerResponse?.captions?.playerCaptionsTracklistRenderer?.captionTracks) {
-          captionTracks = playerResponse.captions.playerCaptionsTracklistRenderer.captionTracks;
+        if (!r.ok) continue;
+        
+        const data = await r.json();
+        if (data.subtitles && data.subtitles.length > 0) {
+          subtitles = data.subtitles;
+          break; // وجدنا الترجمات بنجاح، نخرج من الحلقة
         }
+      } catch (e) {
+        continue; // تجربة الخادم التالي
       }
     }
 
-    // إذا لم يتم العثور على أي ترجمة بعد الطريقتين
-    if (!captionTracks || captionTracks.length === 0) {
-      return res.status(404).json({ error: "خطأ: لا تتوفر ترجمة أو نص مكتوب (Captions/Transcript) لهذا الفيديو على يوتيوب." });
+    if (!subtitles) {
+      return res.status(404).json({ error: "خطأ: لا تتوفر ترجمة لهذا الفيديو، أو أنه لا يحتوي على نص مفرّغ." });
     }
 
-    // 4. اختيار الترجمة (تفضيل العربية إن وجدت، وإلا جلب الترجمة الافتراضية)
-    const track = captionTracks.find(t => t.languageCode.includes('ar')) || captionTracks[0];
+    // 2. اختيار اللغة: العربية أولاً، ثم الإنجليزية، ثم أي لغة متوفرة
+    let track = subtitles.find(s => s.code === 'ar' || (s.name && s.name.toLowerCase().includes('arab')))
+             || subtitles.find(s => s.code === 'en' || (s.name && s.name.toLowerCase().includes('english')))
+             || subtitles[0];
+
+    // 3. جلب ملف الترجمة الفعلي بصيغة VTT
+    let trackUrl = track.url;
+    if (!trackUrl.includes('fmt=')) trackUrl += '&fmt=vtt';
     
-    const transcriptRes = await fetch(track.baseUrl);
-    if (!transcriptRes.ok) throw new Error("تعذر الاتصال بخادم النصوص");
-    const transcriptXml = await transcriptRes.text();
+    const trackRes = await fetch(trackUrl);
+    if (!trackRes.ok) throw new Error("فشل في قراءة ملف الترجمة");
+    
+    const trackText = await trackRes.text();
 
-    // 5. تنظيف النص المستخرج من أكواد XML
-    const textSegments = transcriptXml.match(/<text[^>]*>(.*?)<\/text>/g);
-    if (!textSegments) {
-      return res.status(404).json({ error: "تعذر قراءة نصوص الترجمة." });
-    }
+    // 4. تنظيف النص المستخرج من أكواد التوقيت (VTT Cleanup)
+    let cleanText = trackText
+        .split('\n')
+        .filter(line => 
+            !line.includes('-->') && 
+            !line.startsWith('WEBVTT') && 
+            !line.startsWith('Kind:') && 
+            !line.startsWith('Language:') && 
+            !line.startsWith('Style:') && 
+            line.trim() !== ''
+        )
+        .map(line => {
+            // تنظيف رموز HTML والشفرات
+            return line.replace(/<[^>]+>/g, '')
+                       .replace(/&amp;/g, '&')
+                       .replace(/&#39;/g, "'")
+                       .replace(/&quot;/g, '"')
+                       .trim();
+        })
+        .join(' ')
+        .replace(/\s+/g, ' '); // إزالة المسافات الزائدة
 
-    const cleanText = textSegments
-      .map(tag => {
-        const content = tag.match(/<text[^>]*>(.*?)<\/text>/)[1];
-        return content.replace(/&amp;/g, '&')
-                      .replace(/&#39;/g, "'")
-                      .replace(/&quot;/g, '"')
-                      .replace(/<[^>]+>/g, '') // إزالة أي وسوم HTML داخلية
-                      .trim();
-      })
-      .join(' ')
-      .replace(/\s+/g, ' ');
-
-    return res.status(200).json({ transcript: cleanText });
+    return res.status(200).json({ transcript: cleanText, lang: track.name });
 
   } catch (error) {
-    return res.status(500).json({ error: "حدث خطأ غير متوقع. قد تكون حماية يوتيوب منعت الطلب مؤقتاً." });
+    return res.status(500).json({ error: "حدث خطأ غير متوقع أثناء معالجة النص." });
   }
 }
