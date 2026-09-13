@@ -10,16 +10,10 @@
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap');
     body.lang-ar { font-family: 'Cairo', sans-serif; }
     body.lang-en { font-family: 'Inter', sans-serif; }
-    .tab-btn.active {
-      background-color: #dc2626;
-      color: #ffffff;
-      border-color: #ef4444;
-    }
+    .tab-btn.active { background-color:#dc2626; color:#fff; border-color:#ef4444; }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col lang-ar">
-
-  <!-- شريط التنقل العلوي -->
   <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 backdrop-blur bg-opacity-90">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -27,690 +21,461 @@
         <span class="text-xl font-extrabold tracking-wide text-white">كل العالم رقمي</span>
       </div>
       <button onclick="toggleLanguage()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition">
-        <i class="fa-solid fa-globe text-red-500"></i>
-        <span id="langBtnText">English</span>
+        <i class="fa-solid fa-globe text-red-500"></i><span id="langBtnText">English</span>
       </button>
     </div>
   </nav>
 
-  <!-- الحاوية الرئيسية -->
   <main class="max-w-5xl mx-auto w-full px-4 py-8 flex-grow space-y-6">
-
-    <!-- شريط التبويبات -->
     <div class="flex flex-wrap gap-2 justify-center border-b border-slate-800 pb-4">
-      <button onclick="switchTab('giveaway')" id="tab-giveaway" class="tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-dice text-red-400"></i><span class="t-giveaway">سحب المسابقات</span>
-      </button>
-      <button onclick="switchTab('downloader')" id="tab-downloader" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-image text-sky-400"></i><span class="t-downloader">تحميل الصور</span>
-      </button>
-      <button onclick="switchTab('previewer')" id="tab-previewer" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-eye text-emerald-400"></i><span class="t-previewer">معاين الصورة المصغرة</span>
-      </button>
-      <button onclick="switchTab('contrast')" id="tab-contrast" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-circle-half-stroke text-amber-400"></i><span class="t-contrast">فاحص التباين</span>
-      </button>
-      <button onclick="switchTab('seo')" id="tab-seo" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-magnifying-glass-chart text-purple-400"></i><span class="t-seo">فاحص العناوين</span>
-      </button>
-      <button onclick="switchTab('desc')" id="tab-desc" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-align-right text-indigo-400"></i><span class="t-desc">قوالب الوصف</span>
-      </button>
-      <button onclick="switchTab('tags')" id="tab-tags" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-tags text-pink-400"></i><span class="t-tags">مُولّد الوسوم</span>
-      </button>
-      <button onclick="switchTab('transcript')" id="tab-transcript" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-file-lines text-teal-400"></i><span class="t-transcript">مستخرج النصوص</span>
-      </button>
-      <button onclick="switchTab('hooks')" id="tab-hooks" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-lightbulb text-yellow-400"></i><span class="t-hooks">أفكار وهوكات</span>
-      </button>
-      <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-coins text-amber-500"></i><span class="t-calculator">حاسبة الأرباح</span>
-      </button>
-      <button onclick="switchTab('shields')" id="tab-shields" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-award text-slate-300"></i><span class="t-shields">متعقب الدروع</span>
-      </button>
+      <button onclick="switchTab('giveaway')" id="tab-giveaway" class="tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-dice text-red-400"></i><span class="t-giveaway">سحب المسابقات</span></button>
+      <button onclick="switchTab('downloader')" id="tab-downloader" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-image text-sky-400"></i><span class="t-downloader">تحميل الصور</span></button>
+      <button onclick="switchTab('previewer')" id="tab-previewer" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-eye text-emerald-400"></i><span class="t-previewer">معاين الصورة المصغرة</span></button>
+      <button onclick="switchTab('contrast')" id="tab-contrast" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-circle-half-stroke text-amber-400"></i><span class="t-contrast">فاحص التباين</span></button>
+      <button onclick="switchTab('seo')" id="tab-seo" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-magnifying-glass-chart text-purple-400"></i><span class="t-seo">فاحص العناوين</span></button>
+      <button onclick="switchTab('desc')" id="tab-desc" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-align-right text-indigo-400"></i><span class="t-desc">قوالب الوصف</span></button>
+      <button onclick="switchTab('tags')" id="tab-tags" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-tags text-pink-400"></i><span class="t-tags">مُولّد الوسوم</span></button>
+      <button onclick="switchTab('transcript')" id="tab-transcript" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-teal-400"></i><span class="t-transcript">مستخرج النصوص</span></button>
+      <button onclick="switchTab('hooks')" id="tab-hooks" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-yellow-400"></i><span class="t-hooks">أفكار وهوكات</span></button>
+      <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-coins text-amber-500"></i><span class="t-calculator">حاسبة الأرباح</span></button>
+      <button onclick="switchTab('shields')" id="tab-shields" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-award text-slate-300"></i><span class="t-shields">متعقب الدروع</span></button>
     </div>
 
-    <!-- 1. سحب المسابقات والتعليقات -->
     <div id="section-giveaway" class="tool-section space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div>
-          <label id="lblGiveawayUrl" class="block text-sm font-semibold mb-1 text-slate-300">رابط فيديو اليوتيوب:</label>
-          <input id="giveawayVideoUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
-        </div>
-        <div class="flex items-center gap-2">
-          <input id="uniqueUser" type="checkbox" checked class="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-950 border-slate-800" />
-          <label for="uniqueUser" id="lblUniqueUser" class="text-xs sm:text-sm text-slate-300">احتساب مشاركة واحدة فقط لكل شخص</label>
-        </div>
-        <button id="drawBtn" onclick="runGiveaway()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/30">
-          <i class="fa-solid fa-dice text-lg"></i>
-          <span id="btnDrawText">سحب الفائز واستبعاده فوراً</span>
-        </button>
-        <div id="statusBox" class="hidden text-xs sm:text-sm py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 flex items-center gap-3">
-          <span id="spinner" class="animate-spin inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full"></span>
-          <span id="statusText">جاري المعالجة...</span>
-        </div>
+        <div><label id="lblGiveawayUrl" class="block text-sm font-semibold mb-1 text-slate-300">رابط فيديو اليوتيوب:</label><input id="giveawayVideoUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" /></div>
+        <div class="flex items-center gap-2"><input id="uniqueUser" type="checkbox" checked class="w-4 h-4 rounded text-red-600 focus:ring-red-500 bg-slate-950 border-slate-800" /><label for="uniqueUser" id="lblUniqueUser" class="text-xs sm:text-sm text-slate-300">احتساب مشاركة واحدة فقط لكل شخص</label></div>
+        <button id="drawBtn" onclick="runGiveaway()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-600/30"><i class="fa-solid fa-dice text-lg"></i><span id="btnDrawText">سحب الفائز واستبعاده فوراً</span></button>
+        <div id="statusBox" class="hidden text-xs sm:text-sm py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 flex items-center gap-3"><span id="spinner" class="animate-spin inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full"></span><span id="statusText">جاري المعالجة...</span></div>
       </div>
 
       <div id="winnerCard" class="hidden bg-gradient-to-br from-red-950/60 via-slate-900 to-slate-900 border-2 border-red-500 p-5 rounded-2xl shadow-2xl">
         <div id="winnerBadge" class="inline-block text-xs bg-red-600 text-white font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">الفائز في المسابقة 🎉</div>
-        <div class="flex items-start gap-4">
-          <img id="winnerAvatar" src="" class="w-14 h-14 rounded-full border-2 border-red-400 bg-slate-800 object-cover flex-shrink-0" />
-          <div class="flex-1 space-y-1">
-            <h3 id="winnerName" class="text-xl font-bold text-white"></h3>
-            <p id="winnerId" class="text-xs text-slate-400 font-mono"></p>
-            <div class="mt-2 bg-slate-950 p-3 rounded-xl border border-slate-800 text-sm text-slate-200" id="winnerComment"></div>
-          </div>
-        </div>
+        <div class="flex items-start gap-4"><img id="winnerAvatar" src="" alt="" class="w-14 h-14 rounded-full border-2 border-red-400 bg-slate-800 object-cover flex-shrink-0" /><div class="flex-1 space-y-1"><h3 id="winnerName" class="text-xl font-bold text-white"></h3><p id="winnerId" class="text-xs text-slate-400 font-mono"></p><div class="mt-2 bg-slate-950 p-3 rounded-xl border border-slate-800 text-sm text-slate-200" id="winnerComment"></div></div></div>
       </div>
 
       <div id="commentsSection" class="hidden bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h2 id="commentsListHeading" class="font-bold text-white text-base">قائمة كل التعليقات</h2>
-          <div class="flex items-center gap-2 text-xs">
-            <span class="bg-slate-800 px-2.5 py-1 rounded-lg"><span id="lblTotalComments">الإجمالي</span>: <strong id="totalCountBadge">0</strong></span>
-            <span class="bg-emerald-950 border border-emerald-700 text-emerald-300 px-2.5 py-1 rounded-lg"><span id="lblEligibleComments">المؤهلون</span>: <strong id="eligibleCountBadge">0</strong></span>
-          </div>
-        </div>
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3"><h2 id="commentsListHeading" class="font-bold text-white text-base">قائمة كل التعليقات</h2><div class="flex items-center gap-2 text-xs"><span class="bg-slate-800 px-2.5 py-1 rounded-lg"><span id="lblTotalComments">الإجمالي</span>: <strong id="totalCountBadge">0</strong></span><span class="bg-emerald-950 border border-emerald-700 text-emerald-300 px-2.5 py-1 rounded-lg"><span id="lblEligibleComments">المؤهلون</span>: <strong id="eligibleCountBadge">0</strong></span></div></div>
         <div id="allCommentsList" class="space-y-2.5 max-h-64 overflow-y-auto pr-1"></div>
       </div>
 
       <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-user-slash text-red-400"></i>
-            <h2 id="excludedHeading" class="font-bold text-white text-base">المستبعدون نهائياً</h2>
-          </div>
-          <span id="excludedCount" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full font-bold">0</span>
-        </div>
+        <div class="flex items-center justify-between"><div class="flex items-center gap-2"><i class="fa-solid fa-user-slash text-red-400"></i><h2 id="excludedHeading" class="font-bold text-white text-base">المستبعدون نهائياً</h2></div><span id="excludedCount" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full font-bold">0</span></div>
         <p id="excludedDesc" class="text-xs text-slate-400">الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم.</p>
         <div id="excludedList" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
-        <div class="pt-1 flex justify-end">
-          <button onclick="clearExcluded()" id="btnClearExcluded" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة المستبعدين</button>
-        </div>
+        <div class="pt-1 flex justify-end"><button onclick="clearExcluded()" id="btnClearExcluded" class="text-xs text-slate-400 hover:text-red-400 transition underline">تفريغ قائمة المستبعدين</button></div>
       </div>
     </div>
 
-    <!-- 2. تحميل الصور المصغرة -->
     <div id="section-downloader" class="tool-section hidden space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div>
-          <label id="lblThumbUrl" class="block text-sm font-semibold mb-1 text-slate-300">أدخل رابط أي فيديو يوتيوب:</label>
-          <input id="thumbVideoUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
-        </div>
-        <button onclick="fetchThumbnails()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-download"></i>
-          <span id="btnGetThumbs">استخراج وتحميل الصور</span>
-        </button>
+        <div><label id="lblThumbUrl" class="block text-sm font-semibold mb-1 text-slate-300">أدخل رابط أي فيديو يوتيوب:</label><input id="thumbVideoUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" /></div>
+        <button onclick="fetchThumbnails()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2"><i class="fa-solid fa-download"></i><span id="btnGetThumbs">استخراج وتحميل الصور</span></button>
       </div>
       <div id="thumbResults" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
-          <div class="flex justify-between items-center text-xs font-bold text-slate-300">
-            <span>أعلى جودة (Full HD - 1080p)</span>
-            <a id="linkMax" href="" target="_blank" download class="text-red-400 hover:underline">تحميل</a>
-          </div>
-          <img id="imgMax" src="" class="rounded-lg w-full aspect-video object-cover bg-slate-950" />
-        </div>
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
-          <div class="flex justify-between items-center text-xs font-bold text-slate-300">
-            <span>جودة قياسية (High - 720p)</span>
-            <a id="linkHq" href="" target="_blank" download class="text-red-400 hover:underline">تحميل</a>
-          </div>
-          <img id="imgHq" src="" class="rounded-lg w-full aspect-video object-cover bg-slate-950" />
-        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2"><div class="flex justify-between items-center text-xs font-bold text-slate-300"><span>أعلى جودة (Full HD - 1080p)</span><a id="linkMax" href="" target="_blank" rel="noopener noreferrer" download class="text-red-400 hover:underline">تحميل</a></div><img id="imgMax" src="" alt="" class="rounded-lg w-full aspect-video object-cover bg-slate-950" /></div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2"><div class="flex justify-between items-center text-xs font-bold text-slate-300"><span>جودة قياسية (High - 720p)</span><a id="linkHq" href="" target="_blank" rel="noopener noreferrer" download class="text-red-400 hover:underline">تحميل</a></div><img id="imgHq" src="" alt="" class="rounded-lg w-full aspect-video object-cover bg-slate-950" /></div>
       </div>
     </div>
 
-    <!-- 3. معاين ومحاكي الصور المصغرة -->
     <div id="section-previewer" class="tool-section hidden space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1 text-slate-300">عنوان الفيديو المقترح:</label>
-          <input id="previewTitle" oninput="updatePreview()" type="text" placeholder="اكتب عنوان الفيديو لمعاينته في الصفحة الرئيسية..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" />
-        </div>
-        <div>
-          <label class="block text-sm font-semibold mb-1 text-slate-300">رفع صورة المعاينة:</label>
-          <input id="previewFile" onchange="previewUpload(event)" type="file" accept="image/*" class="w-full text-xs text-slate-400 bg-slate-950 rounded-xl p-2 border border-slate-800 cursor-pointer" />
-        </div>
+        <div><label class="block text-sm font-semibold mb-1 text-slate-300">عنوان الفيديو المقترح:</label><input id="previewTitle" oninput="updatePreview()" type="text" placeholder="اكتب عنوان الفيديو لمعاينته في الصفحة الرئيسية..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" /></div>
+        <div><label class="block text-sm font-semibold mb-1 text-slate-300">رفع صورة المعاينة:</label><input id="previewFile" onchange="previewUpload(event)" type="file" accept="image/*" class="w-full text-xs text-slate-400 bg-slate-950 rounded-xl p-2 border border-slate-800 cursor-pointer" /></div>
       </div>
-      <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2 max-w-sm mx-auto shadow-2xl">
-        <span class="text-xs text-slate-400 font-bold block mb-1">محاكاة الظهور في الهواتف:</span>
-        <div class="rounded-xl overflow-hidden bg-slate-950 aspect-video relative">
-          <img id="previewImgTarget" src="https://via.placeholder.com/640x360?text=Preview" class="w-full h-full object-cover" />
-          <span class="absolute bottom-2 right-2 bg-black/80 text-[10px] px-1.5 py-0.5 rounded font-mono">10:45</span>
-        </div>
-        <div class="flex gap-2.5 pt-1">
-          <div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center font-bold text-xs flex-shrink-0">AWD</div>
-          <div class="space-y-0.5">
-            <h4 id="previewTitleTarget" class="text-sm font-semibold line-clamp-2 leading-snug">عنوان الفيديو المقترح يظهر هنا...</h4>
-            <p class="text-[11px] text-slate-400">All World Digital • 45K مشاهدة • قبل ساعتين</p>
-          </div>
-        </div>
-      </div>
+      <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2 max-w-sm mx-auto shadow-2xl"><span class="text-xs text-slate-400 font-bold block mb-1">محاكاة الظهور في الهواتف:</span><div class="rounded-xl overflow-hidden bg-slate-950 aspect-video relative"><img id="previewImgTarget" src="https://via.placeholder.com/640x360?text=Preview" alt="" class="w-full h-full object-cover" /><span class="absolute bottom-2 right-2 bg-black/80 text-[10px] px-1.5 py-0.5 rounded font-mono">10:45</span></div><div class="flex gap-2.5 pt-1"><div class="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center font-bold text-xs flex-shrink-0">AWD</div><div class="space-y-0.5"><h4 id="previewTitleTarget" class="text-sm font-semibold line-clamp-2 leading-snug">عنوان الفيديو المقترح يظهر هنا...</h4><p class="text-[11px] text-slate-400">All World Digital • 45K مشاهدة • قبل ساعتين</p></div></div></div>
     </div>
 
-    <!-- 4. فاحص التباين والوضوح -->
     <div id="section-contrast" class="tool-section hidden space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1 text-slate-300">اختر لون النص ولون الخلفية لفحص وضوح القراءة على الهاتف:</label>
-          <div class="flex gap-4 items-center">
-            <div class="flex items-center gap-2">
-              <span class="text-xs">لون النص:</span>
-              <input id="textColor" oninput="checkContrast()" type="color" value="#ffffff" class="w-9 h-9 rounded cursor-pointer bg-transparent border-0" />
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs">لون الخلفية:</span>
-              <input id="bgColor" oninput="checkContrast()" type="color" value="#dc2626" class="w-9 h-9 rounded cursor-pointer bg-transparent border-0" />
-            </div>
-          </div>
-        </div>
-        <div id="contrastBox" class="p-6 rounded-xl text-center font-extrabold text-lg transition" style="background-color: #dc2626; color: #ffffff;">
-          نص توضيحي: هل هذا واضح في الصورة المصغرة؟
-        </div>
-        <div id="contrastReport" class="p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs space-y-1">
-          <span>التباين ممتاز للألوان المختارة على الجوال بنسبة قراءة عالية.</span>
-        </div>
+        <div><label class="block text-sm font-semibold mb-1 text-slate-300">اختر لون النص ولون الخلفية لفحص وضوح القراءة على الهاتف:</label><div class="flex gap-4 items-center"><div class="flex items-center gap-2"><span class="text-xs">لون النص:</span><input id="textColor" oninput="checkContrast()" type="color" value="#ffffff" class="w-9 h-9 rounded cursor-pointer bg-transparent border-0" /></div><div class="flex items-center gap-2"><span class="text-xs">لون الخلفية:</span><input id="bgColor" oninput="checkContrast()" type="color" value="#dc2626" class="w-9 h-9 rounded cursor-pointer bg-transparent border-0" /></div></div></div>
+        <div id="contrastBox" class="p-6 rounded-xl text-center font-extrabold text-lg transition" style="background-color:#dc2626;color:#ffffff;">نص توضيحي: هل هذا واضح في الصورة المصغرة؟</div>
+        <div id="contrastReport" class="p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs space-y-1"></div>
       </div>
     </div>
 
-    <!-- 5. فاحص العناوين وSEO -->
     <div id="section-seo" class="tool-section hidden space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div>
-          <label id="lblAnalyzeTitle" class="block text-sm font-semibold mb-1 text-slate-300">اكتب عنوان الفيديو المقترح:</label>
-          <input id="titleInput" oninput="analyzeTitle()" type="text" placeholder="اكتب العنوان هنا لتجربته..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
-        </div>
-        <div class="grid grid-cols-3 gap-3 text-center">
-          <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-            <span class="text-xs text-slate-400">عدد الأحرف</span>
-            <div id="statChars" class="text-lg font-extrabold text-white">0</div>
-          </div>
-          <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-            <span class="text-xs text-slate-400">عدد الكلمات</span>
-            <div id="statWords" class="text-lg font-extrabold text-white">0</div>
-          </div>
-          <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
-            <span class="text-xs text-slate-400">تقييم النقر CTR</span>
-            <div id="statScore" class="text-lg font-extrabold text-emerald-400">-%</div>
-          </div>
-        </div>
+        <div><label id="lblAnalyzeTitle" class="block text-sm font-semibold mb-1 text-slate-300">اكتب عنوان الفيديو المقترح:</label><input id="titleInput" oninput="analyzeTitle()" type="text" placeholder="اكتب العنوان هنا لتجربته..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" /></div>
+        <div class="grid grid-cols-3 gap-3 text-center"><div class="bg-slate-950 border border-slate-800 p-3 rounded-xl"><span class="text-xs text-slate-400">عدد الأحرف</span><div id="statChars" class="text-lg font-extrabold text-white">0</div></div><div class="bg-slate-950 border border-slate-800 p-3 rounded-xl"><span class="text-xs text-slate-400">عدد الكلمات</span><div id="statWords" class="text-lg font-extrabold text-white">0</div></div><div class="bg-slate-950 border border-slate-800 p-3 rounded-xl"><span class="text-xs text-slate-400">تقييم النقر CTR</span><div id="statScore" class="text-lg font-extrabold text-emerald-400">-%</div></div></div>
         <div id="titleFeedback" class="text-xs space-y-1.5 p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300">ابدأ بكتابة العنوان لتوليد الإحصائيات.</div>
       </div>
     </div>
 
-    <!-- 6. قوالب الوصف والطوابع الزمنية -->
-    <div id="section-desc" class="tool-section hidden space-y-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <input id="descTopic" type="text" placeholder="عنوان أو موضوع الفيديو..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs" />
-          <input id="descTelegram" type="text" placeholder="رابط قناتك أو موقعك المذكور..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs" />
-        </div>
-        <button onclick="buildDescription()" class="w-full bg-red-600 hover:bg-red-700 font-bold py-2.5 rounded-xl text-xs transition">توليد قالب الوصف مع الفصول</button>
-        <textarea id="descOutput" rows="8" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono"></textarea>
-      </div>
-    </div>
+    <div id="section-desc" class="tool-section hidden space-y-6"><div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><input id="descTopic" type="text" placeholder="عنوان أو موضوع الفيديو..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs" /><input id="descTelegram" type="text" placeholder="رابط قناتك أو موقعك المذكور..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs" /></div><button onclick="buildDescription()" class="w-full bg-red-600 hover:bg-red-700 font-bold py-2.5 rounded-xl text-xs transition">توليد قالب الوصف مع الفصول</button><textarea id="descOutput" rows="8" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono"></textarea></div></div>
 
-    <!-- 7. مُولّد الوسوم (Tags) -->
-    <div id="section-tags" class="tool-section hidden space-y-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1 text-slate-300">موضوع أو الكلمة الأساسية:</label>
-          <input id="tagsTopic" type="text" placeholder="مثلاً: ربح من الإنترنت، برمجة ويب، تعدين سحابي..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" />
-        </div>
-        <button onclick="generateTags()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-wand-magic-sparkles"></i>
-          <span>توليد وسوم جاهزة</span>
-        </button>
-        <div id="tagsResultBox" class="hidden space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-400">الوسوم المولدة:</span>
-            <button onclick="copyTags()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-lg font-bold transition">
-              <i class="fa-solid fa-copy"></i>
-              <span>نسخ الكل</span>
-            </button>
-          </div>
-          <div id="tagsList" class="flex flex-wrap gap-1.5 p-3 bg-slate-950 border border-slate-800 rounded-xl"></div>
-        </div>
-      </div>
-    </div>
+    <div id="section-tags" class="tool-section hidden space-y-6"><div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4"><div><label class="block text-sm font-semibold mb-1 text-slate-300">موضوع أو الكلمة الأساسية:</label><input id="tagsTopic" type="text" placeholder="مثلاً: ربح من الإنترنت، برمجة ويب، تعدين سحابي..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500 transition" /></div><button onclick="generateTags()" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i><span>توليد وسوم جاهزة</span></button><div id="tagsResultBox" class="hidden space-y-3"><div class="flex items-center justify-between"><span class="text-xs font-semibold text-slate-400">الوسوم المولدة:</span><button onclick="copyTags()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-lg font-bold transition"><i class="fa-solid fa-copy"></i> <span>نسخ الكل</span></button></div><div id="tagsList" class="flex flex-wrap gap-1.5 p-3 bg-slate-950 border border-slate-800 rounded-xl"></div></div></div></div>
 
-    <!-- 8. مستخرج نصوص وترجمة الفيديو (Client-Side المباشر) -->
-    <div id="section-transcript" class="tool-section hidden space-y-4">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1 text-slate-300">رابط الفيديو لاستخراج النصوص والترجمة:</label>
-          <input id="transUrl" type="text" placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 transition" />
-        </div>
-        
-        <button id="btnFetchTrans" onclick="fetchVideoTranscript()" class="w-full bg-teal-600 hover:bg-teal-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-teal-600/30">
-          <i class="fa-solid fa-file-lines"></i>
-          <span>استخراج نص الفيديو فوراً</span>
-        </button>
+    <div id="section-transcript" class="tool-section hidden space-y-4"><div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4"><div><label class="block text-sm font-semibold mb-1 text-slate-300">رابط الفيديو لاستخراج النصوص والترجمة:</label><input id="transUrl" type="text" placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 transition" /></div><button id="btnFetchTrans" onclick="fetchVideoTranscript()" class="w-full bg-teal-600 hover:bg-teal-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-teal-600/30"><i class="fa-solid fa-file-lines"></i><span>استخراج نص الفيديو فوراً</span></button><div id="transStatus" class="hidden text-xs py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 flex items-center gap-2"><span id="transSpinner" class="animate-spin inline-block w-3.5 h-3.5 border-2 border-teal-500 border-t-transparent rounded-full"></span><span id="transStatusText">جاري المعالجة...</span></div><div id="transResultBox" class="hidden space-y-3 pt-2"><div class="flex items-center justify-between"><span class="text-xs font-semibold text-slate-400">النص المستخرج من الفيديو:</span><button onclick="copyTranscriptText()" class="text-xs bg-slate-800 hover:bg-slate-700 text-teal-300 border border-slate-700 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5"><i class="fa-solid fa-copy"></i><span>نسخ النص كاملاً</span></button></div><textarea id="transOutput" rows="9" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs leading-relaxed text-slate-200 focus:outline-none font-mono"></textarea></div></div></div>
 
-        <div id="transStatus" class="hidden text-xs py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 flex items-center gap-2">
-          <span class="animate-spin inline-block w-3.5 h-3.5 border-2 border-teal-500 border-t-transparent rounded-full"></span>
-          <span id="transStatusText">جاري المعالجة...</span>
-        </div>
+    <div id="section-hooks" class="tool-section hidden space-y-6"><div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4"><div><label class="block text-sm font-semibold mb-1 text-slate-300">مجال أو فكرة الفيديو:</label><input id="hookTopic" type="text" placeholder="مثال: تطبيق جديد، تعدين، زيادة المشاهدات..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" /></div><button onclick="genHooks()" class="w-full bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-2.5 rounded-xl transition text-xs">توليد 3 هوكات قوية</button><div id="hooksList" class="space-y-2 text-xs"></div></div></div>
 
-        <div id="transResultBox" class="hidden space-y-3 pt-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-400">النص المستخرج من الفيديو:</span>
-            <button onclick="copyTranscriptText()" class="text-xs bg-slate-800 hover:bg-slate-700 text-teal-300 border border-slate-700 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5">
-              <i class="fa-solid fa-copy"></i>
-              <span>نسخ النص كاملاً</span>
-            </button>
-          </div>
-          <textarea id="transOutput" rows="9" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs leading-relaxed text-slate-200 focus:outline-none font-mono"></textarea>
-        </div>
-      </div>
-    </div>
+    <div id="section-calculator" class="tool-section hidden space-y-6"><div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label id="lblViewsInput" class="block text-sm font-semibold mb-1 text-slate-300">عدد المشاهدات الشهرية:</label><input id="calcViews" type="number" value="50000" min="0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" /></div><div><label id="lblCpmInput" class="block text-sm font-semibold mb-1 text-slate-300">سعر الألف مشاهدة (CPM $):</label><input id="calcCpm" type="number" step="0.1" value="1.5" min="0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" /></div></div><button onclick="calculateRevenue()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition">حساب الدخل التقديري</button><div class="grid grid-cols-2 gap-3 text-center pt-2"><div class="bg-slate-950 border border-slate-800 p-4 rounded-xl"><span class="text-xs text-slate-400" id="lblMonthlyEst">الربح الشهري التقديري</span><div id="valMonthly" class="text-xl font-black text-emerald-400 mt-1">$75.00</div></div><div class="bg-slate-950 border border-slate-800 p-4 rounded-xl"><span class="text-xs text-slate-400" id="lblYearlyEst">الربح السنوي التقديري</span><div id="valYearly" class="text-xl font-black text-emerald-400 mt-1">$900.00</div></div></div></div></div>
 
-    <!-- 9. أفكار وهوكات البداية -->
-    <div id="section-hooks" class="tool-section hidden space-y-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1 text-slate-300">مجال أو فكرة الفيديو:</label>
-          <input id="hookTopic" type="text" placeholder="مثال: تطبيق جديد، تعدين، زيادة المشاهدات..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" />
-        </div>
-        <button onclick="genHooks()" class="w-full bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-2.5 rounded-xl transition text-xs">توليد 3 هوكات قوية</button>
-        <div id="hooksList" class="space-y-2 text-xs"></div>
-      </div>
-    </div>
-
-    <!-- 10. حاسبة الأرباح -->
-    <div id="section-calculator" class="tool-section hidden space-y-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label id="lblViewsInput" class="block text-sm font-semibold mb-1 text-slate-300">عدد المشاهدات الشهرية:</label>
-            <input id="calcViews" type="number" value="50000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" />
-          </div>
-          <div>
-            <label id="lblCpmInput" class="block text-sm font-semibold mb-1 text-slate-300">سعر الألف مشاهدة (CPM $):</label>
-            <input id="calcCpm" type="number" step="0.1" value="1.5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" />
-          </div>
-        </div>
-        <button onclick="calculateRevenue()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition">حساب الدخل التقديري</button>
-        <div class="grid grid-cols-2 gap-3 text-center pt-2">
-          <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
-            <span class="text-xs text-slate-400" id="lblMonthlyEst">الربح الشهري التقديري</span>
-            <div id="valMonthly" class="text-xl font-black text-emerald-400 mt-1">$75.00</div>
-          </div>
-          <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
-            <span class="text-xs text-slate-400" id="lblYearlyEst">الربح السنوي التقديري</span>
-            <div id="valYearly" class="text-xl font-black text-emerald-400 mt-1">$900.00</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 11. متتبع الدروع -->
-    <div id="section-shields" class="tool-section hidden space-y-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1 text-slate-300">عدد المشتركين الحالي في قناتك:</label>
-          <input id="currentSubs" oninput="calcMilestones()" type="number" value="17800" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" />
-        </div>
-        <div class="space-y-4 pt-2">
-          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-            <div class="flex justify-between text-xs font-bold">
-              <span>🥈 الدرع الفضي (100,000 مشترك)</span>
-              <span id="silverPercent" class="text-slate-400">17.8%</span>
-            </div>
-            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-              <div id="silverBar" class="bg-slate-300 h-full transition-all" style="width: 17.8%;"></div>
-            </div>
-            <p id="silverRemaining" class="text-[11px] text-slate-400">متبقي: 82,200 مشترك</p>
-          </div>
-          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-            <div class="flex justify-between text-xs font-bold">
-              <span>🥇 الدرع الذهبي (1,000,000 مشترك)</span>
-              <span id="goldPercent" class="text-amber-400">1.78%</span>
-            </div>
-            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-              <div id="goldBar" class="bg-amber-400 h-full transition-all" style="width: 1.78%;"></div>
-            </div>
-            <p id="goldRemaining" class="text-[11px] text-slate-400">متبقي: 982,200 مشترك</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <div id="section-shields" class="tool-section hidden space-y-6"><div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4"><div><label class="block text-sm font-semibold mb-1 text-slate-300">عدد المشتركين الحالي في قناتك:</label><input id="currentSubs" oninput="calcMilestones()" type="number" value="17800" min="0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm" /></div><div class="space-y-4 pt-2"><div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2"><div class="flex justify-between text-xs font-bold"><span>🥈 الدرع الفضي (100,000 مشترك)</span><span id="silverPercent" class="text-slate-400">17.8%</span></div><div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden"><div id="silverBar" class="bg-slate-300 h-full transition-all" style="width:17.8%;"></div></div><p id="silverRemaining" class="text-[11px] text-slate-400">متبقي: 82,200 مشترك</p></div><div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2"><div class="flex justify-between text-xs font-bold"><span>🥇 الدرع الذهبي (1,000,000 مشترك)</span><span id="goldPercent" class="text-amber-400">1.78%</span></div><div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden"><div id="goldBar" class="bg-amber-400 h-full transition-all" style="width:1.78%;"></div></div><p id="goldRemaining" class="text-[11px] text-slate-400">متبقي: 982,200 مشترك</p></div></div></div></div>
   </main>
 
-  <!-- التذييل النهائي المخصص -->
-  <footer class="bg-slate-900 border-t border-slate-800 mt-auto py-6 text-center text-xs text-slate-400">
-    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <i class="fa-solid fa-code text-red-500"></i>
-        <span>جميع الحقوق محفوظة &copy; 2026 | من تصميم <strong class="text-white">All World Digital</strong></span>
-      </div>
-      <div class="flex items-center gap-4 text-slate-400">
-        <span class="hover:text-red-400 transition cursor-pointer">YouTube Creator Suite</span>
-        <span>•</span>
-        <span class="hover:text-red-400 transition cursor-pointer">كل العالم رقمي</span>
-      </div>
-    </div>
-  </footer>
+  <footer class="bg-slate-900 border-t border-slate-800 mt-auto py-6 text-center text-xs text-slate-400"><div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3"><div class="flex items-center gap-2"><i class="fa-solid fa-code text-red-500"></i><span>جميع الحقوق محفوظة © 2026 | من تصميم <strong class="text-white">All World Digital</strong></span></div><div class="flex items-center gap-4 text-slate-400"><span class="hover:text-red-400 transition cursor-pointer">YouTube Creator Suite</span><span>•</span><span class="hover:text-red-400 transition cursor-pointer">كل العالم رقمي</span></div></div></footer>
 
   <script>
     const STORAGE_KEY = "allwd_permanent_excluded";
     const LANG_KEY = "allwd_language";
+    const BASE_BODY_CLASS = "bg-slate-950 text-slate-100 min-h-screen flex flex-col";
+    const FALLBACK_AVATAR = "https://via.placeholder.com/60?text=User";
 
-    let currentLang = localStorage.getItem(LANG_KEY) || "ar";
+    const AR_EN = {
+      "كل العالم رقمي":"All World Digital","سحب المسابقات":"Giveaway Draw","تحميل الصور":"Thumbnail Download","معاين الصورة المصغرة":"Thumbnail Preview","فاحص التباين":"Contrast Checker","فاحص العناوين":"Title Analyzer","قوالب الوصف":"Description Templates","مُولّد الوسوم":"Tag Generator","مستخرج النصوص":"Transcript Extractor","أفكار وهوكات":"Ideas & Hooks","حاسبة الأرباح":"Revenue Calculator","متعقب الدروع":"Awards Tracker",
+      "رابط فيديو اليوتيوب:":"YouTube video URL:","احتساب مشاركة واحدة فقط لكل شخص":"Count only one entry per person","سحب الفائز واستبعاده فوراً":"Draw winner and exclude immediately","جاري المعالجة...":"Processing...","الفائز في المسابقة 🎉":"Giveaway Winner 🎉","قائمة كل التعليقات":"Comments list","الإجمالي":"Total","المؤهلون":"Eligible","المستبعدون نهائياً":"Permanently excluded","الفائز يُحفظ هنا تلقائياً ولن يُختار مجدداً في أي سحب قادم.":"The winner is saved here automatically and will not be selected in future draws.","تفريغ قائمة المستبعدين":"Clear excluded list",
+      "أدخل رابط أي فيديو يوتيوب:":"Enter any YouTube video URL:","استخراج وتحميل الصور":"Get thumbnails","أعلى جودة (Full HD - 1080p)":"Highest available quality","جودة قياسية (High - 720p)":"Standard quality (HQ)","تحميل":"Download",
+      "عنوان الفيديو المقترح:":"Proposed video title:","رفع صورة المعاينة:":"Upload preview image:","محاكاة الظهور في الهواتف:":"Mobile appearance simulation:","عنوان الفيديو المقترح يظهر هنا...":"Your proposed video title appears here...","All World Digital • 45K مشاهدة • قبل ساعتين":"All World Digital • 45K views • 2 hours ago",
+      "اختر لون النص ولون الخلفية لفحص وضوح القراءة على الهاتف:":"Choose text and background colors to check readability:","لون النص:":"Text color:","لون الخلفية:":"Background color:","نص توضيحي: هل هذا واضح في الصورة المصغرة؟":"Sample text: is this clear on the thumbnail?",
+      "اكتب عنوان الفيديو المقترح:":"Enter the proposed video title:","عدد الأحرف":"Characters","عدد الكلمات":"Words","تقييم النقر CTR":"CTR score","ابدأ بكتابة العنوان لتوليد الإحصائيات.":"Start typing a title to generate statistics.",
+      "توليد قالب الوصف مع الفصول":"Generate description with chapters","موضوع أو الكلمة الأساسية:":"Topic or main keyword:","توليد وسوم جاهزة":"Generate ready tags","الوسوم المولدة:":"Generated tags:","نسخ الكل":"Copy all",
+      "رابط الفيديو لاستخراج النصوص والترجمة:":"Video URL for transcript extraction:","استخراج نص الفيديو فوراً":"Extract video transcript","النص المستخرج من الفيديو:":"Extracted transcript:","نسخ النص كاملاً":"Copy full transcript",
+      "مجال أو فكرة الفيديو:":"Video topic or idea:","توليد 3 هوكات قوية":"Generate 3 strong hooks","عدد المشاهدات الشهرية:":"Monthly views:","سعر الألف مشاهدة (CPM $):":"CPM ($):","حساب الدخل التقديري":"Calculate estimated revenue","الربح الشهري التقديري":"Estimated monthly revenue","الربح السنوي التقديري":"Estimated yearly revenue",
+      "عدد المشتركين الحالي في قناتك:":"Current channel subscribers:","🥈 الدرع الفضي (100,000 مشترك)":"🥈 Silver Award (100,000 subscribers)","🥇 الدرع الذهبي (1,000,000 مشترك)":"🥇 Gold Award (1,000,000 subscribers)","جميع الحقوق محفوظة © 2026 | من تصميم":"All rights reserved © 2026 | Designed by"
+    };
+    const EN_AR = Object.fromEntries(Object.entries(AR_EN).map(([ar,en]) => [en,ar]));
+
+    const PLACEHOLDERS_AR_EN = {
+      "اكتب عنوان الفيديو لمعاينته في الصفحة الرئيسية...":"Enter a title to preview it on the homepage...",
+      "اكتب العنوان هنا لتجربته...":"Enter the title here...",
+      "عنوان أو موضوع الفيديو...":"Video title or topic...",
+      "رابط قناتك أو موقعك المذكور...":"Your channel or mentioned website URL...",
+      "مثلاً: ربح من الإنترنت، برمجة ويب، تعدين سحابي...":"Example: online income, web development, cloud mining...",
+      "https://www.youtube.com/watch?v=... أو https://youtu.be/...":"https://www.youtube.com/watch?v=... or https://youtu.be/...",
+      "مثال: تطبيق جديد، تعدين، زيادة المشاهدات...":"Example: new app, mining, increasing views..."
+    };
+    const PLACEHOLDERS_EN_AR = Object.fromEntries(Object.entries(PLACEHOLDERS_AR_EN).map(([ar,en]) => [en,ar]));
+
+    let currentLang = ["ar","en"].includes(localStorage.getItem(LANG_KEY)) ? localStorage.getItem(LANG_KEY) : "ar";
+    let generatedTags = [];
 
     document.addEventListener("DOMContentLoaded", () => {
+      applyLanguage(currentLang);
       renderExcludedList();
       calcMilestones();
+      calculateRevenue();
+      checkContrast();
+      analyzeTitle();
+      updatePreview();
     });
 
-    function toggleLanguage() {
-      currentLang = currentLang === "ar" ? "en" : "ar";
+    function t(ar, en) { return currentLang === "ar" ? ar : en; }
+
+    function translateStaticContent(targetLang) {
+      const map = targetLang === "en" ? AR_EN : EN_AR;
+      const placeholderMap = targetLang === "en" ? PLACEHOLDERS_AR_EN : PLACEHOLDERS_EN_AR;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      for (const node of nodes) {
+        if (["SCRIPT","STYLE"].includes(node.parentElement?.tagName)) continue;
+        const raw = node.nodeValue;
+        const trimmed = raw.trim();
+        if (!trimmed || !map[trimmed]) continue;
+        node.nodeValue = raw.replace(trimmed, map[trimmed]);
+      }
+      document.querySelectorAll("[placeholder]").forEach(el => {
+        const value = el.getAttribute("placeholder");
+        if (placeholderMap[value]) el.setAttribute("placeholder", placeholderMap[value]);
+      });
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang === "en" ? "en" : "ar";
       localStorage.setItem(LANG_KEY, currentLang);
       document.documentElement.lang = currentLang;
       document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
-      document.body.className = `bg-slate-950 text-slate-100 min-h-screen flex flex-col lang-${currentLang}`;
-      document.getElementById("langBtnText").innerText = currentLang === "ar" ? "English" : "العربية";
+      document.body.className = `${BASE_BODY_CLASS} lang-${currentLang}`;
+      translateStaticContent(currentLang);
+      document.getElementById("langBtnText").textContent = currentLang === "ar" ? "English" : "العربية";
+      renderExcludedList();
+      calcMilestones();
+      checkContrast();
+      analyzeTitle();
+      updatePreview();
+      if (generatedTags.length) generateTags();
     }
+
+    function toggleLanguage() { applyLanguage(currentLang === "ar" ? "en" : "ar"); }
 
     function switchTab(tab) {
+      const section = document.getElementById(`section-${tab}`);
+      const button = document.getElementById(`tab-${tab}`);
+      if (!section || !button) return;
       document.querySelectorAll(".tool-section").forEach(s => s.classList.add("hidden"));
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      document.getElementById(`section-${tab}`).classList.remove("hidden");
-      document.getElementById(`tab-${tab}`).classList.add("active");
+      section.classList.remove("hidden");
+      button.classList.add("active");
     }
 
-    /* 1. السحب والمستبعدين */
-    function getExcludedList() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+    function safeImageUrl(value, fallback = FALLBACK_AVATAR) {
+      try {
+        const u = new URL(String(value || ""));
+        return u.protocol === "https:" ? u.toString() : fallback;
+      } catch { return fallback; }
     }
+
+    function getExcludedList() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return Array.isArray(parsed) ? parsed : [];
+      } catch { return []; }
+    }
+
     function saveExcludedList(list) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.isArray(list) ? list.slice(0, 1000) : []));
       renderExcludedList();
     }
+
+    function formatStoredDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value || "");
+      return new Intl.DateTimeFormat(currentLang === "ar" ? "ar-DZ" : "en-US", { year:"numeric", month:"short", day:"numeric" }).format(date);
+    }
+
     function renderExcludedList() {
       const list = getExcludedList();
-      const c = document.getElementById("excludedList");
-      document.getElementById("excludedCount").innerText = list.length;
+      const container = document.getElementById("excludedList");
+      if (!container) return;
+      document.getElementById("excludedCount").textContent = String(list.length);
+      container.replaceChildren();
+
       if (!list.length) {
-        c.innerHTML = `<div class="text-xs text-slate-500 text-center py-2">لا يوجد فائزون مستبعدون بعد.</div>`;
+        const empty = document.createElement("div");
+        empty.className = "text-xs text-slate-500 text-center py-2";
+        empty.textContent = t("لا يوجد فائزون مستبعدون بعد.", "No excluded winners yet.");
+        container.appendChild(empty);
         return;
       }
-      c.innerHTML = list.map((u, i) => `
-        <div class="flex items-center justify-between bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-xs">
-          <div class="flex items-center gap-2.5">
-            <img src="${u.avatar || 'https://via.placeholder.com/30'}" class="w-7 h-7 rounded-full border border-slate-700 object-cover" />
-            <div>
-              <div class="font-semibold text-slate-200">${u.name}</div>
-              <div class="text-[10px] text-slate-400 font-mono">${u.id} • ${u.date}</div>
-            </div>
-          </div>
-          <button onclick="removeExcluded(${i})" class="text-slate-500 hover:text-red-400 p-1"><i class="fa-solid fa-trash-can"></i></button>
-        </div>
-      `).join('');
+
+      list.forEach((u, i) => {
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-xs";
+        const left = document.createElement("div"); left.className = "flex items-center gap-2.5";
+        const img = document.createElement("img"); img.src = safeImageUrl(u?.avatar); img.alt = ""; img.className = "w-7 h-7 rounded-full border border-slate-700 object-cover";
+        const info = document.createElement("div");
+        const name = document.createElement("div"); name.className = "font-semibold text-slate-200"; name.textContent = String(u?.name || t("مستخدم YouTube", "YouTube User"));
+        const meta = document.createElement("div"); meta.className = "text-[10px] text-slate-400 font-mono"; meta.textContent = `${String(u?.id || "-")} • ${formatStoredDate(u?.date)}`;
+        info.append(name, meta); left.append(img, info);
+        const remove = document.createElement("button"); remove.type = "button"; remove.className = "text-slate-500 hover:text-red-400 p-1"; remove.setAttribute("aria-label", t("إزالة", "Remove"));
+        const icon = document.createElement("i"); icon.className = "fa-solid fa-trash-can"; remove.appendChild(icon); remove.addEventListener("click", () => removeExcluded(i));
+        row.append(left, remove); container.appendChild(row);
+      });
     }
-    function removeExcluded(i) {
-      const l = getExcludedList(); l.splice(i, 1); saveExcludedList(l);
+
+    function removeExcluded(i) { const list = getExcludedList(); if (i >= 0 && i < list.length) { list.splice(i,1); saveExcludedList(list); } }
+    function clearExcluded() { if (confirm(t("تفريغ القائمة بالكامل؟", "Clear the entire excluded list?"))) { localStorage.removeItem(STORAGE_KEY); renderExcludedList(); } }
+
+    function extractVideoId(input) {
+      if (!input) return null;
+      const value = input.trim();
+      if (/^[a-zA-Z0-9_-]{11}$/.test(value)) return value;
+      try {
+        const u = new URL(value.startsWith("http") ? value : `https://${value}`);
+        const host = u.hostname.replace(/^www\./, "");
+        if (host === "youtu.be") return /^[a-zA-Z0-9_-]{11}$/.test(u.pathname.slice(1,12)) ? u.pathname.slice(1,12) : null;
+        if (["youtube.com","m.youtube.com","music.youtube.com"].includes(host)) {
+          const v = u.searchParams.get("v");
+          if (v && /^[a-zA-Z0-9_-]{11}$/.test(v)) return v;
+          const parts = u.pathname.split("/").filter(Boolean);
+          if (["shorts","embed","live"].includes(parts[0]) && /^[a-zA-Z0-9_-]{11}$/.test(parts[1] || "")) return parts[1];
+        }
+      } catch {}
+      return null;
     }
-    function clearExcluded() {
-      if (confirm("تفريغ القائمة بالكامل؟")) { localStorage.removeItem(STORAGE_KEY); renderExcludedList(); }
+
+    function setStatus(text, spinning = true) {
+      const box = document.getElementById("statusBox");
+      if (!text) { box.classList.add("hidden"); return; }
+      box.classList.remove("hidden");
+      document.getElementById("statusText").textContent = text;
+      document.getElementById("spinner").style.display = spinning ? "inline-block" : "none";
     }
-    function extractVideoId(url) {
-      if (!url) return null;
-      const m = url.trim().match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
-      return m && m[1] ? m[1] : (/^[a-zA-Z0-9_-]{11}$/.test(url.trim()) ? url.trim() : null);
+
+    function secureRandomIndex(max) {
+      if (!Number.isInteger(max) || max <= 0) throw new Error("Invalid random range");
+      const range = 0x100000000;
+      const limit = range - (range % max);
+      const a = new Uint32Array(1);
+      do { crypto.getRandomValues(a); } while (a[0] >= limit);
+      return a[0] % max;
     }
-    function setStatus(text, s = true) {
-      const b = document.getElementById("statusBox");
-      const st = document.getElementById("statusText");
-      const sp = document.getElementById("spinner");
-      if (!text) { b.classList.add("hidden"); return; }
-      b.classList.remove("hidden");
-      st.innerText = text;
-      sp.style.display = s ? "inline-block" : "none";
-    }
+
     async function runGiveaway() {
-      const url = document.getElementById("giveawayVideoUrl").value;
+      const vid = extractVideoId(document.getElementById("giveawayVideoUrl").value);
       const unique = document.getElementById("uniqueUser").checked;
       const btn = document.getElementById("drawBtn");
       const card = document.getElementById("winnerCard");
-      const vid = extractVideoId(url);
-      if (!vid) { alert("رابط يوتيوب غير صحيح"); return; }
-      card.classList.add("hidden"); btn.disabled = true;
-      setStatus("جاري جلب التعليقات وحساب النتائج...");
+      if (!vid) { alert(t("رابط يوتيوب غير صحيح", "Invalid YouTube URL")); return; }
+
+      card.classList.add("hidden");
+      document.getElementById("commentsSection").classList.add("hidden");
+      btn.disabled = true; btn.classList.add("opacity-60","cursor-not-allowed");
+      setStatus(t("جاري جلب التعليقات وحساب النتائج...", "Loading comments and calculating results..."));
+
       try {
-        const r = await fetch(`/api/comments?videoId=${vid}`);
-        const d = await r.json();
-        if (!r.ok) throw new Error(d.error || "تعذر الجلب");
-        let comments = d.comments || [];
-        if (!comments.length) { setStatus("لا توجد تعليقات متاحة.", false); return; }
-        const exc = getExcludedList();
-        const excIds = new Set(exc.map(u => String(u.id)));
+        const r = await fetch(`/api/comments?videoId=${encodeURIComponent(vid)}`, { headers:{Accept:"application/json"} });
+        let d = {}; try { d = await r.json(); } catch {}
+        if (!r.ok) throw new Error(d.error || t("تعذر جلب التعليقات.", "Could not load comments."));
+        let comments = Array.isArray(d.comments) ? d.comments : [];
+        if (!comments.length) { setStatus(t("لا توجد تعليقات متاحة.", "No comments available."), false); return; }
+
         if (unique) {
-          const s = new Set();
-          comments = comments.filter(c => { if (s.has(c.id)) return false; s.add(c.id); return true; });
+          const seen = new Set();
+          comments = comments.filter(c => { const id = String(c?.id || ""); if (!id || seen.has(id)) return false; seen.add(id); return true; });
         }
-        let eligible = comments.filter(c => !excIds.has(String(c.id)));
-        document.getElementById("totalCountBadge").innerText = comments.length;
-        document.getElementById("eligibleCountBadge").innerText = eligible.length;
-        if (!eligible.length) { setStatus("جميع المشاركين مستبعدون مسبقاً!", false); return; }
-        const w = eligible[Math.floor(Math.random() * eligible.length)];
-        document.getElementById("winnerName").innerText = w.name;
-        document.getElementById("winnerAvatar").src = w.avatar;
-        document.getElementById("winnerId").innerText = `ID: ${w.id}`;
-        document.getElementById("winnerComment").innerHTML = w.text;
+
+        const excluded = getExcludedList();
+        const excIds = new Set(excluded.map(u => String(u?.id || "")));
+        const eligible = comments.filter(c => !excIds.has(String(c?.id || "")));
+        document.getElementById("totalCountBadge").textContent = String(comments.length);
+        document.getElementById("eligibleCountBadge").textContent = String(eligible.length);
+        if (!eligible.length) { setStatus(t("جميع المشاركين مستبعدون مسبقاً!", "All participants were already excluded!"), false); return; }
+
+        const winner = eligible[secureRandomIndex(eligible.length)];
+        document.getElementById("winnerName").textContent = String(winner.name || t("مستخدم YouTube", "YouTube User"));
+        document.getElementById("winnerAvatar").src = safeImageUrl(winner.avatar);
+        document.getElementById("winnerId").textContent = `ID: ${String(winner.id || "-")}`;
+        document.getElementById("winnerComment").textContent = String(winner.text || "");
         card.classList.remove("hidden");
-        const list = getExcludedList();
-        list.unshift({ id: w.id, name: w.name, avatar: w.avatar, date: new Date().toLocaleDateString() });
-        saveExcludedList(list);
-        renderCommentsUI(comments, excIds, w.id);
-        setStatus(`الفائز: ${w.name}`, false);
-      } catch (err) { alert(err.message); setStatus(""); }
-      finally { btn.disabled = false; }
-    }
-    function renderCommentsUI(comments, excIds, winId) {
-      const c = document.getElementById("allCommentsList");
-      document.getElementById("commentsSection").classList.remove("hidden");
-      c.innerHTML = comments.map(item => `
-        <div class="p-2 rounded-xl bg-slate-950 border ${item.id === winId ? 'border-red-500 bg-red-950/20' : 'border-slate-800'} text-xs space-y-1">
-          <div class="flex justify-between items-center">
-            <span class="font-bold">${item.name}</span>
-            <span class="text-[10px] px-2 py-0.5 rounded ${item.id === winId ? 'bg-red-600 text-white' : (excIds.has(item.id) ? 'bg-red-950 text-red-400' : 'bg-emerald-950 text-emerald-400')}">${item.id === winId ? 'الفائز 🎉' : (excIds.has(item.id) ? 'مستبعد' : 'مؤهل')}</span>
-          </div>
-          <div class="text-slate-300 text-[11px]">${item.text}</div>
-        </div>
-      `).join('');
+
+        excluded.unshift({ id:String(winner.id || ""), name:String(winner.name || ""), avatar:safeImageUrl(winner.avatar), date:new Date().toISOString() });
+        saveExcludedList(excluded);
+        renderCommentsUI(comments, excIds, String(winner.id || ""));
+
+        const limited = Boolean(d?.meta?.truncated);
+        setStatus(limited ? t(`الفائز: ${winner.name} — تم فحص أول ${d.meta.limit || 300} تعليق.`, `Winner: ${winner.name} — first ${d.meta.limit || 300} comments checked.`) : t(`الفائز: ${winner.name}`, `Winner: ${winner.name}`), false);
+      } catch (err) {
+        alert(err?.message || t("حدث خطأ غير متوقع.", "An unexpected error occurred.")); setStatus("");
+      } finally { btn.disabled = false; btn.classList.remove("opacity-60","cursor-not-allowed"); }
     }
 
-    /* 2. تحميل الصور */
+    function renderCommentsUI(comments, excIds, winId) {
+      const container = document.getElementById("allCommentsList");
+      container.replaceChildren();
+      document.getElementById("commentsSection").classList.remove("hidden");
+      comments.forEach(item => {
+        const id = String(item?.id || "");
+        const isWinner = id === winId;
+        const isExcluded = excIds.has(id);
+        const row = document.createElement("div"); row.className = `p-2 rounded-xl bg-slate-950 border ${isWinner ? "border-red-500 bg-red-950/20" : "border-slate-800"} text-xs space-y-1`;
+        const top = document.createElement("div"); top.className = "flex justify-between items-center";
+        const name = document.createElement("span"); name.className = "font-bold"; name.textContent = String(item?.name || t("مستخدم YouTube", "YouTube User"));
+        const badge = document.createElement("span"); badge.className = `text-[10px] px-2 py-0.5 rounded ${isWinner ? "bg-red-600 text-white" : isExcluded ? "bg-red-950 text-red-400" : "bg-emerald-950 text-emerald-400"}`; badge.textContent = isWinner ? t("الفائز 🎉", "Winner 🎉") : isExcluded ? t("مستبعد", "Excluded") : t("مؤهل", "Eligible");
+        top.append(name,badge);
+        const text = document.createElement("div"); text.className = "text-slate-300 text-[11px]"; text.textContent = String(item?.text || "");
+        row.append(top,text); container.appendChild(row);
+      });
+    }
+
     function fetchThumbnails() {
       const id = extractVideoId(document.getElementById("thumbVideoUrl").value);
-      if (!id) { alert("أدخل رابط صحيح"); return; }
+      if (!id) { alert(t("أدخل رابط يوتيوب صحيحاً", "Enter a valid YouTube URL")); return; }
       const max = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
       const hq = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-      document.getElementById("imgMax").src = max;
-      document.getElementById("linkMax").href = max;
-      document.getElementById("imgHq").src = hq;
-      document.getElementById("linkHq").href = hq;
+      const imgMax = document.getElementById("imgMax");
+      const linkMax = document.getElementById("linkMax");
+      imgMax.onerror = () => { imgMax.onerror = null; imgMax.src = hq; linkMax.href = hq; };
+      imgMax.src = max; linkMax.href = max;
+      document.getElementById("imgHq").src = hq; document.getElementById("linkHq").href = hq;
       document.getElementById("thumbResults").classList.remove("hidden");
     }
 
-    /* 3. محاكي ومعاين الصور المصغرة */
     function updatePreview() {
-      const t = document.getElementById("previewTitle").value;
-      document.getElementById("previewTitleTarget").innerText = t || "اكتب عنوان الفيديو لمعاينته هنا...";
+      const value = document.getElementById("previewTitle").value.trim();
+      document.getElementById("previewTitleTarget").textContent = value || t("عنوان الفيديو المقترح يظهر هنا...", "Your proposed video title appears here...");
     }
+
     function previewUpload(e) {
-      if (e.target.files && e.target.files[0]) {
-        const r = new FileReader();
-        r.onload = (ev) => document.getElementById("previewImgTarget").src = ev.target.result;
-        r.readAsDataURL(e.target.files[0]);
-      }
+      const file = e?.target?.files?.[0]; if (!file) return;
+      if (!file.type.startsWith("image/")) { alert(t("اختر ملف صورة صالحاً.", "Choose a valid image file.")); e.target.value=""; return; }
+      if (file.size > 10 * 1024 * 1024) { alert(t("حجم الصورة كبير جداً. الحد الأقصى 10MB.", "Image is too large. Maximum size is 10MB.")); e.target.value=""; return; }
+      const reader = new FileReader(); reader.onload = ev => { document.getElementById("previewImgTarget").src = ev.target.result; }; reader.readAsDataURL(file);
     }
 
-    /* 4. فاحص تباين الألوان */
+    function hexToRgb(hex) { const m = /^#([0-9a-f]{6})$/i.exec(hex); return m ? [parseInt(m[1].slice(0,2),16),parseInt(m[1].slice(2,4),16),parseInt(m[1].slice(4,6),16)] : [0,0,0]; }
+    function relativeLuminance(hex) { return hexToRgb(hex).map(v => v/255).map(v => v <= .04045 ? v/12.92 : Math.pow((v+.055)/1.055,2.4)).reduce((sum,v,i) => sum + v * [0.2126,0.7152,0.0722][i],0); }
+    function contrastRatio(a,b) { const l1=relativeLuminance(a), l2=relativeLuminance(b); return (Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05); }
+
     function checkContrast() {
-      const tc = document.getElementById("textColor").value;
-      const bc = document.getElementById("bgColor").value;
-      const b = document.getElementById("contrastBox");
-      b.style.color = tc; b.style.backgroundColor = bc;
-      document.getElementById("contrastReport").innerHTML = `<span>التباين ممتاز للألوان المختارة على الجوال بنسبة قراءة عالية.</span>`;
+      const tc = document.getElementById("textColor").value; const bc = document.getElementById("bgColor").value;
+      const box = document.getElementById("contrastBox"); box.style.color = tc; box.style.backgroundColor = bc;
+      const ratio = contrastRatio(tc,bc); const aaNormal = ratio >= 4.5; const aaaNormal = ratio >= 7; const aaLarge = ratio >= 3;
+      const verdict = aaaNormal ? t("ممتاز", "Excellent") : aaNormal ? t("جيد", "Good") : aaLarge ? t("مقبول للنص الكبير فقط", "Acceptable for large text only") : t("ضعيف", "Poor");
+      document.getElementById("contrastReport").textContent = currentLang === "ar" ? `نسبة التباين: ${ratio.toFixed(2)}:1 — ${verdict}. AA للنص العادي: ${aaNormal ? "ناجح" : "غير ناجح"}، AAA: ${aaaNormal ? "ناجح" : "غير ناجح"}.` : `Contrast ratio: ${ratio.toFixed(2)}:1 — ${verdict}. Normal-text AA: ${aaNormal ? "Pass" : "Fail"}, AAA: ${aaaNormal ? "Pass" : "Fail"}.`;
     }
 
-    /* 5. فاحص العناوين وSEO */
     function analyzeTitle() {
-      const v = document.getElementById("titleInput").value.trim();
-      document.getElementById("statChars").innerText = v.length;
-      document.getElementById("statWords").innerText = v ? v.split(/\s+/).length : 0;
-      let s = 50;
-      if (v.length >= 40 && v.length <= 65) s += 30;
-      if (/\d+/.test(v)) s += 20;
-      document.getElementById("statScore").innerText = v ? `${Math.min(100, s)}%` : "-%";
+      const value = document.getElementById("titleInput").value.trim(); const chars = value.length; const words = value ? value.split(/\s+/).length : 0;
+      document.getElementById("statChars").textContent = String(chars); document.getElementById("statWords").textContent = String(words);
+      const feedback = document.getElementById("titleFeedback");
+      if (!value) { document.getElementById("statScore").textContent = "-%"; feedback.textContent = t("ابدأ بكتابة العنوان لتوليد الإحصائيات.", "Start typing a title to generate statistics."); return; }
+      let score = 0; const notes = [];
+      if (chars >= 40 && chars <= 65) score += 35; else if (chars >= 30 && chars <= 75) { score += 25; notes.push(t("حاول جعل العنوان بين 40 و65 حرفاً.", "Try to keep the title between 40 and 65 characters.")); } else { score += 10; notes.push(t("طول العنوان بعيد عن النطاق المفضل.", "The title length is outside the preferred range.")); }
+      if (words >= 6 && words <= 12) score += 25; else if (words >= 4 && words <= 15) score += 15; else notes.push(t("اجعل العنوان مختصراً وواضحاً.", "Keep the title concise and clear."));
+      if (/\d/.test(value)) score += 10;
+      const power = /(جديد|أفضل|سر|كيف|شرح|مجاني|مهم|تحذير|new|best|secret|how|free|important|warning)/i.test(value); if (power) score += 15; else notes.push(t("أضف كلمة قوية أو فائدة واضحة دون مبالغة.", "Add a strong word or clear benefit without exaggeration."));
+      if (!/[!?]{3,}/.test(value)) score += 5; else notes.push(t("تجنب الإفراط في علامات التعجب أو الاستفهام.", "Avoid excessive punctuation."));
+      const letters = value.replace(/[^A-Za-z]/g, ""); const allCaps = letters.length > 8 && letters === letters.toUpperCase(); if (!allCaps) score += 10; else notes.push(t("تجنب كتابة العنوان كله بأحرف كبيرة.", "Avoid writing the whole title in ALL CAPS."));
+      score = Math.max(0, Math.min(100, score)); document.getElementById("statScore").textContent = `${score}%`;
+      feedback.textContent = notes.length ? notes.join(" • ") : t("العنوان متوازن من حيث الطول والوضوح والجاذبية.", "The title is well balanced for length, clarity, and appeal.");
     }
 
-    /* 6. قوالب الوصف */
     function buildDescription() {
-      const topic = document.getElementById("descTopic").value || "موضوع الفيديو";
-      const link = document.getElementById("descTelegram").value || "https://t.me/...";
-      document.getElementById("descOutput").value = `في هذا الفيديو سنتعرف بالتفصيل على ${topic}.\n\n📌 رابط القناة والأدوات المذكورة:\n${link}\n\n⏱️ فصول الفيديو (Timestamps):\n00:00 - مقدمة الفيديو\n01:30 - الشرح بالتفصيل\n05:45 - الخلاصة والنصائح\n\n#${topic.replace(/\s+/g, '_')} #كل_العالم_رقمي #YouTube`;
+      const topic = document.getElementById("descTopic").value.trim() || t("موضوع الفيديو", "the video topic");
+      const link = document.getElementById("descTelegram").value.trim() || "https://t.me/...";
+      document.getElementById("descOutput").value = currentLang === "ar" ? `في هذا الفيديو سنتعرف بالتفصيل على ${topic}.\n\n📌 رابط القناة والأدوات المذكورة:\n${link}\n\n⏱️ فصول الفيديو:\n00:00 - مقدمة الفيديو\n01:30 - الشرح بالتفصيل\n05:45 - الخلاصة والنصائح\n\n#${topic.replace(/\s+/g,"_")} #كل_العالم_رقمي #YouTube` : `In this video, we take a detailed look at ${topic}.\n\n📌 Channel and mentioned links:\n${link}\n\n⏱️ Chapters:\n00:00 - Introduction\n01:30 - Detailed explanation\n05:45 - Summary and tips\n\n#${topic.replace(/\s+/g,"_")} #AllWorldDigital #YouTube`;
     }
 
-    /* 7. مُولّد الوسوم */
+    function buildTags(topic) { return currentLang === "ar" ? [topic,`${topic} 2026`,`شرح ${topic}`,`أفضل ${topic}`,`نصائح ${topic}`] : [topic,`${topic} 2026`,`How to ${topic}`,`Best ${topic}`,`${topic} tips`]; }
     function generateTags() {
-      const t = document.getElementById("tagsTopic").value.trim();
-      if (!t) return;
-      const arr = [t, `${t} 2026`, `شرح ${t}`, `أفضل ${t}`, `أسرار ${t}`];
-      document.getElementById("tagsList").innerHTML = arr.map(i => `<span class="bg-slate-900 border border-slate-800 text-xs px-2.5 py-1 rounded">#${i}</span>`).join('');
+      const topic = document.getElementById("tagsTopic").value.trim(); if (!topic) return;
+      generatedTags = buildTags(topic); const list = document.getElementById("tagsList"); list.replaceChildren();
+      generatedTags.forEach(tag => { const span=document.createElement("span"); span.className="bg-slate-900 border border-slate-800 text-xs px-2.5 py-1 rounded"; span.textContent=`#${tag}`; list.appendChild(span); });
       document.getElementById("tagsResultBox").classList.remove("hidden");
     }
-    function copyTags() {
-      const t = document.getElementById("tagsTopic").value.trim();
-      navigator.clipboard.writeText([t, `${t} 2026`, `شرح ${t}`, `أفضل ${t}`].join(", "));
-      alert("تم نسخ الوسوم!");
+
+    async function copyText(text) {
+      if (!text) return false;
+      try { await navigator.clipboard.writeText(text); return true; }
+      catch { const area=document.createElement("textarea"); area.value=text; area.style.position="fixed"; area.style.opacity="0"; document.body.appendChild(area); area.select(); const ok=document.execCommand("copy"); area.remove(); return ok; }
     }
 
-    /* 8. استخراج نصوص وترجمة الفيديو (Client-Side Direct Bypass) */
+    async function copyTags() { if (!generatedTags.length) generateTags(); if (!generatedTags.length) return; if (await copyText(generatedTags.join(", "))) alert(t("تم نسخ الوسوم!", "Tags copied!")); }
+
     async function fetchVideoTranscript() {
-      const url = document.getElementById("transUrl").value;
-      const vid = extractVideoId(url);
-      const btn = document.getElementById("btnFetchTrans");
-      const box = document.getElementById("transResultBox");
-      const status = document.getElementById("transStatus");
-      const statusText = document.getElementById("transStatusText");
-
-      if (!vid) {
-        alert("يرجى إدخال رابط فيديو يوتيوب صحيح.");
-        return;
-      }
-
-      box.classList.add("hidden");
-      status.classList.remove("hidden");
-      statusText.innerText = "جاري الاتصال المباشر لسحب النص...";
-      btn.disabled = true;
-      btn.classList.add("opacity-60", "cursor-not-allowed");
-
+      const vid = extractVideoId(document.getElementById("transUrl").value); const btn=document.getElementById("btnFetchTrans"); const box=document.getElementById("transResultBox"); const status=document.getElementById("transStatus"); const statusText=document.getElementById("transStatusText"); const spinner=document.getElementById("transSpinner");
+      if (!vid) { alert(t("يرجى إدخال رابط فيديو يوتيوب صحيح.", "Please enter a valid YouTube video URL.")); return; }
+      box.classList.add("hidden"); status.classList.remove("hidden"); spinner.style.display="inline-block"; statusText.textContent=t("جاري استخراج النص عبر الخادم...", "Extracting transcript through the server..."); btn.disabled=true; btn.classList.add("opacity-60","cursor-not-allowed");
       try {
-        const instances = [
-          "https://pipedapi.kavin.rocks",
-          "https://pipedapi.smnz.de",
-          "https://piped-api.garudalinux.org"
-        ];
-        
-        let subtitles = null;
-        
-        for (const instance of instances) {
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
-                const r = await fetch(`${instance}/streams/${vid}`, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                
-                if (!r.ok) continue;
-                const data = await r.json();
-                
-                if (data.subtitles && data.subtitles.length > 0) {
-                    subtitles = data.subtitles;
-                    break; 
-                }
-            } catch (e) {
-                continue;
-            }
-        }
-
-        if (!subtitles) {
-          throw new Error("لا تتوفر ترجمة لهذا الفيديو، أو أنه لا يحتوي على نص مفرّغ.");
-        }
-
-        let track = subtitles.find(s => s.code === 'ar') 
-                 || subtitles.find(s => s.code === 'en') 
-                 || subtitles[0];
-        
-        let trackUrl = track.url;
-        if (!trackUrl.includes('fmt=')) trackUrl += '&fmt=vtt';
-        
-        const trackRes = await fetch(trackUrl);
-        if (!trackRes.ok) throw new Error("تعذر قراءة ملف الترجمة.");
-        
-        const trackText = await trackRes.text();
-        
-        let cleanText = trackText.split('\n')
-            .filter(line => !line.includes('-->') && !line.startsWith('WEBVTT') && !line.startsWith('Kind:') && !line.startsWith('Language:') && !line.startsWith('Style:') && line.trim() !== '')
-            .map(line => line.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').trim())
-            .join(' ')
-            .replace(/\s+/g, ' ');
-
-        document.getElementById("transOutput").value = cleanText;
-        box.classList.remove("hidden");
-        status.classList.add("hidden");
-      } catch (err) {
-        statusText.innerText = `خطأ: ${err.message}`;
-      } finally {
-        btn.disabled = false;
-        btn.classList.remove("opacity-60", "cursor-not-allowed");
-      }
+        const r=await fetch(`/api/transcript?videoId=${encodeURIComponent(vid)}`,{headers:{Accept:"application/json"}}); let data={}; try{data=await r.json();}catch{}
+        if(!r.ok) throw new Error(data.error || t("تعذر استخراج النص.", "Could not extract the transcript."));
+        const transcript=String(data.transcript||"").trim(); if(!transcript) throw new Error(t("تمت الاستجابة بدون نص قابل للعرض.", "The server returned no usable transcript."));
+        document.getElementById("transOutput").value=transcript; box.classList.remove("hidden"); spinner.style.display="none"; statusText.textContent=t(`تم استخراج النص بنجاح${data.lang ? ` (${data.lang})` : ""}.`,`Transcript extracted successfully${data.lang ? ` (${data.lang})` : ""}.`);
+      } catch(err) { spinner.style.display="none"; statusText.textContent=`${t("خطأ", "Error")}: ${err?.message || t("تعذر استخراج النص.", "Could not extract transcript.")}`; }
+      finally { btn.disabled=false; btn.classList.remove("opacity-60","cursor-not-allowed"); }
     }
 
-    function copyTranscriptText() {
-      const text = document.getElementById("transOutput").value;
-      if (!text) return;
-      navigator.clipboard.writeText(text);
-      alert("تم نسخ النص بالكامل إلى الحافظة!");
-    }
+    async function copyTranscriptText() { const text=document.getElementById("transOutput").value; if(!text)return; if(await copyText(text)) alert(t("تم نسخ النص بالكامل إلى الحافظة!", "Transcript copied to the clipboard!")); }
 
-    /* 9. مُولّد أفكار وهوكات البداية */
     function genHooks() {
-      const t = document.getElementById("hookTopic").value || "المحتوى التقني";
-      document.getElementById("hooksList").innerHTML = `
-        <div class="p-2 bg-slate-950 border border-slate-800 rounded">💡 <strong>هوك الصدمة:</strong> "معظم الناس يرتكبون هذا الخطأ القاتل عند البدء في ${t}..."</div>
-        <div class="p-2 bg-slate-950 border border-slate-800 rounded">💡 <strong>هوك النتيجة المباشرة:</strong> "في أقل من 5 دقائق ستتعلم كيف تحقق أقصى استفادة من ${t}..."</div>
-        <div class="p-2 bg-slate-950 border border-slate-800 rounded">💡 <strong>هوك السر المخفي:</strong> "السر الذي لا يخبرك به أحد بخصوص ${t} ولماذا يجب عليك البدء الآن!"</div>
-      `;
+      const topic=document.getElementById("hookTopic").value.trim() || t("المحتوى التقني", "tech content"); const list=document.getElementById("hooksList"); list.replaceChildren();
+      const hooks=currentLang === "ar" ? [["هوك الصدمة",`معظم الناس يرتكبون هذا الخطأ عند البدء في ${topic}...`],["هوك النتيجة المباشرة",`في أقل من 5 دقائق ستتعلم كيف تحقق أقصى استفادة من ${topic}...`],["هوك الفضول",`هناك تفصيل مهم في ${topic} يتجاهله الكثيرون، وهذا ما سنكشفه الآن...`]] : [["Shock hook",`Most people make this mistake when starting with ${topic}...`],["Direct-result hook",`In under 5 minutes, you'll learn how to get more from ${topic}...`],["Curiosity hook",`There is one important detail about ${topic} that many people overlook — here it is...`]];
+      hooks.forEach(([label,text])=>{const row=document.createElement("div");row.className="p-2 bg-slate-950 border border-slate-800 rounded";const strong=document.createElement("strong");strong.textContent=`💡 ${label}: `;row.append(strong,document.createTextNode(`“${text}”`));list.appendChild(row);});
     }
 
-    /* 10. حاسبة الأرباح */
-    function calculateRevenue() {
-      const v = parseFloat(document.getElementById("calcViews").value) || 0;
-      const c = parseFloat(document.getElementById("calcCpm").value) || 0;
-      const m = (v / 1000) * c;
-      document.getElementById("valMonthly").innerText = `$${m.toFixed(2)}`;
-      document.getElementById("valYearly").innerText = `$${(m * 12).toFixed(2)}`;
-    }
+    function calculateRevenue() { const views=Math.max(0,parseFloat(document.getElementById("calcViews").value)||0); const cpm=Math.max(0,parseFloat(document.getElementById("calcCpm").value)||0); const monthly=(views/1000)*cpm; document.getElementById("valMonthly").textContent=`$${monthly.toFixed(2)}`; document.getElementById("valYearly").textContent=`$${(monthly*12).toFixed(2)}`; }
 
-    /* 11. متتبع الدروع */
     function calcMilestones() {
-      const s = parseInt(document.getElementById("currentSubs").value) || 0;
-      const sp = Math.min(100, (s / 100000) * 100).toFixed(1);
-      const gp = Math.min(100, (s / 1000000) * 100).toFixed(2);
-      document.getElementById("silverPercent").innerText = `${sp}%`;
-      document.getElementById("silverBar").style.width = `${sp}%`;
-      document.getElementById("silverRemaining").innerText = `متبقي: ${Math.max(0, 100000 - s).toLocaleString()} مشترك`;
-      document.getElementById("goldPercent").innerText = `${gp}%`;
-      document.getElementById("goldBar").style.width = `${gp}%`;
-      document.getElementById("goldRemaining").innerText = `متبقي: ${Math.max(0, 1000000 - s).toLocaleString()} مشترك`;
+      const subs=Math.max(0,parseInt(document.getElementById("currentSubs").value,10)||0); const sp=Math.min(100,(subs/100000)*100); const gp=Math.min(100,(subs/1000000)*100);
+      document.getElementById("silverPercent").textContent=`${sp.toFixed(1)}%`; document.getElementById("silverBar").style.width=`${sp}%`; document.getElementById("goldPercent").textContent=`${gp.toFixed(2)}%`; document.getElementById("goldBar").style.width=`${gp}%`;
+      const locale=currentLang === "ar" ? "ar-DZ" : "en-US"; const silverLeft=Math.max(0,100000-subs).toLocaleString(locale); const goldLeft=Math.max(0,1000000-subs).toLocaleString(locale);
+      document.getElementById("silverRemaining").textContent=currentLang === "ar" ? `متبقي: ${silverLeft} مشترك` : `Remaining: ${silverLeft} subscribers`;
+      document.getElementById("goldRemaining").textContent=currentLang === "ar" ? `متبقي: ${goldLeft} مشترك` : `Remaining: ${goldLeft} subscribers`;
     }
   </script>
 </body>
 </html>
+
