@@ -11,19 +11,56 @@ const PIPED_INSTANCES = [
 ];
 
 const INSTANCE_BATCH_SIZE = 3;
+
 const STREAM_TIMEOUT_MS = 5000;
 const TRACK_TIMEOUT_MS = 8000;
-const YOUTUBE_PAGE_TIMEOUT_MS = 6000;
-const YOUTUBE_LIST_TIMEOUT_MS = 5000;
+const WATCH_PAGE_TIMEOUT_MS = 6000;
+const INNERTUBE_TIMEOUT_MS = 7000;
+
 const MAX_TRACK_BYTES = 2 * 1024 * 1024;
 const MAX_PAGE_BYTES = 4 * 1024 * 1024;
 const MAX_TRANSCRIPT_CHARS = 500000;
 
-const DIRECT_PROBE_LANGUAGES = [
-  "ar",
-  "en",
-  "fr",
-  "es"
+const FALLBACK_INNERTUBE_API_KEY =
+  "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+
+const INNERTUBE_CLIENTS = [
+  {
+    id: "android",
+    clientName: "ANDROID",
+    clientVersion: "19.47.53",
+    clientNumber: "3",
+    userAgent:
+      "com.google.android.youtube/19.47.53 (Linux; U; Android 14) gzip",
+    extraClient: {
+      androidSdkVersion: 34,
+      osName: "Android",
+      osVersion: "14"
+    }
+  },
+  {
+    id: "ios",
+    clientName: "IOS",
+    clientVersion: "20.03.02",
+    clientNumber: "5",
+    userAgent:
+      "com.google.ios.youtube/20.03.02 (iPhone16,2; U; CPU iOS 18_2_1 like Mac OS X;)",
+    extraClient: {
+      deviceMake: "Apple",
+      deviceModel: "iPhone16,2",
+      osName: "iPhone",
+      osVersion: "18.2.1.22C161"
+    }
+  },
+  {
+    id: "web",
+    clientName: "WEB",
+    clientVersion: "2.20250312.04.00",
+    clientNumber: "1",
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    extraClient: {}
+  }
 ];
 
 function isValidVideoId(value) {
@@ -40,7 +77,11 @@ function normalizeLanguage(value) {
 }
 
 function isPrivateIPv4(hostname) {
-  if (!/^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname)) {
+  if (
+    !/^\d{1,3}(?:\.\d{1,3}){3}$/.test(
+      hostname
+    )
+  ) {
     return false;
   }
 
@@ -67,7 +108,9 @@ function isPrivateIPv4(hostname) {
     a === 10 ||
     a === 127 ||
     (a === 169 && b === 254) ||
-    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 172 &&
+      b >= 16 &&
+      b <= 31) ||
     (a === 192 && b === 168) ||
     a >= 224
   );
@@ -125,7 +168,9 @@ function isSafeRemoteUrl(rawUrl) {
   }
 }
 
-function isAllowedYouTubeCaptionUrl(rawUrl) {
+function isAllowedYouTubeCaptionUrl(
+  rawUrl
+) {
   try {
     const url = new URL(rawUrl);
 
@@ -142,7 +187,9 @@ function isAllowedYouTubeCaptionUrl(rawUrl) {
       host === "m.youtube.com" ||
       host === "video.google.com" ||
       host.endsWith(".youtube.com") ||
-      host.endsWith(".googlevideo.com")
+      host.endsWith(
+        ".googlevideo.com"
+      )
     );
   } catch {
     return false;
@@ -202,19 +249,59 @@ async function fetchWithTimeout(
   }
 }
 
+async function readLimitedText(
+  response,
+  maxBytes
+) {
+  const lengthHeader =
+    response.headers.get(
+      "content-length"
+    );
+
+  if (lengthHeader) {
+    const declaredSize =
+      Number(lengthHeader);
+
+    if (
+      Number.isFinite(
+        declaredSize
+      ) &&
+      declaredSize > maxBytes
+    ) {
+      throw new Error(
+        "الاستجابة أكبر من الحد المسموح."
+      );
+    }
+  }
+
+  const text =
+    await response.text();
+
+  if (
+    Buffer.byteLength(
+      text,
+      "utf8"
+    ) > maxBytes
+  ) {
+    throw new Error(
+      "الاستجابة أكبر من الحد المسموح."
+    );
+  }
+
+  return text;
+}
+
 function trackScore(track) {
   const code =
     normalizeLanguage(
       track?.code ||
-      track?.languageCode
+      track?.languageCode ||
+      track?.lang_code
     );
 
   const name =
     normalizeLanguage(
-      track?.name?.simpleText ||
-      track?.name ||
-      track?.lang_original ||
-      track?.lang_translated
+      getTrackDisplayName(track)
     );
 
   let score = 0;
@@ -232,6 +319,13 @@ function trackScore(track) {
     name.includes("english")
   ) {
     score += 80;
+  } else if (
+    code === "fr" ||
+    code.startsWith("fr-") ||
+    name.includes("french") ||
+    name.includes("français")
+  ) {
+    score += 60;
   } else {
     score += 20;
   }
@@ -257,7 +351,8 @@ function trackScore(track) {
   }
 
   if (
-    typeof track?.baseUrl === "string" &&
+    typeof track?.baseUrl ===
+      "string" &&
     track.baseUrl.trim()
   ) {
     score += 5;
@@ -289,24 +384,48 @@ function pickSubtitleTrack(subtitles) {
   );
 }
 
-function buildVttUrl(rawUrl) {
+function getTrackDisplayName(track) {
   if (
-    typeof rawUrl !== "string" ||
-    !rawUrl.trim() ||
-    !isSafeRemoteUrl(rawUrl)
+    typeof track?.name ===
+    "string"
   ) {
-    throw new Error(
-      "رابط الترجمة غير صالح أو غير آمن."
-    );
+    return track.name;
   }
 
-  const url = new URL(rawUrl);
-  url.searchParams.set(
-    "fmt",
-    "vtt"
-  );
+  if (
+    typeof track?.name
+      ?.simpleText === "string"
+  ) {
+    return track.name.simpleText;
+  }
 
-  return url.toString();
+  if (
+    Array.isArray(
+      track?.name?.runs
+    )
+  ) {
+    const value =
+      track.name.runs
+        .map(
+          (item) =>
+            item?.text || ""
+        )
+        .join("")
+        .trim();
+
+    if (value) {
+      return value;
+    }
+  }
+
+  return (
+    track?.lang_original ||
+    track?.lang_translated ||
+    track?.languageCode ||
+    track?.code ||
+    track?.lang_code ||
+    "unknown"
+  );
 }
 
 function decodeHtmlEntities(text) {
@@ -504,25 +623,14 @@ function cleanVtt(vttText) {
       continue;
     }
 
-    const words =
-      cleaned.split(/\s+/);
-
-    const before =
-      outputWords.length;
-
     outputWords =
       appendWithOverlap(
         outputWords,
-        words
+        cleaned.split(/\s+/)
       );
 
-    if (
-      outputWords.length >
-      before
-    ) {
-      currentLength +=
-        cleaned.length + 1;
-    }
+    currentLength +=
+      cleaned.length + 1;
 
     previousLine = cleaned;
 
@@ -567,9 +675,7 @@ function cleanJson3(data) {
       .join("");
 
     const cleaned =
-      normalizeCaptionLine(
-        raw
-      );
+      normalizeCaptionLine(raw);
 
     if (!cleaned) {
       continue;
@@ -610,7 +716,9 @@ function cleanTimedTextXml(xmlText) {
     return "";
   }
 
-  const pieces = [];
+  let outputWords = [];
+  let currentLength = 0;
+
   const regex =
     /<text\b[^>]*>([\s\S]*?)<\/text>/gi;
 
@@ -624,19 +732,28 @@ function cleanTimedTextXml(xmlText) {
         match[1]
       );
 
-    if (cleaned) {
-      pieces.push(cleaned);
+    if (!cleaned) {
+      continue;
     }
 
+    outputWords =
+      appendWithOverlap(
+        outputWords,
+        cleaned.split(/\s+/)
+      );
+
+    currentLength +=
+      cleaned.length + 1;
+
     if (
-      pieces.join(" ").length >=
+      currentLength >=
       MAX_TRANSCRIPT_CHARS
     ) {
       break;
     }
   }
 
-  return pieces
+  return outputWords
     .join(" ")
     .replace(/\s+/g, " ")
     .trim()
@@ -646,46 +763,25 @@ function cleanTimedTextXml(xmlText) {
     );
 }
 
-async function readLimitedText(
-  response,
-  maxBytes
-) {
-  const lengthHeader =
-    response.headers.get(
-      "content-length"
-    );
-
-  if (lengthHeader) {
-    const declaredSize =
-      Number(lengthHeader);
-
-    if (
-      Number.isFinite(
-        declaredSize
-      ) &&
-      declaredSize > maxBytes
-    ) {
-      throw new Error(
-        "الاستجابة أكبر من الحد المسموح."
-      );
-    }
-  }
-
-  const text =
-    await response.text();
-
+function buildVttUrl(rawUrl) {
   if (
-    Buffer.byteLength(
-      text,
-      "utf8"
-    ) > maxBytes
+    typeof rawUrl !== "string" ||
+    !rawUrl.trim() ||
+    !isSafeRemoteUrl(rawUrl)
   ) {
     throw new Error(
-      "الاستجابة أكبر من الحد المسموح."
+      "رابط الترجمة غير صالح أو غير آمن."
     );
   }
 
-  return text;
+  const url = new URL(rawUrl);
+
+  url.searchParams.set(
+    "fmt",
+    "vtt"
+  );
+
+  return url.toString();
 }
 
 async function readTrackText(
@@ -880,412 +976,216 @@ async function runInstanceBatch(
   }
 }
 
-function extractBalancedJsonArray(
-  text,
-  marker
+function extractInnerTubeApiKey(
+  html
 ) {
-  const markerIndex =
-    text.indexOf(marker);
-
-  if (markerIndex < 0) {
+  if (
+    typeof html !== "string" ||
+    !html
+  ) {
     return null;
   }
 
-  const start =
-    text.indexOf(
-      "[",
-      markerIndex +
-      marker.length
-    );
-
-  if (start < 0) {
-    return null;
-  }
-
-  let depth = 0;
-  let inString = false;
-  let escaped = false;
+  const patterns = [
+    /"INNERTUBE_API_KEY"\s*:\s*"([^"]+)"/,
+    /'INNERTUBE_API_KEY'\s*:\s*'([^']+)'/,
+    /INNERTUBE_API_KEY\s*[:=]\s*"([^"]+)"/
+  ];
 
   for (
-    let index = start;
-    index < text.length;
-    index += 1
+    const pattern of patterns
   ) {
-    const char =
-      text[index];
+    const match =
+      html.match(pattern);
 
-    if (inString) {
-      if (escaped) {
-        escaped = false;
-        continue;
-      }
-
-      if (char === "\\") {
-        escaped = true;
-        continue;
-      }
-
-      if (char === '"') {
-        inString = false;
-      }
-
-      continue;
-    }
-
-    if (char === '"') {
-      inString = true;
-      continue;
-    }
-
-    if (char === "[") {
-      depth += 1;
-      continue;
-    }
-
-    if (char === "]") {
-      depth -= 1;
-
-      if (depth === 0) {
-        return text.slice(
-          start,
-          index + 1
-        );
-      }
+    if (
+      match?.[1] &&
+      match[1].startsWith(
+        "AIza"
+      )
+    ) {
+      return match[1];
     }
   }
 
   return null;
 }
 
-function getTrackDisplayName(
-  track
-) {
-  if (
-    typeof track?.name ===
-    "string"
-  ) {
-    return track.name;
-  }
-
-  if (
-    typeof track?.name
-      ?.simpleText ===
-    "string"
-  ) {
-    return track.name
-      .simpleText;
-  }
-
-  if (
-    Array.isArray(
-      track?.name?.runs
-    )
-  ) {
-    const value =
-      track.name.runs
-        .map(
-          (item) =>
-            item?.text || ""
-        )
-        .join("")
-        .trim();
-
-    if (value) {
-      return value;
-    }
-  }
-
-  return (
-    track?.lang_original ||
-    track?.lang_translated ||
-    track?.languageCode ||
-    track?.code ||
-    "unknown"
-  );
-}
-
-async function getYouTubeTracksFromWatchPage(
+async function getInnerTubeApiKey(
   videoId
 ) {
-  const url =
-    new URL(
-      "https://www.youtube.com/watch"
-    );
-
-  url.searchParams.set(
-    "v",
-    videoId
-  );
-
-  url.searchParams.set(
-    "hl",
-    "en"
-  );
-
-  const response =
-    await fetchWithTimeout(
-      url.toString(),
-      YOUTUBE_PAGE_TIMEOUT_MS,
-      {
-        headers: {
-          Accept:
-            "text/html,application/xhtml+xml",
-          "Accept-Language":
-            "en-US,en;q=0.9",
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
-        }
-      }
-    );
-
-  if (!response.ok) {
-    return [];
-  }
-
-  const html =
-    await readLimitedText(
-      response,
-      MAX_PAGE_BYTES
-    );
-
-  const jsonArray =
-    extractBalancedJsonArray(
-      html,
-      '"captionTracks":'
-    );
-
-  if (!jsonArray) {
-    return [];
-  }
-
   try {
-    const tracks =
-      JSON.parse(jsonArray);
-
-    return Array.isArray(
-      tracks
-    )
-      ? tracks
-      : [];
-  } catch {
-    return [];
-  }
-}
-
-function parseXmlAttributes(
-  input
-) {
-  const attrs = {};
-  const regex =
-    /([a-zA-Z0-9_:-]+)="([^"]*)"/g;
-
-  let match;
-
-  while (
-    (match = regex.exec(input))
-  ) {
-    attrs[match[1]] =
-      decodeHtmlEntities(
-        match[2]
+    const url =
+      new URL(
+        "https://www.youtube.com/watch"
       );
-  }
 
-  return attrs;
-}
-
-async function getYouTubeTracksFromTimedTextList(
-  videoId
-) {
-  const url =
-    new URL(
-      "https://www.youtube.com/api/timedtext"
+    url.searchParams.set(
+      "v",
+      videoId
     );
 
-  url.searchParams.set(
-    "type",
-    "list"
-  );
+    url.searchParams.set(
+      "hl",
+      "en"
+    );
 
-  url.searchParams.set(
-    "v",
-    videoId
-  );
-
-  const response =
-    await fetchWithTimeout(
-      url.toString(),
-      YOUTUBE_LIST_TIMEOUT_MS,
-      {
-        headers: {
-          Accept:
-            "text/xml,application/xml,text/plain;q=0.9,*/*;q=0.5",
-          "Accept-Language":
-            "en-US,en;q=0.9"
+    const response =
+      await fetchWithTimeout(
+        url.toString(),
+        WATCH_PAGE_TIMEOUT_MS,
+        {
+          headers: {
+            Accept:
+              "text/html,application/xhtml+xml",
+            "Accept-Language":
+              "en-US,en;q=0.9",
+            "User-Agent":
+              INNERTUBE_CLIENTS[
+                2
+              ].userAgent
+          }
         }
-      }
-    );
-
-  if (!response.ok) {
-    return [];
-  }
-
-  const xml =
-    await readLimitedText(
-      response,
-      MAX_TRACK_BYTES
-    );
-
-  if (!xml.trim()) {
-    return [];
-  }
-
-  const tracks = [];
-  const regex =
-    /<track\b([^>]*)\/?>/gi;
-
-  let match;
-
-  while (
-    (match = regex.exec(xml))
-  ) {
-    const attrs =
-      parseXmlAttributes(
-        match[1]
       );
 
-    const code =
-      attrs.lang_code || "";
-
-    if (!code) {
-      continue;
+    if (!response.ok) {
+      return (
+        FALLBACK_INNERTUBE_API_KEY
+      );
     }
 
-    tracks.push({
-      languageCode: code,
-      name:
-        attrs.lang_original ||
-        attrs.lang_translated ||
-        code,
-      kind:
-        attrs.kind || null,
-      trackName:
-        attrs.name || ""
-    });
-  }
+    const html =
+      await readLimitedText(
+        response,
+        MAX_PAGE_BYTES
+      );
 
-  return tracks;
+    return (
+      extractInnerTubeApiKey(
+        html
+      ) ||
+      FALLBACK_INNERTUBE_API_KEY
+    );
+  } catch {
+    return (
+      FALLBACK_INNERTUBE_API_KEY
+    );
+  }
 }
 
-function buildDirectTimedTextUrl(
-  videoId,
-  track,
-  format = "json3"
+function getCaptionTracksFromPlayer(
+  playerData
 ) {
-  const code =
-    track?.languageCode ||
-    track?.code ||
-    track?.lang_code;
+  const tracks =
+    playerData?.captions
+      ?.playerCaptionsTracklistRenderer
+      ?.captionTracks;
 
-  if (
-    typeof code !== "string" ||
-    !code.trim()
-  ) {
-    return null;
-  }
-
-  const url =
-    new URL(
-      "https://www.youtube.com/api/timedtext"
-    );
-
-  url.searchParams.set(
-    "v",
-    videoId
-  );
-
-  url.searchParams.set(
-    "lang",
-    code.trim()
-  );
-
-  if (format) {
-    url.searchParams.set(
-      "fmt",
-      format
-    );
-  }
-
-  const kind =
-    track?.kind;
-
-  if (
-    typeof kind === "string" &&
-    kind.trim()
-  ) {
-    url.searchParams.set(
-      "kind",
-      kind.trim()
-    );
-  }
-
-  const name =
-    track?.trackName;
-
-  if (
-    typeof name === "string" &&
-    name.trim()
-  ) {
-    url.searchParams.set(
-      "name",
-      name.trim()
-    );
-  }
-
-  return url.toString();
+  return Array.isArray(tracks)
+    ? tracks
+    : [];
 }
 
-async function fetchYouTubeCaptionUrl(
+function isLikelyPoTokenTrack(
   rawUrl
 ) {
+  try {
+    const url =
+      new URL(rawUrl);
+
+    return (
+      url.searchParams.get(
+        "exp"
+      ) === "xpe"
+    );
+  } catch {
+    return false;
+  }
+}
+
+async function fetchCaptionFromBaseUrl(
+  baseUrl,
+  client
+) {
   if (
+    typeof baseUrl !== "string" ||
+    !baseUrl.trim() ||
     !isAllowedYouTubeCaptionUrl(
-      rawUrl
+      baseUrl
     )
   ) {
     return "";
   }
 
-  const jsonUrl =
-    new URL(rawUrl);
+  const commonHeaders = {
+    "Accept-Language":
+      "en-US,en;q=0.9",
+    "User-Agent":
+      client.userAgent,
+    Referer:
+      "https://www.youtube.com/",
+    Origin:
+      "https://www.youtube.com"
+  };
 
-  jsonUrl.searchParams.set(
-    "fmt",
-    "json3"
-  );
+  const formats = [
+    "json3",
+    null,
+    "vtt"
+  ];
 
-  try {
-    const response =
-      await fetchWithTimeout(
-        jsonUrl.toString(),
-        TRACK_TIMEOUT_MS,
-        {
-          headers: {
-            Accept:
-              "application/json,text/plain;q=0.9,*/*;q=0.5",
-            "Accept-Language":
-              "en-US,en;q=0.9"
+  for (
+    const format of formats
+  ) {
+    try {
+      const url =
+        new URL(baseUrl);
+
+      if (format) {
+        url.searchParams.set(
+          "fmt",
+          format
+        );
+      } else {
+        url.searchParams.delete(
+          "fmt"
+        );
+      }
+
+      const response =
+        await fetchWithTimeout(
+          url.toString(),
+          TRACK_TIMEOUT_MS,
+          {
+            headers: {
+              ...commonHeaders,
+              Accept:
+                format === "json3"
+                  ? "application/json,text/plain;q=0.9,*/*;q=0.5"
+                  : format === "vtt"
+                    ? "text/vtt,text/plain;q=0.9,*/*;q=0.5"
+                    : "text/xml,application/xml,text/plain;q=0.9,*/*;q=0.5"
+            }
           }
-        }
-      );
+        );
 
-    if (response.ok) {
+      if (!response.ok) {
+        continue;
+      }
+
       const body =
         await readLimitedText(
           response,
           MAX_TRACK_BYTES
         );
 
-      if (body.trim()) {
+      if (!body.trim()) {
+        continue;
+      }
+
+      if (
+        format === "json3"
+      ) {
         try {
           const data =
             JSON.parse(body);
@@ -1297,255 +1197,491 @@ async function fetchYouTubeCaptionUrl(
             return transcript;
           }
         } catch {
-          const transcript =
-            cleanTimedTextXml(
-              body
-            );
+          // ننتقل إلى الصيغ التالية.
+        }
+      } else if (
+        format === "vtt"
+      ) {
+        const transcript =
+          cleanVtt(body);
 
-          if (transcript) {
-            return transcript;
+        if (transcript) {
+          return transcript;
+        }
+      } else {
+        const transcript =
+          cleanTimedTextXml(
+            body
+          );
+
+        if (transcript) {
+          return transcript;
+        }
+
+        try {
+          const data =
+            JSON.parse(body);
+
+          const transcriptFromJson =
+            cleanJson3(data);
+
+          if (
+            transcriptFromJson
+          ) {
+            return (
+              transcriptFromJson
+            );
           }
+        } catch {
+          // ليست JSON.
         }
       }
+    } catch {
+      // نجرب الصيغة التالية.
     }
-  } catch {
-    // نجرب VTT في الأسفل.
   }
 
-  try {
-    const vttUrl =
-      new URL(rawUrl);
+  return "";
+}
 
-    vttUrl.searchParams.set(
-      "fmt",
-      "vtt"
+async function callInnerTubePlayer(
+  videoId,
+  apiKey,
+  client
+) {
+  const url =
+    new URL(
+      "https://www.youtube.com/youtubei/v1/player"
     );
+
+  if (apiKey) {
+    url.searchParams.set(
+      "key",
+      apiKey
+    );
+  }
+
+  url.searchParams.set(
+    "prettyPrint",
+    "false"
+  );
+
+  const payload = {
+    videoId,
+    context: {
+      client: {
+        hl: "en",
+        gl: "US",
+        clientName:
+          client.clientName,
+        clientVersion:
+          client.clientVersion,
+        userAgent:
+          client.userAgent,
+        ...client.extraClient
+      }
+    },
+    contentCheckOk: true,
+    racyCheckOk: true
+  };
+
+  if (
+    client.clientName === "WEB"
+  ) {
+    payload.playbackContext = {
+      contentPlaybackContext: {
+        html5Preference:
+          "HTML5_PREF_WANTS"
+      }
+    };
+  }
+
+  const response =
+    await fetchWithTimeout(
+      url.toString(),
+      INNERTUBE_TIMEOUT_MS,
+      {
+        method: "POST",
+        headers: {
+          Accept:
+            "application/json",
+          "Content-Type":
+            "application/json",
+          "User-Agent":
+            client.userAgent,
+          Origin:
+            "https://www.youtube.com",
+          Referer:
+            "https://www.youtube.com/",
+          "X-YouTube-Client-Name":
+            client.clientNumber,
+          "X-YouTube-Client-Version":
+            client.clientVersion
+        },
+        body:
+          JSON.stringify(payload)
+      }
+    );
+
+  if (!response.ok) {
+    return {
+      ok: false,
+      tracks: [],
+      playabilityStatus:
+        null
+    };
+  }
+
+  let data;
+
+  try {
+    data =
+      await response.json();
+  } catch {
+    return {
+      ok: false,
+      tracks: [],
+      playabilityStatus:
+        null
+    };
+  }
+
+  return {
+    ok: true,
+    tracks:
+      getCaptionTracksFromPlayer(
+        data
+      ),
+    playabilityStatus:
+      data?.playabilityStatus
+        ?.status || null
+  };
+}
+
+async function tryInnerTube(
+  videoId
+) {
+  const apiKey =
+    await getInnerTubeApiKey(
+      videoId
+    );
+
+  let foundSubtitleMetadata =
+    false;
+
+  for (
+    const client of
+    INNERTUBE_CLIENTS
+  ) {
+    try {
+      const playerResult =
+        await callInnerTubePlayer(
+          videoId,
+          apiKey,
+          client
+        );
+
+      const tracks =
+        playerResult.tracks;
+
+      if (!tracks.length) {
+        continue;
+      }
+
+      foundSubtitleMetadata =
+        true;
+
+      const orderedTracks =
+        [...tracks]
+          .filter(
+            (track) =>
+              track &&
+              typeof track ===
+                "object" &&
+              typeof track
+                .baseUrl ===
+                "string"
+          )
+          .sort(
+            (a, b) =>
+              trackScore(b) -
+              trackScore(a)
+          );
+
+      for (
+        const track of
+        orderedTracks
+      ) {
+        if (
+          client.clientName ===
+            "WEB" &&
+          isLikelyPoTokenTrack(
+            track.baseUrl
+          )
+        ) {
+          continue;
+        }
+
+        const transcript =
+          await fetchCaptionFromBaseUrl(
+            track.baseUrl,
+            client
+          );
+
+        if (!transcript) {
+          continue;
+        }
+
+        return {
+          success: {
+            transcript,
+            lang:
+              getTrackDisplayName(
+                track
+              ),
+            code:
+              track.languageCode ||
+              null,
+            source:
+              `innertube-${client.id}`
+          },
+          foundSubtitleMetadata:
+            true
+        };
+      }
+    } catch {
+      // نجرب عميل InnerTube التالي.
+    }
+  }
+
+  return {
+    success: null,
+    foundSubtitleMetadata
+  };
+}
+
+async function tryWatchPageCaptionTracks(
+  videoId
+) {
+  try {
+    const url =
+      new URL(
+        "https://www.youtube.com/watch"
+      );
+
+    url.searchParams.set(
+      "v",
+      videoId
+    );
+
+    url.searchParams.set(
+      "hl",
+      "en"
+    );
+
+    const client =
+      INNERTUBE_CLIENTS[2];
 
     const response =
       await fetchWithTimeout(
-        vttUrl.toString(),
-        TRACK_TIMEOUT_MS,
+        url.toString(),
+        WATCH_PAGE_TIMEOUT_MS,
         {
           headers: {
             Accept:
-              "text/vtt,text/plain;q=0.9,*/*;q=0.5",
+              "text/html,application/xhtml+xml",
             "Accept-Language":
-              "en-US,en;q=0.9"
+              "en-US,en;q=0.9",
+            "User-Agent":
+              client.userAgent
           }
         }
       );
 
     if (!response.ok) {
-      return "";
+      return {
+        success: null,
+        foundSubtitleMetadata:
+          false
+      };
     }
 
-    const body =
+    const html =
       await readLimitedText(
         response,
-        MAX_TRACK_BYTES
+        MAX_PAGE_BYTES
       );
 
-    return cleanVtt(body);
-  } catch {
-    return "";
-  }
-}
+    const marker =
+      '"captionTracks":';
 
-async function tryYouTubeTrack(
-  videoId,
-  track
-) {
-  try {
-    const baseUrl =
-      track?.baseUrl;
+    const markerIndex =
+      html.indexOf(marker);
 
-    let transcript = "";
-
-    if (
-      typeof baseUrl ===
-        "string" &&
-      baseUrl.trim()
-    ) {
-      transcript =
-        await fetchYouTubeCaptionUrl(
-          baseUrl
-        );
-    } else {
-      const directUrl =
-        buildDirectTimedTextUrl(
-          videoId,
-          track,
-          "json3"
-        );
-
-      if (directUrl) {
-        transcript =
-          await fetchYouTubeCaptionUrl(
-            directUrl
-          );
-      }
+    if (markerIndex < 0) {
+      return {
+        success: null,
+        foundSubtitleMetadata:
+          false
+      };
     }
 
-    if (!transcript) {
-      return null;
-    }
-
-    return {
-      transcript,
-      lang:
-        getTrackDisplayName(
-          track
-        ),
-      code:
-        track?.languageCode ||
-        track?.code ||
-        track?.lang_code ||
-        null,
-      source: "youtube"
-    };
-  } catch {
-    return null;
-  }
-}
-
-async function tryYouTubeTracks(
-  videoId,
-  tracks
-) {
-  if (
-    !Array.isArray(tracks) ||
-    !tracks.length
-  ) {
-    return null;
-  }
-
-  const ordered =
-    [...tracks]
-      .filter(
-        (track) =>
-          track &&
-          typeof track ===
-            "object"
-      )
-      .sort(
-        (a, b) =>
-          trackScore(b) -
-          trackScore(a)
+    const start =
+      html.indexOf(
+        "[",
+        markerIndex +
+          marker.length
       );
 
-  for (const track of ordered) {
-    const result =
-      await tryYouTubeTrack(
-        videoId,
-        track
-      );
-
-    if (result) {
-      return result;
+    if (start < 0) {
+      return {
+        success: null,
+        foundSubtitleMetadata:
+          false
+      };
     }
-  }
 
-  return null;
-}
-
-async function tryDirectLanguageProbes(
-  videoId
-) {
-  for (
-    const code of
-    DIRECT_PROBE_LANGUAGES
-  ) {
-    const variants = [
-      {
-        languageCode: code,
-        name: code,
-        kind: null
-      },
-      {
-        languageCode: code,
-        name: code,
-        kind: "asr"
-      }
-    ];
+    let depth = 0;
+    let inString = false;
+    let escaped = false;
+    let end = -1;
 
     for (
-      const variant of variants
+      let i = start;
+      i < html.length;
+      i += 1
     ) {
-      const result =
-        await tryYouTubeTrack(
-          videoId,
-          variant
-        );
+      const char = html[i];
 
-      if (result) {
-        return result;
+      if (inString) {
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+
+        if (char === "\\") {
+          escaped = true;
+          continue;
+        }
+
+        if (char === '"') {
+          inString = false;
+        }
+
+        continue;
+      }
+
+      if (char === '"') {
+        inString = true;
+        continue;
+      }
+
+      if (char === "[") {
+        depth += 1;
+      } else if (
+        char === "]"
+      ) {
+        depth -= 1;
+
+        if (depth === 0) {
+          end = i + 1;
+          break;
+        }
       }
     }
-  }
 
-  return null;
-}
-
-async function tryYouTubeDirect(
-  videoId
-) {
-  try {
-    const pageTracks =
-      await getYouTubeTracksFromWatchPage(
-        videoId
-      );
-
-    const pageResult =
-      await tryYouTubeTracks(
-        videoId,
-        pageTracks
-      );
-
-    if (pageResult) {
+    if (end < 0) {
       return {
-        success: pageResult,
+        success: null,
         foundSubtitleMetadata:
-          pageTracks.length > 0
+          false
       };
     }
 
-    const listTracks =
-      await getYouTubeTracksFromTimedTextList(
-        videoId
-      );
+    let tracks;
 
-    const listResult =
-      await tryYouTubeTracks(
-        videoId,
-        listTracks
-      );
-
-    if (listResult) {
+    try {
+      tracks =
+        JSON.parse(
+          html.slice(
+            start,
+            end
+          )
+        );
+    } catch {
       return {
-        success: listResult,
+        success: null,
         foundSubtitleMetadata:
-          true
+          false
       };
     }
 
-    const probeResult =
-      await tryDirectLanguageProbes(
-        videoId
-      );
-
-    if (probeResult) {
+    if (
+      !Array.isArray(tracks) ||
+      !tracks.length
+    ) {
       return {
-        success: probeResult,
+        success: null,
         foundSubtitleMetadata:
-          true
+          false
       };
+    }
+
+    const orderedTracks =
+      [...tracks]
+        .filter(
+          (track) =>
+            typeof track?.baseUrl ===
+            "string"
+        )
+        .sort(
+          (a, b) =>
+            trackScore(b) -
+            trackScore(a)
+        );
+
+    for (
+      const track of
+      orderedTracks
+    ) {
+      if (
+        isLikelyPoTokenTrack(
+          track.baseUrl
+        )
+      ) {
+        continue;
+      }
+
+      const transcript =
+        await fetchCaptionFromBaseUrl(
+          track.baseUrl,
+          client
+        );
+
+      if (transcript) {
+        return {
+          success: {
+            transcript,
+            lang:
+              getTrackDisplayName(
+                track
+              ),
+            code:
+              track.languageCode ||
+              null,
+            source:
+              "watch-page"
+          },
+          foundSubtitleMetadata:
+            true
+        };
+      }
     }
 
     return {
       success: null,
       foundSubtitleMetadata:
-        pageTracks.length > 0 ||
-        listTracks.length > 0
+        true
     };
   } catch {
     return {
@@ -1598,8 +1734,7 @@ export default async function handler(
   let foundSubtitleMetadata =
     false;
 
-  // المرحلة الأولى:
-  // تجربة خوادم Piped العامة.
+  // 1) Piped
   for (
     let index = 0;
     index <
@@ -1611,7 +1746,7 @@ export default async function handler(
       PIPED_INSTANCES.slice(
         index,
         index +
-        INSTANCE_BATCH_SIZE
+          INSTANCE_BATCH_SIZE
       );
 
     const result =
@@ -1644,16 +1779,14 @@ export default async function handler(
     }
   }
 
-  // المرحلة الثانية:
-  // إذا فشل Piped، نحاول قراءة Captions
-  // مباشرة من YouTube بدون مفتاح API.
-  const youtubeResult =
-    await tryYouTubeDirect(
+  // 2) YouTube InnerTube
+  const innerTubeResult =
+    await tryInnerTube(
       videoId
     );
 
   if (
-    youtubeResult
+    innerTubeResult
       .foundSubtitleMetadata
   ) {
     foundSubtitleMetadata =
@@ -1661,23 +1794,60 @@ export default async function handler(
   }
 
   if (
-    youtubeResult.success
+    innerTubeResult.success
   ) {
     return res
       .status(200)
       .json({
         transcript:
-          youtubeResult.success
+          innerTubeResult
+            .success
             .transcript,
         lang:
-          youtubeResult.success
-            .lang,
+          innerTubeResult
+            .success.lang,
         code:
-          youtubeResult.success
-            .code,
+          innerTubeResult
+            .success.code,
         source:
-          youtubeResult.success
-            .source
+          innerTubeResult
+            .success.source
+      });
+  }
+
+  // 3) Watch page signed caption URL
+  const watchPageResult =
+    await tryWatchPageCaptionTracks(
+      videoId
+    );
+
+  if (
+    watchPageResult
+      .foundSubtitleMetadata
+  ) {
+    foundSubtitleMetadata =
+      true;
+  }
+
+  if (
+    watchPageResult.success
+  ) {
+    return res
+      .status(200)
+      .json({
+        transcript:
+          watchPageResult
+            .success
+            .transcript,
+        lang:
+          watchPageResult
+            .success.lang,
+        code:
+          watchPageResult
+            .success.code,
+        source:
+          watchPageResult
+            .success.source
       });
   }
 
@@ -1688,7 +1858,7 @@ export default async function handler(
       .status(502)
       .json({
         error:
-          "تم العثور على مسار ترجمة، لكن تعذر قراءة النص حالياً. حاول مرة أخرى بعد قليل."
+          "تم العثور على Captions لهذا الفيديو، لكن YouTube منع تنزيل ملف النص من الخادم حالياً. حاول مرة أخرى بعد قليل."
       });
   }
 
@@ -1696,7 +1866,7 @@ export default async function handler(
     .status(404)
     .json({
       error:
-        "لا توجد ترجمة أو Captions متاحة لهذا الفيديو. إذا كان الفيديو بلا نصوص على YouTube فسيحتاج إلى تحويل الصوت إلى نص."
+        "لم يتم العثور على Captions قابلة للاستخراج لهذا الفيديو حالياً."
     });
 }
 
