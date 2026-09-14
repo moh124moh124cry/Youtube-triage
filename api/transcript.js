@@ -25,20 +25,7 @@ const FALLBACK_INNERTUBE_API_KEY =
   "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 
 const INNERTUBE_CLIENTS = [
-  {
-    id: "android",
-    clientName: "ANDROID",
-    clientVersion: "19.47.53",
-    clientNumber: "3",
-    userAgent:
-      "com.google.android.youtube/19.47.53 (Linux; U; Android 14) gzip",
-    extraClient: {
-      androidSdkVersion: 34,
-      osName: "Android",
-      osVersion: "14"
-    }
-  },
-  {
+{
     id: "ios",
     clientName: "IOS",
     clientVersion: "20.03.02",
@@ -52,7 +39,20 @@ const INNERTUBE_CLIENTS = [
       osVersion: "18.2.1.22C161"
     }
   },
-  {
+{
+    id: "android",
+    clientName: "ANDROID",
+    clientVersion: "19.47.53",
+    clientNumber: "3",
+    userAgent:
+      "com.google.android.youtube/19.47.53 (Linux; U; Android 14) gzip",
+    extraClient: {
+      androidSdkVersion: 34,
+      osName: "Android",
+      osVersion: "14"
+    }
+  },
+{
     id: "web",
     clientName: "WEB",
     clientVersion: "2.20250312.04.00",
@@ -1107,6 +1107,13 @@ async function fetchCaptionFromBaseUrl(
   baseUrl,
   client
 ) {
+  const diagnostics = {
+    validUrl: false,
+    poTokenLike: false,
+    host: null,
+    attempts: []
+  };
+
   if (
     typeof baseUrl !== "string" ||
     !baseUrl.trim() ||
@@ -1114,7 +1121,21 @@ async function fetchCaptionFromBaseUrl(
       baseUrl
     )
   ) {
-    return "";
+    return {
+      transcript: "",
+      diagnostics
+    };
+  }
+
+  diagnostics.validUrl = true;
+  diagnostics.poTokenLike =
+    isLikelyPoTokenTrack(baseUrl);
+
+  try {
+    diagnostics.host =
+      new URL(baseUrl).hostname;
+  } catch {
+    diagnostics.host = null;
   }
 
   const commonHeaders = {
@@ -1123,9 +1144,7 @@ async function fetchCaptionFromBaseUrl(
     "User-Agent":
       client.userAgent,
     Referer:
-      "https://www.youtube.com/",
-    Origin:
-      "https://www.youtube.com"
+      "https://www.youtube.com/"
   };
 
   const formats = [
@@ -1137,6 +1156,17 @@ async function fetchCaptionFromBaseUrl(
   for (
     const format of formats
   ) {
+    const attempt = {
+      format:
+        format || "default",
+      status: null,
+      ok: false,
+      bytes: 0,
+      contentType: null,
+      parsed: false,
+      error: null
+    };
+
     try {
       const url =
         new URL(baseUrl);
@@ -1169,7 +1199,19 @@ async function fetchCaptionFromBaseUrl(
           }
         );
 
+      attempt.status =
+        response.status;
+      attempt.ok =
+        response.ok;
+      attempt.contentType =
+        response.headers.get(
+          "content-type"
+        );
+
       if (!response.ok) {
+        diagnostics.attempts.push(
+          attempt
+        );
         continue;
       }
 
@@ -1179,7 +1221,16 @@ async function fetchCaptionFromBaseUrl(
           MAX_TRACK_BYTES
         );
 
+      attempt.bytes =
+        Buffer.byteLength(
+          body,
+          "utf8"
+        );
+
       if (!body.trim()) {
+        diagnostics.attempts.push(
+          attempt
+        );
         continue;
       }
 
@@ -1194,10 +1245,18 @@ async function fetchCaptionFromBaseUrl(
             cleanJson3(data);
 
           if (transcript) {
-            return transcript;
+            attempt.parsed = true;
+            diagnostics.attempts.push(
+              attempt
+            );
+
+            return {
+              transcript,
+              diagnostics
+            };
           }
         } catch {
-          // ننتقل إلى الصيغ التالية.
+          // نجرب الصيغة التالية.
         }
       } else if (
         format === "vtt"
@@ -1206,7 +1265,15 @@ async function fetchCaptionFromBaseUrl(
           cleanVtt(body);
 
         if (transcript) {
-          return transcript;
+          attempt.parsed = true;
+          diagnostics.attempts.push(
+            attempt
+          );
+
+          return {
+            transcript,
+            diagnostics
+          };
         }
       } else {
         const transcript =
@@ -1215,7 +1282,15 @@ async function fetchCaptionFromBaseUrl(
           );
 
         if (transcript) {
-          return transcript;
+          attempt.parsed = true;
+          diagnostics.attempts.push(
+            attempt
+          );
+
+          return {
+            transcript,
+            diagnostics
+          };
         }
 
         try {
@@ -1228,21 +1303,42 @@ async function fetchCaptionFromBaseUrl(
           if (
             transcriptFromJson
           ) {
-            return (
-              transcriptFromJson
+            attempt.parsed = true;
+            diagnostics.attempts.push(
+              attempt
             );
+
+            return {
+              transcript:
+                transcriptFromJson,
+              diagnostics
+            };
           }
         } catch {
           // ليست JSON.
         }
       }
-    } catch {
-      // نجرب الصيغة التالية.
+
+      diagnostics.attempts.push(
+        attempt
+      );
+    } catch (error) {
+      attempt.error =
+        error?.name ||
+        "fetch-error";
+
+      diagnostics.attempts.push(
+        attempt
+      );
     }
   }
 
-  return "";
+  return {
+    transcript: "",
+    diagnostics
+  };
 }
+
 
 async function callInnerTubePlayer(
   videoId,
@@ -1296,67 +1392,96 @@ async function callInnerTubePlayer(
     };
   }
 
-  const response =
-    await fetchWithTimeout(
-      url.toString(),
-      INNERTUBE_TIMEOUT_MS,
-      {
-        method: "POST",
-        headers: {
-          Accept:
-            "application/json",
-          "Content-Type":
-            "application/json",
-          "User-Agent":
-            client.userAgent,
-          Origin:
-            "https://www.youtube.com",
-          Referer:
-            "https://www.youtube.com/",
-          "X-YouTube-Client-Name":
-            client.clientNumber,
-          "X-YouTube-Client-Version":
-            client.clientVersion
-        },
-        body:
-          JSON.stringify(payload)
-      }
-    );
-
-  if (!response.ok) {
-    return {
-      ok: false,
-      tracks: [],
-      playabilityStatus:
-        null
-    };
-  }
-
-  let data;
-
   try {
-    data =
-      await response.json();
-  } catch {
+    const response =
+      await fetchWithTimeout(
+        url.toString(),
+        INNERTUBE_TIMEOUT_MS,
+        {
+          method: "POST",
+          headers: {
+            Accept:
+              "application/json",
+            "Content-Type":
+              "application/json",
+            "User-Agent":
+              client.userAgent,
+            Origin:
+              "https://www.youtube.com",
+            Referer:
+              "https://www.youtube.com/",
+            "X-YouTube-Client-Name":
+              client.clientNumber,
+            "X-YouTube-Client-Version":
+              client.clientVersion
+          },
+          body:
+            JSON.stringify(payload)
+        }
+      );
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        httpStatus:
+          response.status,
+        tracks: [],
+        playabilityStatus:
+          null,
+        error: null
+      };
+    }
+
+    let data;
+
+    try {
+      data =
+        await response.json();
+    } catch {
+      return {
+        ok: false,
+        httpStatus:
+          response.status,
+        tracks: [],
+        playabilityStatus:
+          null,
+        error:
+          "invalid-json"
+      };
+    }
+
+    return {
+      ok: true,
+      httpStatus:
+        response.status,
+      tracks:
+        getCaptionTracksFromPlayer(
+          data
+        ),
+      playabilityStatus:
+        data?.playabilityStatus
+          ?.status || null,
+      playabilityReason:
+        data?.playabilityStatus
+          ?.reason || null,
+      error: null
+    };
+  } catch (error) {
     return {
       ok: false,
+      httpStatus: null,
       tracks: [],
       playabilityStatus:
-        null
+        null,
+      playabilityReason:
+        null,
+      error:
+        error?.name ||
+        "request-error"
     };
   }
-
-  return {
-    ok: true,
-    tracks:
-      getCaptionTracksFromPlayer(
-        data
-      ),
-    playabilityStatus:
-      data?.playabilityStatus
-        ?.status || null
-  };
 }
+
 
 async function tryInnerTube(
   videoId
@@ -1369,10 +1494,25 @@ async function tryInnerTube(
   let foundSubtitleMetadata =
     false;
 
+  const diagnostics = {
+    clients: []
+  };
+
   for (
     const client of
     INNERTUBE_CLIENTS
   ) {
+    const clientDiagnostics = {
+      id: client.id,
+      playerOk: false,
+      httpStatus: null,
+      playabilityStatus: null,
+      playabilityReason: null,
+      trackCount: 0,
+      tracks: [],
+      error: null
+    };
+
     try {
       const playerResult =
         await callInnerTubePlayer(
@@ -1381,10 +1521,27 @@ async function tryInnerTube(
           client
         );
 
+      clientDiagnostics.playerOk =
+        playerResult.ok;
+      clientDiagnostics.httpStatus =
+        playerResult.httpStatus;
+      clientDiagnostics.playabilityStatus =
+        playerResult.playabilityStatus;
+      clientDiagnostics.playabilityReason =
+        playerResult.playabilityReason;
+      clientDiagnostics.error =
+        playerResult.error;
+
       const tracks =
         playerResult.tracks;
 
+      clientDiagnostics.trackCount =
+        tracks.length;
+
       if (!tracks.length) {
+        diagnostics.clients.push(
+          clientDiagnostics
+        );
         continue;
       }
 
@@ -1412,29 +1569,68 @@ async function tryInnerTube(
         const track of
         orderedTracks
       ) {
+        const trackDiagnostics = {
+          code:
+            track.languageCode ||
+            null,
+          name:
+            getTrackDisplayName(
+              track
+            ),
+          kind:
+            track.kind || null,
+          poTokenLike:
+            isLikelyPoTokenTrack(
+              track.baseUrl
+            ),
+          fetch: null
+        };
+
         if (
           client.clientName ===
             "WEB" &&
-          isLikelyPoTokenTrack(
-            track.baseUrl
-          )
+          trackDiagnostics
+            .poTokenLike
         ) {
+          trackDiagnostics.fetch = {
+            skipped:
+              "po-token-like"
+          };
+
+          clientDiagnostics.tracks.push(
+            trackDiagnostics
+          );
+
           continue;
         }
 
-        const transcript =
+        const captionResult =
           await fetchCaptionFromBaseUrl(
             track.baseUrl,
             client
           );
 
-        if (!transcript) {
+        trackDiagnostics.fetch =
+          captionResult.diagnostics;
+
+        clientDiagnostics.tracks.push(
+          trackDiagnostics
+        );
+
+        if (
+          !captionResult.transcript
+        ) {
           continue;
         }
 
+        diagnostics.clients.push(
+          clientDiagnostics
+        );
+
         return {
           success: {
-            transcript,
+            transcript:
+              captionResult.transcript,
             lang:
               getTrackDisplayName(
                 track
@@ -1446,19 +1642,28 @@ async function tryInnerTube(
               `innertube-${client.id}`
           },
           foundSubtitleMetadata:
-            true
+            true,
+          diagnostics
         };
       }
-    } catch {
-      // نجرب عميل InnerTube التالي.
+    } catch (error) {
+      clientDiagnostics.error =
+        error?.name ||
+        "inner-error";
     }
+
+    diagnostics.clients.push(
+      clientDiagnostics
+    );
   }
 
   return {
     success: null,
-    foundSubtitleMetadata
+    foundSubtitleMetadata,
+    diagnostics
   };
 }
+
 
 async function tryWatchPageCaptionTracks(
   videoId
@@ -1652,16 +1857,17 @@ async function tryWatchPageCaptionTracks(
         continue;
       }
 
-      const transcript =
+      const captionResult =
         await fetchCaptionFromBaseUrl(
           track.baseUrl,
           client
         );
 
-      if (transcript) {
+      if (captionResult.transcript) {
         return {
           success: {
-            transcript,
+            transcript:
+              captionResult.transcript,
             lang:
               getTrackDisplayName(
                 track
@@ -1717,6 +1923,9 @@ export default async function handler(
 
   const { videoId } =
     req.query;
+
+  const debug =
+    req.query?.debug === "1";
 
   if (
     !isValidVideoId(
@@ -1784,6 +1993,12 @@ export default async function handler(
     await tryInnerTube(
       videoId
     );
+
+  const debugDiagnostics = {
+    innerTube:
+      innerTubeResult.diagnostics ||
+      null
+  };
 
   if (
     innerTubeResult
@@ -1858,7 +2073,11 @@ export default async function handler(
       .status(502)
       .json({
         error:
-          "تم العثور على Captions لهذا الفيديو، لكن YouTube منع تنزيل ملف النص من الخادم حالياً. حاول مرة أخرى بعد قليل."
+          "تم العثور على Captions لهذا الفيديو، لكن YouTube منع تنزيل ملف النص من الخادم حالياً. حاول مرة أخرى بعد قليل.",
+        ...(debug
+          ? { diagnostics:
+              debugDiagnostics }
+          : {})
       });
   }
 
@@ -1866,7 +2085,11 @@ export default async function handler(
     .status(404)
     .json({
       error:
-        "لم يتم العثور على Captions قابلة للاستخراج لهذا الفيديو حالياً."
+        "لم يتم العثور على Captions قابلة للاستخراج لهذا الفيديو حالياً.",
+      ...(debug
+        ? { diagnostics:
+            debugDiagnostics }
+        : {})
     });
 }
 
